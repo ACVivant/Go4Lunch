@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Launch Sign-In Activity when user clicked on Facebook Login Button
                 startSignInActivityFacebook();
+                startLunchActivity();
             }
         });
 
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Launch Sign-In Activity when user clicked on Google Login Button
                 startSignInActivityGoogle();
+                startLunchActivity();
+
             }
         });
     }
@@ -123,6 +126,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    // launch lunch activity
+    private void startLunchActivity() {
+        Intent intent = new Intent(this, LunchActivity.class);
+        startActivity(intent);
     }
 
 }
