@@ -65,6 +65,12 @@ public class LunchActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the toolbar menu
+        getMenuInflater().inflate(R.menu.toolbar, menu);
+        return true;
+    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
