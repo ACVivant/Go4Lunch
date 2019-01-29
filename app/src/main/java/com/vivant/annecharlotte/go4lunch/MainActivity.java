@@ -5,10 +5,13 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -19,11 +22,12 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
 
     private LinearLayout mainActivityLinearLayout;
-    private Button facebooBtn;
+    private Button facebookBtn;
     private Button googleBtn;
 
     // Identifier for Sign-In Activity
     private static final int RC_SIGN_IN_GOOGLE = 123;
+    private static final int RC_SIGN_IN_FACEBOOK = 456;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +48,22 @@ public class MainActivity extends AppCompatActivity {
     // Links between activity and layout
     private void layoutLinks() {
         mainActivityLinearLayout = (LinearLayout) findViewById(R.id.main_activity_linear_layout);
-        facebooBtn = (Button) findViewById(R.id.mainactivity_button_login_facebook);
+        facebookBtn = (Button) findViewById(R.id.mainactivity_button_login_facebook);
         googleBtn = (Button) findViewById(R.id.mainactivity_button_login_google);
+
+        facebookBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Launch Sign-In Activity when user clicked on Facebook Login Button
+                startSignInActivityFacebook();
+            }
+        });
 
         googleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Launch Sign-In Activity when user clicked on Google Login Button
-                startSignInActivity();
+                startSignInActivityGoogle();
             }
         });
     }
@@ -65,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
         Snackbar.make(linearLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
-    //Launch Sign-In Activity
-    private void startSignInActivity(){
+    //Launch Sign-In Activity with Google
+    private void startSignInActivityGoogle(){
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
@@ -74,11 +86,22 @@ public class MainActivity extends AppCompatActivity {
                         .setAvailableProviders(
                                 Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
                         .setIsSmartLockEnabled(false, true)
-                        .setLogo(R.drawable.baseline_local_dining_24)
                         .build(),
                 RC_SIGN_IN_GOOGLE);
     }
 
+    //Launch Sign-In Activity with Facebook
+    private void startSignInActivityFacebook(){
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setTheme(R.style.LoginTheme)
+                        .setAvailableProviders(
+                                Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+                        .setIsSmartLockEnabled(false, true)
+                        .build(),
+                RC_SIGN_IN_FACEBOOK);
+    }
     // --------------------
     // UTILS
     // --------------------
@@ -87,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data){
         IdpResponse response = IdpResponse.fromResultIntent(data);
 
-        if (requestCode == RC_SIGN_IN_GOOGLE) {
+        if (requestCode == RC_SIGN_IN_GOOGLE || requestCode == RC_SIGN_IN_FACEBOOK) {
             if (resultCode == RESULT_OK) { // SUCCESS
                 showSnackBar(this.mainActivityLinearLayout, getString(R.string.connection_succeed));
             } else { // ERRORS
