@@ -1,5 +1,6 @@
 package com.vivant.annecharlotte.go4lunch;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -82,8 +83,9 @@ public class LunchActivity extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_settings) {
 
-        } else if (id == R.id.nav_logout) {
 
+        } else if (id == R.id.nav_logout) {
+            Intent intent = new Intent(this, ProfileActivity.class);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

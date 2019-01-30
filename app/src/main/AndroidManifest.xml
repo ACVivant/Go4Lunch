@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".BaseActivity"></activity>
         <activity
             android:name=".LunchActivity"
             android:label="@string/title_activity_lunch"
@@ -28,7 +29,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity> <!-- PROFILE ACTIVITY -->
+        <activity
+            android:name=".ProfileActivity"
+            android:label="@string/toolbar_title_login_activity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>
