@@ -86,6 +86,7 @@ public class LunchActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_logout) {
             Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
