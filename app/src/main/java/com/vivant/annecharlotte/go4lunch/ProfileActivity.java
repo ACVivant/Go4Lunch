@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -38,7 +37,6 @@ public class ProfileActivity extends BaseActivity {
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate: ");
         super.onCreate(savedInstanceState);
         layoutLinks();
         this.configureToolbar();
@@ -56,7 +54,6 @@ public class ProfileActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 onClickDeleteButton();
-                startMainActivity();
             }
         });
 
@@ -64,7 +61,6 @@ public class ProfileActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 onClickSignOutButton();
-                startMainActivity();
             }
         });
     }
@@ -75,8 +71,6 @@ public class ProfileActivity extends BaseActivity {
     // --------------------
     // ACTIONS
     // --------------------
-
-    public void onClickUpdateButton() { }
 
     public void onClickDeleteButton() {
         new AlertDialog.Builder(this)
@@ -105,6 +99,7 @@ public class ProfileActivity extends BaseActivity {
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(SIGN_OUT_TASK));
+        startMainActivity();
     }
 
     private void deleteUserFromFirebase(){
@@ -112,6 +107,7 @@ public class ProfileActivity extends BaseActivity {
             AuthUI.getInstance()
                     .delete(this)
                     .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(DELETE_USER_TASK));
+            startMainActivity();
         }
     }
 
@@ -119,7 +115,7 @@ public class ProfileActivity extends BaseActivity {
     // UI
     // --------------------
 
-    // 1 - Update UI when activity is creating
+    //  Update UI when activity is creating
     private void updateUIWhenCreating(){
 
         if (this.getCurrentUser() != null){

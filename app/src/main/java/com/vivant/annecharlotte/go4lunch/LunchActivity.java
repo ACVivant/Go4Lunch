@@ -3,10 +3,14 @@ package com.vivant.annecharlotte.go4lunch;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
@@ -22,15 +26,23 @@ import androidx.fragment.app.FragmentManager;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-public class LunchActivity extends AppCompatActivity
+public class LunchActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private TextView nameTextView;
+    private TextView emailTextView;
+    private ImageView photoImageView;
 
     final Fragment fragment1 = new MapFragment();
     final Fragment fragment2 = new ListRestoFragment();
     final Fragment fragment3 = new ListWorkmatesFragment();
     final FragmentManager fm = getSupportFragmentManager();
     Fragment active = fragment1;
+
+    private String TAG = "LUNCH";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +65,25 @@ public class LunchActivity extends AppCompatActivity
 
         fm.beginTransaction().add(R.id.lunch_container, fragment3, "3").hide(fragment3).commit();
         fm.beginTransaction().add(R.id.lunch_container, fragment2, "2").hide(fragment2).commit();
-        fm.beginTransaction().add(R.id.lunch_container,fragment1, "1").commit();
+        fm.beginTransaction().add(R.id.lunch_container, fragment1, "1").commit();
+
+        // pour l'instant fait bugger l'appli:
+        layoutLinks();
+        //updateUIWhenCreating();
     }
+
+
+    protected void layoutLinks() {
+        nameTextView = (TextView) findViewById(R.id.ND_name_textView);
+        emailTextView = (TextView) findViewById(R.id.ND_email_textView);
+        photoImageView = (ImageView) findViewById(R.id.ND_photo_imageView);
+
+        // pourquoi le lien ne se fait-il pas???
+        // Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'void android.widget.EditText.setText(java.lang.CharSequence)' on a null object reference
+    }
+
+    @Override
+    public int getFragmentLayout() { return R.layout.activity_profile; }
 
     @Override
     public void onBackPressed() {
@@ -118,4 +147,28 @@ public class LunchActivity extends AppCompatActivity
             return false;
         }
     };
+
+    //  Update UI when activity is creating
+    private void updateUIWhenCreating(){
+
+        Log.d(TAG, "updateUIWhenCreating: début");
+        if (this.getCurrentUser() != null){
+
+            //Get picture URL from Firebase
+            if (this.getCurrentUser().getPhotoUrl() != null) {
+                Log.d(TAG, "updateUIWhenCreating: photo");
+                Glide.with(this)
+                        .load(this.getCurrentUser().getPhotoUrl())
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(photoImageView);
+            }
+            //Get email & username from Firebase
+            String email = TextUtils.isEmpty(this.getCurrentUser().getEmail()) ? getString(R.string.info_no_email_found) : this.getCurrentUser().getEmail();
+            String username = TextUtils.isEmpty(this.getCurrentUser().getDisplayName()) ? getString(R.string.info_no_username_found) : this.getCurrentUser().getDisplayName();
+
+            //Update views with data
+            this.nameTextView.setText(username);
+            this.emailTextView.setText(email);
+        }
+    }
 }
