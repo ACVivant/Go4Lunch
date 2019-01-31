@@ -3,9 +3,15 @@ package com.vivant.annecharlotte.go4lunch;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -17,6 +23,8 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         layoutLinks();
+        printHashKey(this);
     }
 
     // Récupère le retour de l'activité d'authentification pour  vérifier si elle s'est bien passée
@@ -56,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Launch Sign-In Activity when user clicked on Facebook Login Button
                 startSignInActivityFacebook();
-                startLunchActivity();
             }
         });
 
@@ -65,8 +73,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Launch Sign-In Activity when user clicked on Google Login Button
                 startSignInActivityGoogle();
-                startLunchActivity();
-
             }
         });
     }
@@ -114,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN_GOOGLE || requestCode == RC_SIGN_IN_FACEBOOK) {
             if (resultCode == RESULT_OK) { // SUCCESS
                 showSnackBar(this.mainActivityLinearLayout, getString(R.string.connection_succeed));
+                startLunchActivity();
             } else { // ERRORS
                 if (response == null) {
                     showSnackBar(this.mainActivityLinearLayout, getString(R.string.error_authentication_canceled));
@@ -132,5 +139,18 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public static void printHashKey(Context context) {
+        try {
+            final PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
+            for (android.content.pm.Signature signature : info.signatures) {
+                final MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                final String hashKey = new String(Base64.encode(md.digest(), 0));
+                Log.i("AppLog", "key:" + hashKey + "=");
+            }
+        } catch (Exception e) {
+            Log.e("AppLog", "error:", e);
+        }
+    }
 }
 
