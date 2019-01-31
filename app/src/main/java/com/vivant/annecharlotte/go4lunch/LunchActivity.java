@@ -44,6 +44,8 @@ public class LunchActivity extends BaseActivity
 
     private String TAG = "LUNCH";
 
+    private NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +59,7 @@ public class LunchActivity extends BaseActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -74,9 +76,9 @@ public class LunchActivity extends BaseActivity
 
 
     protected void layoutLinks() {
-        nameTextView = (TextView) findViewById(R.id.ND_name_textView);
-        emailTextView = (TextView) findViewById(R.id.ND_email_textView);
-        photoImageView = (ImageView) findViewById(R.id.ND_photo_imageView);
+        nameTextView = (TextView) navigationView.findViewById(R.id.ND_name_textView);
+        emailTextView = (TextView) navigationView.findViewById(R.id.ND_email_textView);
+        photoImageView = (ImageView) navigationView.findViewById(R.id.ND_photo_imageView);
 
         // pourquoi le lien ne se fait-il pas???
         // Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'void android.widget.EditText.setText(java.lang.CharSequence)' on a null object reference
