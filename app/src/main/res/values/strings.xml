@@ -49,6 +49,9 @@
     <string name="popup_message_choice_no">Non</string>
     <string name="check_box_is_mentor">Etes-vous un mentor ?</string>
 
+    <!-- GOOGLE PURPOSE -->
+    <string name="google_maps_api_key">AIzaSyADUp0sSiKbsMF6Q2V7M4fRdubHR1_S1Q4</string>
+
     <!-- FACEBOOK PURPOSE -->
     <string name="facebook_app_id">1031726573687275</string>
     <string name="fb_login_protocol_scheme">fb1031726573687275</string>
