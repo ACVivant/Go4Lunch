@@ -48,6 +48,10 @@ dependencies {
 
     // MAPS
     implementation 'com.google.android.gms:play-services:11.8.0'
+
+    //MULTIDEX
+    implementation 'com.android.support:multidex:1.0.3'
+
 }
 
 apply plugin: 'com.google.gms.google-services'
