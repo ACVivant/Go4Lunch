@@ -135,8 +135,8 @@ public class MainActivity extends AppCompatActivity {
 
     // launch lunch activity
     private void startLunchActivity() {
-        //Intent intent = new Intent(this, LunchActivity.class);
-        Intent intent = new Intent(this, TestActivity.class);
+        Intent intent = new Intent(this, LunchActivity.class);
+        //Intent intent = new Intent(this, TestActivity.class);
         startActivity(intent);
     }
 
