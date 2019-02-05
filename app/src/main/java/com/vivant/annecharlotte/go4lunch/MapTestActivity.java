@@ -42,6 +42,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -80,6 +82,8 @@ public class MapTestActivity extends AppCompatActivity implements OnMapReadyCall
     private LocationRequest mLocationRequest;
     private Location lastLocation;
     private Marker currentUserLocationMarker;
+    double lat, lng;
+    private int proximityRadius = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,6 +192,25 @@ public class MapTestActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
     private void moveCamera(LatLng latlng, float zoom, String title) {
+
+        String restaurant = "restaurant";
+        Object transferData[] = new Object[2];
+        GetNearbyPlaces getNearbyPlaces = new GetNearbyPlaces();
+        lat = latlng.latitude;
+        lng = latlng.longitude;
+
+        // add nearby restaurants
+        mMap.clear();
+        String url = getUrl(lat, lng, restaurant);
+        Log.d(TAG, "moveCamera: url " + url);
+        transferData[0] = mMap;
+        transferData[1] = url;
+
+        getNearbyPlaces.execute(transferData);
+        Toast.makeText(this, "Searching for nearby restaurants", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Showing nearby restaurants", Toast.LENGTH_LONG).show();
+
+
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latlng.latitude + ", lng: " + latlng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, zoom));
 
@@ -197,9 +220,25 @@ public class MapTestActivity extends AppCompatActivity implements OnMapReadyCall
            // Add marker to the map
            MarkerOptions options = new MarkerOptions()
                    .position(latlng)
-                   .title(title);
+                   .title(title)
+                   .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
            mMap.addMarker(options);
        }
+
+    }
+
+    private String getUrl(double latitude, double longitude, String nearbyPlace) {
+        StringBuilder googleUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googleUrl.append("location=" + latitude +"," +longitude);
+        googleUrl.append("&radius="+proximityRadius);
+        googleUrl.append("&type=" +nearbyPlace);
+        googleUrl.append("&sensor=true");
+        googleUrl.append("&key="+ "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI");
+
+        Log.d(TAG, "getUrl: url " +googleUrl.toString());
+
+        return googleUrl.toString();
+
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -304,6 +343,7 @@ public class MapTestActivity extends AppCompatActivity implements OnMapReadyCall
             currentUserLocationMarker.remove();
         }
 
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
     }
 
     @Override
