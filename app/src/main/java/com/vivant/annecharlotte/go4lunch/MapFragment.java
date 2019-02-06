@@ -108,7 +108,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_map, container, false);
-        mSearchText = (AutoCompleteTextView) mView.findViewById(R.id.input_search);
+       // mSearchText = (AutoCompleteTextView) mView.findViewById(R.id.input_search);
         mGps = (ImageView) mView.findViewById(R.id.ic_gps);
 
         getLocationPermission();
@@ -124,7 +124,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         //mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(this, Places.getGeoDataClient(this, null), LAT_LNG_BOUNDS, null);
         //mSearchText.setAdapter(mPlaceAutocompleteAdapter);
 
-        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        /*mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH
@@ -136,7 +136,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 }
                 return false;
             }
-        });
+        });*/
         hideSoftKeyboard();
 
         mGps.setOnClickListener(new View.OnClickListener() {
@@ -246,6 +246,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         googleUrl.append("&type=" + nearbyPlace);
         googleUrl.append("&sensor=true");
         googleUrl.append("&key=" + "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI");
+        // il faudra mettre la clé autre part
 
         Log.d(TAG, "getUrl: url " + googleUrl.toString());
 
