@@ -21,6 +21,9 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
 
     private final static String TAG = "VIEWHOLDER";
 
+    private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
+
+
     public ListOfRestaurantsViewholder(View itemView, final ListOfRestaurantsAdapter.OnItemClickedListener listener) {
         super(itemView);
 
@@ -49,50 +52,65 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
         });
     }
 
-    public void updateWithDetailsRestaurants(RestaurantDetailResult restaurantDetail, RequestManager glide){
+    public void updateWithDetailsRestaurants(RestaurantDetailResult restaurantDetail, RequestManager glide) {
 
         Log.d(TAG, "updateWithDetailsRestaurants");
         this.nameTextView.setText(restaurantDetail.getName());
-        this.addressTextView.setText(restaurantDetail.getVicinity());
+
+        String address_short = restaurantDetail.getAddressComponents().get(0).getShortName() + ", " + restaurantDetail.getAddressComponents().get(1).getShortName();
+        this.addressTextView.setText(address_short);
+
        /* if(restaurantDetail.getOpeninghours().get(0).getOpenNow()) {
         this.openTextView.setText("Ouvert en ce moment");
         } else {
             this.openTextView.setText("Fermé en ce moment");
         }*/
 
+       // Aucune étoile en dessous de 2.5, 1 étoile entre 2.6 et 3.5, 2 étoiles entre 3.6 et 4.5, 3 étoiles au-dessus
         Double rate = restaurantDetail.getRating();
 
-        int rate_int = (int) Math.floor(rate);
-        Log.d(TAG, "updateWithDetailsRestaurants: rating "+rate_int);
+        int rate_int = (int) Math.round(rate);
+        Log.d(TAG, "updateWithDetailsRestaurants: rating " + rate_int);
 
         switch (rate_int) {
             case 0:
                 this.star1.setVisibility(View.GONE);
                 this.star2.setVisibility(View.GONE);
                 this.star3.setVisibility(View.GONE);
+                break;
             case 1:
                 this.star1.setVisibility(View.GONE);
                 this.star2.setVisibility(View.GONE);
                 this.star3.setVisibility(View.GONE);
+                break;
             case 2:
                 this.star1.setVisibility(View.GONE);
                 this.star2.setVisibility(View.GONE);
-                this.star3.setVisibility(View.VISIBLE);
+                this.star3.setVisibility(View.GONE);
+                break;
             case 3:
+                this.star1.setVisibility(View.GONE);
+                this.star2.setVisibility(View.GONE);
+                this.star3.setVisibility(View.VISIBLE);
+                break;
+            case 4:
                 this.star1.setVisibility(View.GONE);
                 this.star2.setVisibility(View.VISIBLE);
                 this.star3.setVisibility(View.VISIBLE);
-            case 4:
-                this.star1.setVisibility(View.VISIBLE);
-                this.star2.setVisibility(View.VISIBLE);
-                this.star3.setVisibility(View.VISIBLE);
+                break;
             case 5:
                 this.star1.setVisibility(View.VISIBLE);
                 this.star2.setVisibility(View.VISIBLE);
                 this.star3.setVisibility(View.VISIBLE);
+                break;
         }
 
-        // Images
-               // glide.load(restaurantDetail.getPhotos().get(0).getHtmlAttributions().get(0)).into(photo);
+       // Images
+        if (restaurantDetail.getPhotos() != null && !restaurantDetail.getPhotos().isEmpty()){
+                glide.load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+restaurantDetail.getPhotos().get(0).getPhotoReference()+"key="+key);
+        } else {
+            this.photo.setImageResource(R.drawable.ic_menu_camera);
+        }
+
     }
 }

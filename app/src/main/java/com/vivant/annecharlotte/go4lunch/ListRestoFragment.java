@@ -34,7 +34,6 @@ public class ListRestoFragment extends Fragment {
 
     private ListOfRestaurantsAdapter adapter;
     private RestaurantDetailResult mResto;
-  //  public  List<RestaurantDetailResult> listRestos = null;
     public ArrayList<RestaurantDetailResult> listRestos = new ArrayList<>();
 
     private Call<ListDetailResult> call;
@@ -52,7 +51,6 @@ public class ListRestoFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        //View view = inflater.inflate(R.layout.fragment_list_workmates, container, false);
         View view =  inflater.inflate(R.layout.fragment_list_resto, container, false);
         mRecyclerView = view.findViewById(R.id.fragment_restaurants_recyclerview);
         Log.d(TAG, "onCreateView: view");
@@ -71,8 +69,12 @@ public class ListRestoFragment extends Fragment {
 
         for (int i = 0; i < myIdTab.length; i++) {
             Log.d(TAG, "onCreate: boucle sur les différents id: i: "+ i);
-            call = apiService.getRestaurantDetail(API_KEY, myIdTab[i], "name,photo,url,vicinity,formatted_phone_number,website,rating");
-            //call = apiService.getRestaurantDetail(API_KEY, myIdTab[i], "name");
+            call = apiService.getRestaurantDetail(API_KEY, myIdTab[i], "name,photo,url,formatted_phone_number,website,rating,address_component");
+            //call = apiService.getRestaurantDetail(API_KEY, myIdTab[i], "name,photo,url,formatted_phone_number,website,rating,address_component,opening_hours");
+            // pb avec opening_hours
+            //java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 43 column 26 path $.result.opening_hours
+            // et photos semble toujours vide... pourtant a priori non
+
             //address_component, adr_address, alt_id, formatted_address, geometry, icon, id, name, permanently_closed, photo, place_id, plus_code, scope, type, url, utc_offset, vicinity
             //formatted_phone_number, international_phone_number, opening_hours, website
             //price_level, rating, review
@@ -89,17 +91,7 @@ public class ListRestoFragment extends Fragment {
                     ListDetailResult posts = response.body();
                     mResto = posts.getResult();
                     // fill the recyclerview
-                    Log.d(TAG, "onResponse: il y a une réponse: " +mResto.getName());
-                    Log.d(TAG, "onResponse: il y a une réponse: " +mResto.getPhotos());
-                    Log.d(TAG, "onResponse: il y a une réponse: " +mResto.getUrl());
-                    Log.d(TAG, "onResponse: il y a une réponse: " +mResto.getVicinity());
-                    Log.d(TAG, "onResponse: il y a une réponse: " +mResto.getFormattedPhoneNumber());
-                    //Log.d(TAG, "onResponse: il y a une réponse: " +mResto.getOpeninghours());
-                    Log.d(TAG, "onResponse: il y a une réponse: " +mResto.getWebsite());
-                    Log.d(TAG, "onResponse: il y a une réponse: " +mResto.getRating());
-
                     listRestos.add(mResto);
-                    Log.d(TAG, "onResponse: listRestos.size: " +listRestos.size());
 
                     adapter = new ListOfRestaurantsAdapter(listRestos, Glide.with(mRecyclerView), myIdTab.length);
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

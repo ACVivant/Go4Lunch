@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 
+import com.facebook.appevents.codeless.CodelessLoggingEventListener;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 
@@ -30,11 +31,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback
        , GoogleApiClient.ConnectionCallbacks {
@@ -64,6 +70,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     private Marker currentUserLocationMarker;
     double lat, lng;
     private int proximityRadius = 1000;
+
+    private List<HashMap<String, String>> nearbyPlacesList;
 
     public MapFragment() {
         // Required empty public constructor
@@ -216,7 +224,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
         String restaurant = "restaurant";
         Object transferData[] = new Object[2];
-        GetNearbyPlaces getNearbyPlaces = new GetNearbyPlaces();
+
         lat = latlng.latitude;
         lng = latlng.longitude;
 
@@ -224,16 +232,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         mMap.clear();
         String url = getUrl(lat, lng, restaurant);
         Log.d(TAG, "moveCamera: url " + url);
+
+        GetNearbyPlaces getNearbyPlaces = new GetNearbyPlaces();
         transferData[0] = mMap;
         transferData[1] = url;
-
         getNearbyPlaces.execute(transferData);
+
+        //nearbyPlacesList = RestaurantSingleton.getInstance(mMap, url).getPlacesInfos();
+        //displayNearbyPlaces(nearbyPlacesList);
 
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latlng.latitude + ", lng: " + latlng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, zoom));
 
       //  hideSoftKeyboard();
-
     }
 
     private String getUrl(double latitude, double longitude, String nearbyPlace) {
@@ -249,6 +260,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
         return googleUrl.toString();
    }
+
+    private void displayNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
+
+        for (int i=0; i<nearbyPlacesList.size(); i++) {
+            MarkerOptions markerOptions = new MarkerOptions();
+
+            HashMap<String, String> googleNearbyPlace = nearbyPlacesList.get(i);
+            String nameOfPlace = googleNearbyPlace.get("place_name");
+            String vicinity = googleNearbyPlace.get("vicinity");
+            String idOfPlace = googleNearbyPlace.get("place_id");
+            double lat = Double.parseDouble(googleNearbyPlace.get("lat"));
+            double lng = Double.parseDouble(googleNearbyPlace.get("lng"));
+
+            LatLng latLng = new LatLng(lat, lng);
+            markerOptions.position(latLng)
+                    .title(nameOfPlace+ " : " + vicinity)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            mMap.addMarker(markerOptions);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
+            Log.d(TAG, "displayNearbyPlaces: " +i);
+
+            System.out.println("id restaurant: " + idOfPlace);
+
+        }
+    }
 
     //------------------------------------------------------------------------------------------------------------------
     // connection

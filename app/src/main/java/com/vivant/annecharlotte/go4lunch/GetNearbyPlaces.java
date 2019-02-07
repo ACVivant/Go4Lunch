@@ -28,6 +28,7 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
     public String tabIdNearbyRestaurant[];
 
     private final String TAG = "GetNearbyPlaces";
+    List<HashMap<String, String>> nearbyPlacesList = null;
 
     @Override
     protected String doInBackground(Object... objects) {
@@ -46,12 +47,18 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
 
     @Override
     protected void onPostExecute(String s) {
+    //protected void onPostExecute(String s) {
         Log.d(TAG, "onPostExecute: ");
-        List<HashMap<String, String>> nearbyPlacesList = null;
+
         DataParser dataParser = new DataParser();
         nearbyPlacesList = dataParser.parse(s);
 
         displayNearbyPlaces(nearbyPlacesList);
+        Log.d(TAG, "onPostExecute: " + nearbyPlacesList.get(0).get("place_name"));
+    }
+
+    public List<HashMap<String, String>> getNearbyPlacesList() {
+        return nearbyPlacesList;
     }
 
     private void displayNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
@@ -63,14 +70,13 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
 
             HashMap<String, String> googleNearbyPlace = nearbyPlacesList.get(i);
             String nameOfPlace = googleNearbyPlace.get("place_name");
-            String vicinity = googleNearbyPlace.get("vicinity");
             String idOfPlace = googleNearbyPlace.get("place_id");
             double lat = Double.parseDouble(googleNearbyPlace.get("lat"));
             double lng = Double.parseDouble(googleNearbyPlace.get("lng"));
 
             LatLng latLng = new LatLng(lat, lng);
            markerOptions.position(latLng)
-                    .title(nameOfPlace+ " : " + vicinity)
+                    .title(nameOfPlace)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             mMap.addMarker(markerOptions);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
