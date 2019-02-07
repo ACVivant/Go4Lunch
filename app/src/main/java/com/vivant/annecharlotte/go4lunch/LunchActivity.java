@@ -76,10 +76,11 @@ public class LunchActivity extends BaseActivity
 
 
     protected void layoutLinks() {
-        nameTextView = (TextView) navigationView.findViewById(R.id.ND_name_textView);
-        emailTextView = (TextView) navigationView.findViewById(R.id.ND_email_textView);
-        photoImageView = (ImageView) navigationView.findViewById(R.id.ND_photo_imageView);
+        photoImageView= navigationView.getHeaderView(0).findViewById(R.id.ND_photo_imageView);
 
+        /*nameTextView = (TextView) navigationView.findViewById(R.id.ND_name_textView);
+        emailTextView = (TextView) navigationView.findViewById(R.id.ND_email_textView);
+        photoImageView = (ImageView) navigationView.findViewById(R.id.ND_photo_imageView);*/
         // pourquoi le lien ne se fait-il pas???
         // Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'void android.widget.EditText.setText(java.lang.CharSequence)' on a null object reference
     }

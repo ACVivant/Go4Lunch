@@ -21,6 +21,12 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
     private String googlePlaceData ,url;
     private GoogleMap mMap;
 
+    public String[] getTabIdNearbyRestaurant() {
+        return tabIdNearbyRestaurant;
+    }
+
+    public String tabIdNearbyRestaurant[];
+
     private final String TAG = "GetNearbyPlaces";
 
     @Override
@@ -50,12 +56,15 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
 
     private void displayNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
 
+        tabIdNearbyRestaurant = new String[nearbyPlacesList.size()];
+
         for (int i=0; i<nearbyPlacesList.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();
 
             HashMap<String, String> googleNearbyPlace = nearbyPlacesList.get(i);
             String nameOfPlace = googleNearbyPlace.get("place_name");
             String vicinity = googleNearbyPlace.get("vicinity");
+            String idOfPlace = googleNearbyPlace.get("place_id");
             double lat = Double.parseDouble(googleNearbyPlace.get("lat"));
             double lng = Double.parseDouble(googleNearbyPlace.get("lng"));
 
@@ -67,6 +76,10 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
             Log.d(TAG, "displayNearbyPlaces: " +i);
+
+            tabIdNearbyRestaurant[i]= idOfPlace;
+            System.out.println("id restaurant: " + idOfPlace);
+
         }
     }
 }
