@@ -68,47 +68,13 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
 
        // Aucune étoile en dessous de 2.5, 1 étoile entre 2.6 et 3.5, 2 étoiles entre 3.6 et 4.5, 3 étoiles au-dessus
         Double rate = restaurantDetail.getRating();
-
-        int rate_int = (int) Math.round(rate);
-        Log.d(TAG, "updateWithDetailsRestaurants: rating " + rate_int);
-
-        switch (rate_int) {
-            case 0:
-                this.star1.setVisibility(View.GONE);
-                this.star2.setVisibility(View.GONE);
-                this.star3.setVisibility(View.GONE);
-                break;
-            case 1:
-                this.star1.setVisibility(View.GONE);
-                this.star2.setVisibility(View.GONE);
-                this.star3.setVisibility(View.GONE);
-                break;
-            case 2:
-                this.star1.setVisibility(View.GONE);
-                this.star2.setVisibility(View.GONE);
-                this.star3.setVisibility(View.GONE);
-                break;
-            case 3:
-                this.star1.setVisibility(View.GONE);
-                this.star2.setVisibility(View.GONE);
-                this.star3.setVisibility(View.VISIBLE);
-                break;
-            case 4:
-                this.star1.setVisibility(View.GONE);
-                this.star2.setVisibility(View.VISIBLE);
-                this.star3.setVisibility(View.VISIBLE);
-                break;
-            case 5:
-                this.star1.setVisibility(View.VISIBLE);
-                this.star2.setVisibility(View.VISIBLE);
-                this.star3.setVisibility(View.VISIBLE);
-                break;
-        }
+        Rate myRate = new Rate(rate, star1, star2, star3);
 
        // Images
         if (restaurantDetail.getPhotos() != null && !restaurantDetail.getPhotos().isEmpty()){
-                glide.load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+restaurantDetail.getPhotos().get(0).getPhotoReference()+"key="+key);
-        } else {
+            this.photo.setImageResource(R.drawable.ic_gps);
+                glide.load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+restaurantDetail.getPhotos().get(0).getPhotoReference()+"&key="+key).into(photo);
+      } else {
             this.photo.setImageResource(R.drawable.ic_menu_camera);
         }
 

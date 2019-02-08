@@ -1,5 +1,6 @@
 package com.vivant.annecharlotte.go4lunch;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 
@@ -31,16 +34,26 @@ public class ListRestoFragment extends Fragment {
     private final static String TAG = "ListRestoFragment" ;
     private final static String API_KEY = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI" ;
     private String TAG_API = "details";
+    private String WEB = "resto_web";
+    private String TEL = "resto_phone";
+    private String NAME = "resto_name";
+    private String ADDRESS = "resto_address";
+    private String LIKE = "resto_like";
+    private String RATE = "resto_rate";
+    private String PHOTO = "resto_photo";
+
+    private boolean myLike;
+
 
     private ListOfRestaurantsAdapter adapter;
     private RestaurantDetailResult mResto;
     public ArrayList<RestaurantDetailResult> listRestos = new ArrayList<>();
+    GoogleMap mMap;
+    //private String[] nearbyId;
+    private String[] nearbyId = {"ChIJFZNaZzuC6EcRRB3TmC-FHUk","ChIJ7xYvoDuC6EcRck_rg2c7PNQ","ChIJbffq7DaC6EcR5yUvXuFI6CE","ChIJB0WhETuC6EcRPKb-BTrYy7g","ChIJ_6CTOzuC6EcREpF_KeMn6Vg"};
 
     private Call<ListDetailResult> call;
 
-    GetNearbyPlaces myNearbyPlaces = new GetNearbyPlaces();
-
-    public static final String API_INDEX = "pos";
 
     public ListRestoFragment() {
         // Required empty public constructor
@@ -54,22 +67,20 @@ public class ListRestoFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_list_resto, container, false);
         mRecyclerView = view.findViewById(R.id.fragment_restaurants_recyclerview);
         Log.d(TAG, "onCreateView: view");
-        return view;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
         // Call to the Google Places API
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        //String[] myIdTab = myNearbyPlaces.getTabIdNearbyRestaurant();
-        final String[] myIdTab = {"ChIJFZNaZzuC6EcRRB3TmC-FHUk","ChIJ7xYvoDuC6EcRck_rg2c7PNQ","ChIJbffq7DaC6EcR5yUvXuFI6CE","ChIJB0WhETuC6EcRPKb-BTrYy7g","ChIJ_6CTOzuC6EcREpF_KeMn6Vg"};
+        // Pourquoi est-ce qu'une nouvelle instance cherche à être créee alors qu'on a déjà celle du MapFragment?
+       /* NearbyRestaurantsSingleton myRestaurants = NearbyRestaurantsSingleton.getInstance(new LatLng(40, 40), mMap);
+        nearbyId= myRestaurants.getNearbyId();
+        Log.d(TAG, "onComplete: nearbyId 1 " + nearbyId[1]);
+        Log.d(TAG, "onComplete: nearbyId 2 " + nearbyId[2]);
+        Log.d(TAG, "onComplete: nearbyId 3 " + nearbyId[3]);*/
 
-        for (int i = 0; i < myIdTab.length; i++) {
+        for (int i = 0; i < nearbyId.length; i++) {
             Log.d(TAG, "onCreate: boucle sur les différents id: i: "+ i);
-            call = apiService.getRestaurantDetail(API_KEY, myIdTab[i], "name,photo,url,formatted_phone_number,website,rating,address_component");
+            call = apiService.getRestaurantDetail(API_KEY, nearbyId[i], "name,photo,url,formatted_phone_number,website,rating,address_component");
             //call = apiService.getRestaurantDetail(API_KEY, myIdTab[i], "name,photo,url,formatted_phone_number,website,rating,address_component,opening_hours");
             // pb avec opening_hours
             //java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 43 column 26 path $.result.opening_hours
@@ -93,9 +104,25 @@ public class ListRestoFragment extends Fragment {
                     // fill the recyclerview
                     listRestos.add(mResto);
 
-                    adapter = new ListOfRestaurantsAdapter(listRestos, Glide.with(mRecyclerView), myIdTab.length);
+                    adapter = new ListOfRestaurantsAdapter(listRestos, Glide.with(mRecyclerView), nearbyId.length);
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     mRecyclerView.setAdapter(adapter);
+
+                    // Launch WebViewActiviy when user clicks on an articles item
+                    adapter.setOnItemClickedListener(new ListOfRestaurantsAdapter.OnItemClickedListener() {
+                        @Override
+                        public void OnItemClicked(int position) {
+                            Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
+                            WVIntent.putExtra(WEB, listRestos.get(position).getUrl());
+                            WVIntent.putExtra(NAME, listRestos.get(position).getName());
+                            WVIntent.putExtra(TEL, listRestos.get(position).getFormattedPhoneNumber());
+                            WVIntent.putExtra(ADDRESS, listRestos.get(position).getAddressComponents().get(0).getShortName() + ", " + listRestos.get(position).getAddressComponents().get(1).getShortName());
+                            WVIntent.putExtra(LIKE, myLike);
+                            WVIntent.putExtra(RATE, listRestos.get(position).getRating() );
+                            WVIntent.putExtra(PHOTO, listRestos.get(position).getPhotos().get(0).getPhotoReference());
+                            startActivity(WVIntent);
+                        }
+                    });
 
                 }
                 @Override
@@ -105,6 +132,14 @@ public class ListRestoFragment extends Fragment {
                 }
             });
         }
+
+        return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
 
     }
 }

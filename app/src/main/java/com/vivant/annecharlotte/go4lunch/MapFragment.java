@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -17,25 +16,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 
-import com.facebook.appevents.codeless.CodelessLoggingEventListener;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -90,6 +84,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         mGps = (ImageView) mView.findViewById(R.id.ic_gps);
 
         getLocationPermission();
+        if (mLocationPermissionGranted) initMap();
 
         return mView;
     }
@@ -104,7 +99,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         if (ContextCompat.checkSelfPermission(this.getContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(this.getContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mLocationPermissionGranted = true;
-                initMap();
+                //initMap();
 
             } else {
                 ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
@@ -130,7 +125,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                         Log.d(TAG, "onRequestPermissionsResult: Permissions granted");
                         mLocationPermissionGranted = true;
                         //initialize our map
-                        initMap();
+                        //initMap();
                     }
                 }
             }
@@ -204,7 +199,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                         if (task.isSuccessful()) {
                             Log.d(TAG, "onComplete: found location");
                             Location currentLocation = (Location) task.getResult();
-                            searchNearbyRestaurants(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM, "My location");
+                            mMap.clear();
+
+                            NearbyRestaurantsSingleton myRestaurants = NearbyRestaurantsSingleton.getInstance(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), mMap);
+                            String[] nearbyId= myRestaurants.getNearbyId();
+                            Log.d(TAG, "onComplete: nearbyId 1 " + nearbyId[1]);
+                            Log.d(TAG, "onComplete: nearbyId 2 " + nearbyId[2]);
+                            Log.d(TAG, "onComplete: nearbyId 3 " + nearbyId[3]);
+
+
+                           // searchNearbyRestaurants(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM, "My location");
                         } else {
                             Log.d(TAG, "onComplete: current location is null");
                             //Toast.makeText(this, "Unable to get current location", Toast.LENGTH_LONG).show();
@@ -216,7 +220,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
             Log.e(TAG, "getDeviceLocation: SecurityException " + e.getMessage());
         }
     }
-
+/*
     //------------------------------------------------------------------------------------------------------------------
     //Nearby restaurants
     //------------------------------------------------------------------------------------------------------------------
@@ -286,7 +290,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
         }
     }
-
+*/
     //------------------------------------------------------------------------------------------------------------------
     // connection
     //-----------------------------------------------------------------------------------------------------------------
@@ -322,14 +326,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     //------------------------------------------------------------------------------------------------------
     // ...
     //---------------------------------------------------------------------------------------------------------
-
+/*
     private void hideSoftKeyboard() {
         Log.d(TAG, "hideSoftKeyboard: hide keyboard");
 
         final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
-
+*/
 
 }
 
