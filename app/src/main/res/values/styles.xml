@@ -13,6 +13,9 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="actionBarTheme">@null</item>
+        <item name="colorPrimary">#F4511E</item>
+        <item name="colorPrimaryDark">#FF8A65</item>
+        <item name="colorAccent">#BF360C</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
