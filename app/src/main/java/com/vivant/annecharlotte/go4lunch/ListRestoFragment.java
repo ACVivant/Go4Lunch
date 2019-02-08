@@ -113,7 +113,11 @@ public class ListRestoFragment extends Fragment {
                         @Override
                         public void OnItemClicked(int position) {
                             Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
-                            WVIntent.putExtra(WEB, listRestos.get(position).getUrl());
+                            if(listRestos.get(position).getWebsite().length()>0) {
+                            WVIntent.putExtra(WEB, listRestos.get(position).getWebsite());
+                            } else {
+                                WVIntent.putExtra(WEB, "no");
+                            }
                             WVIntent.putExtra(NAME, listRestos.get(position).getName());
                             WVIntent.putExtra(TEL, listRestos.get(position).getFormattedPhoneNumber());
                             WVIntent.putExtra(ADDRESS, listRestos.get(position).getAddressComponents().get(0).getShortName() + ", " + listRestos.get(position).getAddressComponents().get(1).getShortName());

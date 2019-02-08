@@ -63,7 +63,11 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- PHONE CALL -->
+    <string name="no_phone_number">"Le numéro n'est pas disponible"</string>
+    <string name="no_permission_for_call">"Go4Lunch n'a pas la permission de passer des appels"</string>
+
+    <!-- WEBSITE -->
+    <string name="no_website">"L'adresse du site web n'est pas disponible"</string>
 
 </resources>
