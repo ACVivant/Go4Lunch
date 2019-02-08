@@ -139,17 +139,28 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
                             ListDetailResult posts = response.body();
                             mResto = posts.getResult();
                                     Intent WVIntent = new Intent(mContext, DetailRestoActivity.class);
-                                    if(mResto.getWebsite().length()>0) {
+                                    if(mResto.getWebsite()!=null) {
                                         WVIntent.putExtra(WEB, mResto.getWebsite());
                                     } else {
-                                        WVIntent.putExtra(WEB, "no");
+                                        WVIntent.putExtra(WEB, "no-website");
                                     }
                                     WVIntent.putExtra(NAME, mResto.getName());
                                     WVIntent.putExtra(TEL, mResto.getFormattedPhoneNumber());
                                     WVIntent.putExtra(ADDRESS, mResto.getAddressComponents().get(0).getShortName() + ", " + mResto.getAddressComponents().get(1).getShortName());
                                     WVIntent.putExtra(LIKE, myLike);
+
+                                    if(mResto.getRating()!=null){
                                     WVIntent.putExtra(RATE, mResto.getRating() );
+                                    }
+                                    else {
+                                     WVIntent.putExtra(RATE, 0 );
+                                    }
+
+                                    if(mResto.getPhotos() != null && !mResto.getPhotos().isEmpty()){
                                     WVIntent.putExtra(PHOTO, mResto.getPhotos().get(0).getPhotoReference());
+                                    } else {
+                                        WVIntent.putExtra(PHOTO, "no-photo");
+                                    }
                                     mContext.startActivity(WVIntent);
                                 }
 

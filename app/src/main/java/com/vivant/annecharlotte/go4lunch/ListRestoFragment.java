@@ -113,17 +113,29 @@ public class ListRestoFragment extends Fragment {
                         @Override
                         public void OnItemClicked(int position) {
                             Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
-                            if(listRestos.get(position).getWebsite().length()>0) {
+                            if(listRestos.get(position).getWebsite()!=null) {
                             WVIntent.putExtra(WEB, listRestos.get(position).getWebsite());
                             } else {
-                                WVIntent.putExtra(WEB, "no");
+                                WVIntent.putExtra(WEB, "no-website");
                             }
                             WVIntent.putExtra(NAME, listRestos.get(position).getName());
                             WVIntent.putExtra(TEL, listRestos.get(position).getFormattedPhoneNumber());
                             WVIntent.putExtra(ADDRESS, listRestos.get(position).getAddressComponents().get(0).getShortName() + ", " + listRestos.get(position).getAddressComponents().get(1).getShortName());
                             WVIntent.putExtra(LIKE, myLike);
-                            WVIntent.putExtra(RATE, listRestos.get(position).getRating() );
-                            WVIntent.putExtra(PHOTO, listRestos.get(position).getPhotos().get(0).getPhotoReference());
+                            if(mResto.getRating()!=null){
+                                WVIntent.putExtra(RATE, listRestos.get(position).getRating() );
+                            }
+                            else {
+                                WVIntent.putExtra(RATE, 0 );
+                            }
+
+
+                            if(mResto.getPhotos() != null && !mResto.getPhotos().isEmpty()){
+                                WVIntent.putExtra(PHOTO, listRestos.get(position).getPhotos().get(0).getPhotoReference());
+                            } else {
+                                WVIntent.putExtra(PHOTO, "no-photo");
+                            }
+
                             startActivity(WVIntent);
                         }
                     });

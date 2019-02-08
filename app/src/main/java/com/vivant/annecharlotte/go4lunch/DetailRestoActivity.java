@@ -81,9 +81,12 @@ public class DetailRestoActivity extends AppCompatActivity {
         // Photo
         String restoPhoto = getIntent().getStringExtra(PHOTO);
         photoIV = (ImageView) findViewById(R.id.photo_detail);
-        String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + restoPhoto + "&key=" + key;
-        Glide.with(this).load(photoUrl).into(photoIV);
-
+        if(restoPhoto.equals("no-photo")){
+            photoIV.setImageResource(R.drawable.ic_camera);
+        } else {
+            String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + restoPhoto + "&key=" + key;
+            Glide.with(this).load(photoUrl).into(photoIV);
+        }
 
         // Call
         //restoTel = getIntent().getStringExtra(TEL);
@@ -105,7 +108,7 @@ public class DetailRestoActivity extends AppCompatActivity {
         toWebsite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (restoWebsite.equals("no")) {
+                if (restoWebsite.equals("no-website")) {
                     Toast.makeText(DetailRestoActivity.this, R.string.no_website, Toast.LENGTH_LONG).show();
                 } else {
                     Intent WVIntent = new Intent(DetailRestoActivity.this, WebViewActivity.class);
