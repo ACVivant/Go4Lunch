@@ -24,6 +24,7 @@ import com.google.android.gms.location.LocationRequest;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -181,6 +182,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
             public void onClick(View v) {
                 Log.d(TAG, "onClick: clicked gps icon");
                 getDeviceLocation();
+
+
             }
         });
     }
@@ -199,7 +202,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                         if (task.isSuccessful()) {
                             Log.d(TAG, "onComplete: found location");
                             Location currentLocation = (Location) task.getResult();
-                            mMap.clear();
+                            //mMap.clear();
 
                             NearbyRestaurantsSingleton myRestaurants = NearbyRestaurantsSingleton.getInstance(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), mMap, getContext());
                             String[] nearbyId= myRestaurants.getNearbyId();
@@ -207,6 +210,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                             Log.d(TAG, "onComplete: nearbyId 2 " + nearbyId[2]);
                             Log.d(TAG, "onComplete: nearbyId 3 " + nearbyId[3]);
 
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM));
 
                            // searchNearbyRestaurants(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM, "My location");
                         } else {
