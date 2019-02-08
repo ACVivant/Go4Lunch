@@ -1,5 +1,6 @@
 package com.vivant.annecharlotte.go4lunch;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -19,6 +20,7 @@ public class NearbyRestaurantsSingleton {
     private int proximityRadius = 1000;
     private static final float DEFAULT_ZOOM = 15f;
     private LatLng latlng;
+    private Context mContext;
     private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
 
     //private String[] nearbyId;
@@ -28,18 +30,19 @@ public class NearbyRestaurantsSingleton {
     private static final String TAG = "NearbyRestaurantsSg";
     Object transferData[] = new Object[2];
 
-    private NearbyRestaurantsSingleton(LatLng latlng, GoogleMap mMap) {
+    private NearbyRestaurantsSingleton(LatLng latlng, GoogleMap mMap, Context context) {
         this.latlng = latlng;
     lat =latlng.latitude;
     lng =latlng.longitude;
     this.mMap = mMap;
+    mContext = context;
 
     addNearbyRestaurants();
 }
     /** Point d'accès pour l'instance unique du singleton */
-    public static synchronized NearbyRestaurantsSingleton getInstance(LatLng latlng, GoogleMap mMap) {
+    public static synchronized NearbyRestaurantsSingleton getInstance(LatLng latlng, GoogleMap mMap, Context context) {
         if (instance == null) {
-            instance = new NearbyRestaurantsSingleton(latlng, mMap);
+            instance = new NearbyRestaurantsSingleton(latlng, mMap, context);
         }
         return instance;
     }
@@ -54,7 +57,7 @@ public void addNearbyRestaurants() {
     String url = getUrl(lat, lng, restaurant);
     Log.d(TAG, "moveCamera: url " + url);
 
-    GetNearbyPlaces getNearbyPlaces = new GetNearbyPlaces();
+    GetNearbyPlaces getNearbyPlaces = new GetNearbyPlaces(mContext);
     transferData[0] = mMap;
     transferData[1] = url;
     getNearbyPlaces.execute(transferData);

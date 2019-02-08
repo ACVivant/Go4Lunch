@@ -201,7 +201,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                             Location currentLocation = (Location) task.getResult();
                             mMap.clear();
 
-                            NearbyRestaurantsSingleton myRestaurants = NearbyRestaurantsSingleton.getInstance(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), mMap);
+                            NearbyRestaurantsSingleton myRestaurants = NearbyRestaurantsSingleton.getInstance(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), mMap, getContext());
                             String[] nearbyId= myRestaurants.getNearbyId();
                             Log.d(TAG, "onComplete: nearbyId 1 " + nearbyId[1]);
                             Log.d(TAG, "onComplete: nearbyId 2 " + nearbyId[2]);
