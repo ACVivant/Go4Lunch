@@ -71,17 +71,13 @@ public class LunchActivity extends BaseActivity
 
         // pour l'instant fait bugger l'appli:
         layoutLinks();
-        //updateUIWhenCreating();
+        updateUIWhenCreating();
     }
 
-
     protected void layoutLinks() {
-        nameTextView = (TextView) navigationView.findViewById(R.id.ND_name_textView);
-        emailTextView = (TextView) navigationView.findViewById(R.id.ND_email_textView);
-        photoImageView = (ImageView) navigationView.findViewById(R.id.ND_photo_imageView);
-
-        // pourquoi le lien ne se fait-il pas???
-        // Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'void android.widget.EditText.setText(java.lang.CharSequence)' on a null object reference
+        nameTextView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.ND_name_textView);
+        emailTextView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.ND_email_textView);
+        photoImageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.ND_photo_imageView);
     }
 
     @Override
@@ -164,6 +160,7 @@ public class LunchActivity extends BaseActivity
                         .apply(RequestOptions.circleCropTransform())
                         .into(photoImageView);
             }
+
             //Get email & username from Firebase
             String email = TextUtils.isEmpty(this.getCurrentUser().getEmail()) ? getString(R.string.info_no_email_found) : this.getCurrentUser().getEmail();
             String username = TextUtils.isEmpty(this.getCurrentUser().getDisplayName()) ? getString(R.string.info_no_username_found) : this.getCurrentUser().getDisplayName();
@@ -173,4 +170,6 @@ public class LunchActivity extends BaseActivity
             this.emailTextView.setText(email);
         }
     }
+
+
 }

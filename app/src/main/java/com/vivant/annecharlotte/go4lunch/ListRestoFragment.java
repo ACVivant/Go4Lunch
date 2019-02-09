@@ -1,110 +1,161 @@
 package com.vivant.annecharlotte.go4lunch;
 
-import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import io.reactivex.annotations.Nullable;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.GoogleMap;
+import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
+import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
+import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
+import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
+
+import java.util.ArrayList;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ListRestoFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ListRestoFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ListRestoFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private RecyclerView mRecyclerView;
 
-    private OnFragmentInteractionListener mListener;
+    private final static String TAG = "ListRestoFragment" ;
+    private final static String API_KEY = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI" ;
+    private String TAG_API = "details";
+    private String WEB = "resto_web";
+    private String TEL = "resto_phone";
+    private String NAME = "resto_name";
+    private String ADDRESS = "resto_address";
+    private String LIKE = "resto_like";
+    private String RATE = "resto_rate";
+    private String PHOTO = "resto_photo";
+
+    private boolean myLike;
+
+
+    private ListOfRestaurantsAdapter adapter;
+    private RestaurantDetailResult mResto;
+    public ArrayList<RestaurantDetailResult> listRestos = new ArrayList<>();
+    GoogleMap mMap;
+    //private String[] nearbyId;
+    private String[] nearbyId = {"ChIJFZNaZzuC6EcRRB3TmC-FHUk","ChIJ7xYvoDuC6EcRck_rg2c7PNQ","ChIJbffq7DaC6EcR5yUvXuFI6CE","ChIJB0WhETuC6EcRPKb-BTrYy7g","ChIJ_6CTOzuC6EcREpF_KeMn6Vg"};
+
+    private Call<ListDetailResult> call;
+
 
     public ListRestoFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ListRestoFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ListRestoFragment newInstance(String param1, String param2) {
-        ListRestoFragment fragment = new ListRestoFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list_resto, container, false);
-    }
+        View view =  inflater.inflate(R.layout.fragment_list_resto, container, false);
+        mRecyclerView = view.findViewById(R.id.fragment_restaurants_recyclerview);
+        Log.d(TAG, "onCreateView: view");
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+        // Call to the Google Places API
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        // Pourquoi est-ce qu'une nouvelle instance cherche à être créee alors qu'on a déjà celle du MapFragment?
+       /* NearbyRestaurantsSingleton myRestaurants = NearbyRestaurantsSingleton.getInstance(new LatLng(40, 40), mMap);
+        nearbyId= myRestaurants.getNearbyId();
+        Log.d(TAG, "onComplete: nearbyId 1 " + nearbyId[1]);
+        Log.d(TAG, "onComplete: nearbyId 2 " + nearbyId[2]);
+        Log.d(TAG, "onComplete: nearbyId 3 " + nearbyId[3]);*/
+
+        for (int i = 0; i < nearbyId.length; i++) {
+            Log.d(TAG, "onCreate: boucle sur les différents id: i: "+ i);
+            call = apiService.getRestaurantDetail(API_KEY, nearbyId[i], "name,photo,url,formatted_phone_number,website,rating,address_component");
+            //call = apiService.getRestaurantDetail(API_KEY, myIdTab[i], "name,photo,url,formatted_phone_number,website,rating,address_component,opening_hours");
+            // pb avec opening_hours
+            //java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 43 column 26 path $.result.opening_hours
+            // et photos semble toujours vide... pourtant a priori non
+
+            //address_component, adr_address, alt_id, formatted_address, geometry, icon, id, name, permanently_closed, photo, place_id, plus_code, scope, type, url, utc_offset, vicinity
+            //formatted_phone_number, international_phone_number, opening_hours, website
+            //price_level, rating, review
+
+            call.enqueue(new Callback<ListDetailResult>() {
+                @Override
+                public void onResponse(Call<ListDetailResult> call, Response<ListDetailResult> response) {
+                    if (!response.isSuccessful()) {
+                        Toast.makeText(getContext(), "Code: " + response.code(), Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "onResponse: erreur");
+                        return;
+                    }
+
+                    ListDetailResult posts = response.body();
+                    mResto = posts.getResult();
+                    // fill the recyclerview
+                    listRestos.add(mResto);
+
+                    adapter = new ListOfRestaurantsAdapter(listRestos, Glide.with(mRecyclerView), nearbyId.length);
+                    mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    mRecyclerView.setAdapter(adapter);
+
+                    // Launch WebViewActiviy when user clicks on an articles item
+                    adapter.setOnItemClickedListener(new ListOfRestaurantsAdapter.OnItemClickedListener() {
+                        @Override
+                        public void OnItemClicked(int position) {
+                            Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
+                            if(listRestos.get(position).getWebsite()!=null) {
+                            WVIntent.putExtra(WEB, listRestos.get(position).getWebsite());
+                            } else {
+                                WVIntent.putExtra(WEB, "no-website");
+                            }
+                            WVIntent.putExtra(NAME, listRestos.get(position).getName());
+                            WVIntent.putExtra(TEL, listRestos.get(position).getFormattedPhoneNumber());
+                            WVIntent.putExtra(ADDRESS, listRestos.get(position).getAddressComponents().get(0).getShortName() + ", " + listRestos.get(position).getAddressComponents().get(1).getShortName());
+                            WVIntent.putExtra(LIKE, myLike);
+                            if(mResto.getRating()!=null){
+                                WVIntent.putExtra(RATE, listRestos.get(position).getRating() );
+                            }
+                            else {
+                                WVIntent.putExtra(RATE, 0 );
+                            }
+
+
+                            if(mResto.getPhotos() != null && !mResto.getPhotos().isEmpty()){
+                                WVIntent.putExtra(PHOTO, listRestos.get(position).getPhotos().get(0).getPhotoReference());
+                            } else {
+                                WVIntent.putExtra(PHOTO, "no-photo");
+                            }
+
+                            startActivity(WVIntent);
+                        }
+                    });
+
+                }
+                @Override
+                public void onFailure(Call<ListDetailResult> call, Throwable t) {
+                    Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                    Log.e(TAG, t.toString());
+                }
+            });
         }
+
+        return view;
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-     /*   if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
-    }
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

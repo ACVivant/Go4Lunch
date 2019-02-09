@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == RC_SIGN_IN_GOOGLE || requestCode == RC_SIGN_IN_FACEBOOK) {
             if (resultCode == RESULT_OK) { // SUCCESS
-                showSnackBar(this.mainActivityLinearLayout, getString(R.string.connection_succeed));
+                //showSnackBar(this.mainActivityLinearLayout, getString(R.string.connection_succeed));
                 startLunchActivity();
             } else { // ERRORS
                 if (response == null) {
@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
     // launch lunch activity
     private void startLunchActivity() {
         Intent intent = new Intent(this, LunchActivity.class);
+        //Intent intent = new Intent(this, TestActivity.class);
         startActivity(intent);
     }
 
