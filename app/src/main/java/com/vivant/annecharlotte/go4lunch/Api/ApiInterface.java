@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch;
+package com.vivant.annecharlotte.go4lunch.Api;
 
 import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
