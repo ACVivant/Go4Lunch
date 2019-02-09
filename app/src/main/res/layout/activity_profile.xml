@@ -97,21 +97,44 @@ android:gravity="center_horizontal">
         android:text="@string/button_sign_out_account"
         android:textColor="#fff"
         android:textSize="@dimen/default_text_size"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimary"
         android:layout_margin="@dimen/default_margin"
         android:padding="@dimen/default_margin"/>
 
-    <!-- BUTTON DELETE ACCOUNT -->
+    <!-- BUTTON UPDATE ACCOUNT -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:gravity="center">
+
+    <Button
+        android:id="@+id/profile_activity_button_update"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/button_update_account"
+        android:textColor="#fff"
+        android:textSize="@dimen/default_text_size"
+        android:background="@color/colorPrimaryDark"
+        android:layout_margin="@dimen/default_margin"
+        android:padding="@dimen/default_margin"
+        android:layout_gravity="center"
+        />
+
     <Button
         android:id="@+id/profile_activity_button_delete"
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="@string/button_delete_account"
         android:textColor="#fff"
         android:textSize="@dimen/default_text_size"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorPrimaryDark"
         android:layout_margin="@dimen/default_margin"
-        android:padding="@dimen/default_margin"/>
+        android:padding="@dimen/default_margin"
+        android:layout_gravity="center"/>
+
+    </LinearLayout>
 
 </LinearLayout>
 

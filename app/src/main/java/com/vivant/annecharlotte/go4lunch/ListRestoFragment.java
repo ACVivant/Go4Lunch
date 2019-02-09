@@ -19,12 +19,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
+import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
+import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
 import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class ListRestoFragment extends Fragment {
