@@ -32,7 +32,7 @@ public class ListRestoFragment extends Fragment {
     private RecyclerView mRecyclerView;
 
     private final static String TAG = "ListRestoFragment" ;
-    private final static String API_KEY = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI" ;
+    //private final static String API_KEY = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI" ;
     private String TAG_API = "details";
     private String WEB = "resto_web";
     private String TEL = "resto_phone";
@@ -80,7 +80,7 @@ public class ListRestoFragment extends Fragment {
 
         for (int i = 0; i < nearbyId.length; i++) {
             Log.d(TAG, "onCreate: boucle sur les différents id: i: "+ i);
-            call = apiService.getRestaurantDetail(API_KEY, nearbyId[i], "name,photo,url,formatted_phone_number,website,rating,address_component");
+            call = apiService.getRestaurantDetail(BuildConfig.apikey, nearbyId[i], "name,photo,url,formatted_phone_number,website,rating,address_component");
             //call = apiService.getRestaurantDetail(API_KEY, myIdTab[i], "name,photo,url,formatted_phone_number,website,rating,address_component,opening_hours");
             // pb avec opening_hours
             //java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 43 column 26 path $.result.opening_hours

@@ -51,7 +51,7 @@ public class DetailRestoActivity extends AppCompatActivity {
 
     private String restoTel;
 
-    private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
+    //private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
     private final static String TAG = "DETAILRESTOACTIVITY";
 
     private static final int REQUEST_CALL = 1;
@@ -84,7 +84,7 @@ public class DetailRestoActivity extends AppCompatActivity {
         if(restoPhoto.equals("no-photo")){
             photoIV.setImageResource(R.drawable.ic_camera);
         } else {
-            String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + restoPhoto + "&key=" + key;
+            String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + restoPhoto + "&key=" + BuildConfig.apikey;
             Glide.with(this).load(photoUrl).into(photoIV);
         }
 

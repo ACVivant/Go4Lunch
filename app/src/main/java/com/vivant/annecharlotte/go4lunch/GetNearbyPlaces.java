@@ -30,7 +30,7 @@ import retrofit2.Response;
  */
 public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
 
-    private final static String API_KEY = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI" ;
+    //private final static String API_KEY = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI" ;
     private String googlePlaceData ,url;
     private GoogleMap mMap;
     private Context mContext;
@@ -51,6 +51,7 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
         Log.d(TAG, "getTabIdNearbyRestaurant: " + tabIdNearbyRestaurant[1]);
         Log.d(TAG, "getTabIdNearbyRestaurant: " + tabIdNearbyRestaurant[2]);
         Log.d(TAG, "getTabIdNearbyRestaurant: " + tabIdNearbyRestaurant[3]);
+
         return tabIdNearbyRestaurant;
     }
 
@@ -125,7 +126,7 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
                     Log.d(TAG, "onInfoWindowClick: " + tabIdNearbyRestaurant[position]);
 
                     ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-                    call = apiService.getRestaurantDetail(API_KEY, tabIdNearbyRestaurant[position], "name,photo,url,formatted_phone_number,website,rating,address_component");
+                    call = apiService.getRestaurantDetail(BuildConfig.apikey, tabIdNearbyRestaurant[position], "name,photo,url,formatted_phone_number,website,rating,address_component");
 
                     call.enqueue(new Callback<ListDetailResult>() {
                         @Override

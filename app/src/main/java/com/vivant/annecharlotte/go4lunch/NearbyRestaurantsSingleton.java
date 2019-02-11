@@ -21,7 +21,7 @@ public class NearbyRestaurantsSingleton {
     private static final float DEFAULT_ZOOM = 15f;
     private LatLng latlng;
     private Context mContext;
-    private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
+    //private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
 
     //private String[] nearbyId;
     // en attendant d'arriver à récupérer le tableau complet des id...
@@ -77,7 +77,7 @@ public void addNearbyRestaurants() {
         googleUrl.append("&radius=" + proximityRadius);
         googleUrl.append("&type=" + nearbyPlace);
         googleUrl.append("&sensor=true");
-        googleUrl.append("&key=" + key);
+        googleUrl.append("&key=" + BuildConfig.apikey);
 
         Log.d(TAG, "getUrl: url " + googleUrl.toString());
 

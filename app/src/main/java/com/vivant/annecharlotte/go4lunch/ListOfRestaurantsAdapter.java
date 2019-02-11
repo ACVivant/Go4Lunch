@@ -49,7 +49,7 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_restaurant, parent, false);
         Log.d(TAG, "onCreateViewHolder");
-        return new ListOfRestaurantsViewholder(view, mListener);
+        return new ListOfRestaurantsViewholder(view, mListener, context);
     }
 
     // update view holder

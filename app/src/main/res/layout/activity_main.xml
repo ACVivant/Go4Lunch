@@ -17,8 +17,8 @@
 
         <!-- IMAGE VIEW GO4LUNCH -->
     <ImageView
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/default_large_margin"
         android:layout_marginBottom="50dp"
@@ -44,6 +44,19 @@
             android:textColor="@android:color/white"
             android:layout_gravity="center_horizontal"/>
 
+    <!-- BUTTON ALREADY CONNECTED -->
+    <Button
+        android:id="@+id/mainactivity_button_already_connected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login_already"
+        android:textColor="#fff"
+        android:textSize="@dimen/default_text_size"
+        android:background="@color/colorPrimary"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_margin="@dimen/default_large_margin"
+        android:padding="@dimen/default_margin"/>
+
             <!-- BUTTON FACEBOOK -->
             <Button
                 android:id="@+id/mainactivity_button_login_facebook"
@@ -54,7 +67,7 @@
                 android:textSize="@dimen/default_text_size"
                 android:background="@drawable/facebook_button_shape"
                 style="?android:attr/borderlessButtonStyle"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginHorizontal="@dimen/default_large_margin"
                 android:padding="@dimen/default_margin"
                 android:drawableStart="@drawable/facebook" />
@@ -72,5 +85,7 @@
                 android:layout_margin="@dimen/default_large_margin"
                 android:padding="@dimen/default_margin"
                 android:drawableStart="@drawable/google"/>
+
+
 
 </LinearLayout>

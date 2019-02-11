@@ -9,15 +9,27 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        resValue "string", "places_api_key", (project.findProperty("PLACES_API_KEY") ?: "")
+
 
     }
     buildTypes {
+        debug {
+            buildConfigField("String", "apikey", PLACES_API_KEY)
+            resValue("string", "apikey", PLACES_API_KEY)
+
+            buildConfigField("String", "mapapikey", MAP_API_KEY)
+            resValue("string", "mapapikey", MAP_API_KEY)
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "apikey", PLACES_API_KEY)
+            resValue("string", "apikey", PLACES_API_KEY)
 
+            buildConfigField("String", "mapapikey", MAP_API_KEY)
+            resValue("string", "mapapikey", MAP_API_KEY)
         }
+
     }
     productFlavors {
     }

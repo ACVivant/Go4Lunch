@@ -33,6 +33,7 @@ public class MainActivity extends BaseActivity {
     private LinearLayout mainActivityLinearLayout;
     private Button facebookBtn;
     private Button googleBtn;
+    private Button alreadyBtn;
     private static final String TAG = "MAINACTIVITY";
 
     // Identifier for Sign-In Activity
@@ -44,6 +45,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         layoutLinks();
+        updateView();
        // printHashKey(this);
     }
 
@@ -69,6 +71,7 @@ public class MainActivity extends BaseActivity {
         mainActivityLinearLayout = (LinearLayout) findViewById(R.id.main_activity_linear_layout);
         facebookBtn = (Button) findViewById(R.id.mainactivity_button_login_facebook);
         googleBtn = (Button) findViewById(R.id.mainactivity_button_login_google);
+        alreadyBtn = (Button) findViewById(R.id.mainactivity_button_already_connected);
 
         facebookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +88,25 @@ public class MainActivity extends BaseActivity {
                 startSignInActivityGoogle();
             }
         });
+
+        alreadyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startLunchActivity();
+            }
+        });
+    }
+
+    private void updateView() {
+        if (this.getCurrentUser()!= null) {
+            alreadyBtn.setVisibility(View.VISIBLE);
+            facebookBtn.setVisibility(View.GONE);
+            googleBtn.setVisibility(View.GONE);
+        } else {
+            alreadyBtn.setVisibility(View.GONE);
+            facebookBtn.setVisibility(View.VISIBLE);
+            googleBtn.setVisibility(View.VISIBLE);
+        }
     }
 
     // --------------------

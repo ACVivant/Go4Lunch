@@ -4,6 +4,7 @@
 
     <string name="login_facebook">"S'authentifier avec Facebook"</string>
     <string name="login_google">"S'authentifier avec Google"</string>
+    <string name="login_already">"Commencer"</string>
 
     <!-- NAVIGATION DRAWER -->
     <string name="ND_title">"Go4Lunch"</string>
