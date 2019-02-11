@@ -36,9 +36,14 @@ public class LunchActivity extends BaseActivity
     private TextView emailTextView;
     private ImageView photoImageView;
 
-    final Fragment fragment1 = new MapFragment();
+    /*final Fragment fragment1 = new MapFragment();
     final Fragment fragment2 = new ListRestoFragment();
+    final Fragment fragment3 = new ListWorkmatesFragment();*/
+
+    final Fragment fragment1 = new ListWorkmatesFragment();
+    final Fragment fragment2 = new ListWorkmatesFragment();
     final Fragment fragment3 = new ListWorkmatesFragment();
+
     final FragmentManager fm = getSupportFragmentManager();
     Fragment active = fragment1;
 

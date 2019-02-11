@@ -1,5 +1,7 @@
 package com.vivant.annecharlotte.go4lunch.Api;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -13,6 +15,7 @@ import java.util.List;
  */
 public class UserHelper {
     private static final String COLLECTION_NAME = "users";
+    private static final String TAG = "USERHELPER";
 
     // --- COLLECTION REFERENCE ---
     public static CollectionReference getUsersCollection(){
@@ -20,8 +23,9 @@ public class UserHelper {
     }
 
     // --- CREATE ---
-    public static Task<Void> createUser(String uid, String username, String userEmail, String restoToday,String urlPicture, List<String> restoLike) {
-        User userToCreate = new User(uid, username, userEmail, restoToday, urlPicture, restoLike);
+    public static Task<Void> createUser(String uid, String username, String userEmail,String urlPicture) {
+        User userToCreate = new User(uid, username, userEmail, urlPicture);
+        Log.d(TAG, "createUser: ");
         return UserHelper.getUsersCollection().document(uid).set(userToCreate);
     }
 

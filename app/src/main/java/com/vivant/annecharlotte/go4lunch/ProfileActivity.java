@@ -11,12 +11,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.vivant.annecharlotte.go4lunch.Api.UserHelper;
+import com.vivant.annecharlotte.go4lunch.Models.User;
 
 public class ProfileActivity extends BaseActivity {
 
@@ -28,6 +32,8 @@ public class ProfileActivity extends BaseActivity {
     private TextView textViewEmail;
     private Button deleteBtn;
     private Button signoutBtn;
+    private Button updateBtn;
+    private ProgressBar progressBar;
 
     //FOR DATA
     // Identify each Http Request
@@ -41,14 +47,19 @@ public class ProfileActivity extends BaseActivity {
         layoutLinks();
         this.configureToolbar();
         this.updateUIWhenCreating();
+        Log.d(TAG, "onCreate: ");
     }
 
     public void layoutLinks() {
+        Log.d(TAG, "layoutLinks: ");
         imageViewProfile = (ImageView) findViewById(R.id.profile_activity_imageview_profile);
         textInputEditTextUsername = (EditText) findViewById(R.id.profile_activity_edit_text_username);
         textViewEmail = (TextView) findViewById(R.id.profile_activity_text_view_email);
         deleteBtn = (Button) findViewById(R.id.profile_activity_button_delete);
         signoutBtn = (Button) findViewById(R.id.profile_activity_button_sign_out);
+        updateBtn = (Button) findViewById(R.id.profile_activity_button_update);
+        progressBar = (ProgressBar) findViewById(R.id.profile_activity_progress_bar);
+
 
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +72,13 @@ public class ProfileActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 onClickSignOutButton();
+            }
+        });
+
+        updateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickUpdateButton();
             }
         });
     }
@@ -79,6 +97,7 @@ public class ProfileActivity extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         deleteUserFromFirebase();
+                        startMainActivity();
                     }
                 })
                 .setNegativeButton(R.string.popup_message_choice_no, null)
@@ -90,6 +109,12 @@ public class ProfileActivity extends BaseActivity {
         startMainActivity();
     }
 
+    public void onClickUpdateButton() {
+        this.updateUsernameInFirebase();
+        startLunchActivity();
+
+    }
+
     // --------------------
     // REST REQUESTS
     // --------------------
@@ -99,15 +124,28 @@ public class ProfileActivity extends BaseActivity {
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(SIGN_OUT_TASK));
-        startMainActivity();
     }
 
     private void deleteUserFromFirebase(){
         if (this.getCurrentUser() != null) {
+
+            // We also delete user from firestore storage
+            UserHelper.deleteUser(this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener());
+
             AuthUI.getInstance()
                     .delete(this)
                     .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(DELETE_USER_TASK));
-            startMainActivity();
+        }
+    }
+
+    private void updateUsernameInFirebase(){
+        this.progressBar.setVisibility(View.VISIBLE);
+        String username = this.textInputEditTextUsername.getText().toString();
+
+        if (this.getCurrentUser() != null){
+            if (!username.isEmpty() &&  !username.equals(getString(R.string.info_no_username_found))){
+                UserHelper.updateUsername(username, this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener()).addOnSuccessListener(this.updateUIAfterRESTRequestsCompleted(UPDATE_USERNAME));
+            }
         }
     }
 
@@ -127,13 +165,23 @@ public class ProfileActivity extends BaseActivity {
                         .apply(RequestOptions.circleCropTransform())
                         .into(imageViewProfile);
             }
-            //Get email & username from Firebase
+            //Get email from Firebase
             String email = TextUtils.isEmpty(this.getCurrentUser().getEmail()) ? getString(R.string.info_no_email_found) : this.getCurrentUser().getEmail();
-            String username = TextUtils.isEmpty(this.getCurrentUser().getDisplayName()) ? getString(R.string.info_no_username_found) : this.getCurrentUser().getDisplayName();
+            //String username = TextUtils.isEmpty(this.getCurrentUser().getDisplayName()) ? getString(R.string.info_no_username_found) : this.getCurrentUser().getDisplayName();
 
             //Update views with data
-            this.textInputEditTextUsername.setText(username);
+            //this.textInputEditTextUsername.setText(username);
             this.textViewEmail.setText(email);
+
+            //Get additional (and potentially personnalized) data from Firestore (Username)
+            UserHelper.getUser(this.getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    User currentUser = documentSnapshot.toObject(User.class);
+                    String username = TextUtils.isEmpty(currentUser.getUsername()) ? getString(R.string.info_no_username_found) : currentUser.getUsername();
+                    textInputEditTextUsername.setText(username);
+                }
+            });
         }
     }
 
@@ -149,6 +197,10 @@ public class ProfileActivity extends BaseActivity {
                     case DELETE_USER_TASK:
                         finish();
                         break;
+                    //Hiding Progress bar after request completed
+                    case UPDATE_USERNAME:
+                        progressBar.setVisibility(View.INVISIBLE);
+                        break;
                     default:
                         break;
                 }
@@ -162,6 +214,11 @@ public class ProfileActivity extends BaseActivity {
 
     private void startMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    private void startLunchActivity() {
+        Intent intent = new Intent(this, LunchActivity.class);
         startActivity(intent);
     }
 }
