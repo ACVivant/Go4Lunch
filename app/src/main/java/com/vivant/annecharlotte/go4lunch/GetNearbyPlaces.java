@@ -57,7 +57,11 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
     public String tabIdNearbyRestaurant[];
 
     private final String TAG = "GetNearbyPlaces";
-    List<HashMap<String, String>> nearbyPlacesList = null;
+
+    List<HashMap<String, String>> nearbyPlacesList =null;
+    public List<HashMap<String, String>> getNearbyPlacesList() {
+        return nearbyPlacesList;
+    }
 
     public GetNearbyPlaces(Context context) {
         mContext = context;
@@ -80,19 +84,14 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
 
     @Override
     protected void onPostExecute(String s) {
-    //protected void onPostExecute(String s) {
-        Log.d(TAG, "onPostExecute: ");
-
         DataParser dataParser = new DataParser();
         nearbyPlacesList = dataParser.parse(s);
         tabIdNearbyRestaurant=displayNearbyPlaces(nearbyPlacesList);
         Log.d(TAG, "onPostExecute: " + nearbyPlacesList.get(0).get("place_name"));
     }
 
-    public List<HashMap<String, String>> getNearbyPlacesList() {
-        return nearbyPlacesList;
-    }
-
+    // Il faut que je sorte cette méthode de ce qui est géré par le singleton, sinon les marqueurs ne s'affichent qu'une fois
+    // donc je dois trimballer nearbyPlacesList
     private String[] displayNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
 
         tabIdNearbyRestaurant = new String[nearbyPlacesList.size()];
