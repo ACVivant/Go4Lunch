@@ -1,31 +1,26 @@
-package com.vivant.annecharlotte.go4lunch;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
+package com.vivant.annecharlotte.go4lunch.authentification;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.material.snackbar.Snackbar;
 import com.vivant.annecharlotte.go4lunch.Api.UserHelper;
+import com.vivant.annecharlotte.go4lunch.LunchActivity;
+import com.vivant.annecharlotte.go4lunch.R;
+import com.vivant.annecharlotte.go4lunch.authentification.BaseActivity;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class MainActivity extends BaseActivity {
@@ -40,12 +35,22 @@ public class MainActivity extends BaseActivity {
     private static final int RC_SIGN_IN_GOOGLE = 123;
     private static final int RC_SIGN_IN_FACEBOOK = 456;
 
+    private static final String USER_ID = "userId";
+
+    private String userId;
+    public String getUserId() {
+        return userId;
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         layoutLinks();
         updateView();
+        userId = this.getCurrentUser().getUid();
        // printHashKey(this);
     }
 
@@ -98,15 +103,17 @@ public class MainActivity extends BaseActivity {
     }
 
     private void updateView() {
-        if (this.getCurrentUser()!= null) {
+       /* if (this.getCurrentUser().getUid()!= null) {
+            //il trouve un utilisateur mêle quand firebase est vide!!!!
+            Log.d(TAG, "updateView: getCurrentUser " +this.getCurrentUser().getUid());
             alreadyBtn.setVisibility(View.VISIBLE);
             facebookBtn.setVisibility(View.GONE);
             googleBtn.setVisibility(View.GONE);
-        } else {
+        } else {*/
             alreadyBtn.setVisibility(View.GONE);
             facebookBtn.setVisibility(View.VISIBLE);
             googleBtn.setVisibility(View.VISIBLE);
-        }
+       // }
     }
 
     // --------------------
@@ -192,6 +199,7 @@ public class MainActivity extends BaseActivity {
     private void startLunchActivity() {
         Log.d(TAG, "startLunchActivity: ");
         Intent intent = new Intent(this, LunchActivity.class);
+        intent.putExtra(USER_ID, userId);
         startActivity(intent);
     }
 

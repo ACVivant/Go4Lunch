@@ -1,33 +1,35 @@
 package com.vivant.annecharlotte.go4lunch;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.Target;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.vivant.annecharlotte.go4lunch.Api.UserHelper;
+import com.vivant.annecharlotte.go4lunch.ListResto.Rate;
+import com.vivant.annecharlotte.go4lunch.Models.User;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public class DetailRestoActivity extends AppCompatActivity {
 
@@ -38,7 +40,9 @@ public class DetailRestoActivity extends AppCompatActivity {
     private String LIKE = "resto_like";
     private String RATE = "resto_rate";
     private String PHOTO = "resto_photo";
-
+    private String IDRESTO = "resto_id";
+    private boolean restoLike;
+    private List<String> listRestoLike= new ArrayList<String>();
     private TextView nameTV;
     private TextView addressTV;
     private ImageView photoIV;
@@ -47,9 +51,15 @@ public class DetailRestoActivity extends AppCompatActivity {
     private ImageView star3;
     private ImageView toPhone;
     private ImageView toWebsite;
-    private ImageView like;
+    private ImageView likeThisResto;
+    private FloatingActionButton myRestoToday;
 
     private String restoTel;
+    private String idResto;
+
+    private User currentUser;
+    private static final String USER_ID = "userId";
+    private String userId;
 
     //private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
     private final static String TAG = "DETAILRESTOACTIVITY";
@@ -61,7 +71,28 @@ public class DetailRestoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_resto);
 
-        boolean restoLike = getIntent().getExtras().getBoolean(LIKE);
+        userId = getIntent().getStringExtra(USER_ID);
+        Log.d(TAG, "onCreate: userId " + userId);
+
+        Log.d(TAG, "onCreate");
+
+        idResto = getIntent().getStringExtra(IDRESTO);
+        Log.d(TAG, "onCreate: idresto " +idResto);
+
+        // Like or not
+        likeThisResto = (ImageView) findViewById(R.id.like_detail_button);
+        restoLike = getIntent().getExtras().getBoolean(LIKE);
+        Log.d(TAG, "onCreate: like " + restoLike);
+              // mise à jour de la vue
+        updateLikeView(restoLike);
+        likeThisResto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                 // mise à jour de Firestore
+                updateLikeInFirebase(idResto);
+                //updateLikeView(!restoLike);
+            }
+        });
 
         // Display infos on restaurant
         String restoName = getIntent().getStringExtra(NAME);
@@ -99,6 +130,9 @@ public class DetailRestoActivity extends AppCompatActivity {
                 Log.d(TAG, "onCreate: restoTel " + restoTel);
             }
         });
+
+        // Choose this restaurant today
+        myRestoToday = (FloatingActionButton) findViewById(R.id.restoToday_FloatingButton);
 
         //--------------------------------------------------------------------------------------------------
         // Website
@@ -147,4 +181,36 @@ public class DetailRestoActivity extends AppCompatActivity {
             }
         }
     }
+
+    //---------------------------------------------------------------------------------------------------
+    // Update Firebase
+    //---------------------------------------------------------------------------------------------------
+    private void updateLikeInFirebase(final String idResto) {
+        Log.d(TAG, "updateLikeInFirebase: idresto " +idResto);
+
+        UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                listRestoLike = documentSnapshot.toObject(User.class).getRestoLike();
+                if(listRestoLike!=null) {
+                    if (listRestoLike.contains(idResto)) {
+                        listRestoLike.remove(idResto);
+                        likeThisResto.setImageResource(R.drawable.ic_action_star_no);
+                    } else {
+                        listRestoLike.add(idResto);
+                        likeThisResto.setImageResource(R.drawable.ic_action_star);
+                    }
+                }
+                UserHelper.updateLikedResto(listRestoLike, userId);
+
+            }
+        });
+    }
+
+    private void updateLikeView(boolean restolike) {
+        if (restoLike) {
+            likeThisResto.setImageResource(R.drawable.ic_action_star);
+        }else {likeThisResto.setImageResource(R.drawable.ic_action_star_no);}
+    }
+
 }

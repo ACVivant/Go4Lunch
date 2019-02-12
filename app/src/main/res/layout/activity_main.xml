@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/buffet2"
-    tools:context="com.vivant.annecharlotte.go4lunch.MainActivity">
+    tools:context="com.vivant.annecharlotte.go4lunch.authentification.MainActivity">
 
     <!-- IMAGE VIEW GO4LUNCH -->
     <ImageView

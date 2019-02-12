@@ -7,10 +7,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
-import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
+import com.vivant.annecharlotte.go4lunch.ListResto.Rate;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
-
-import java.util.ConcurrentModificationException;
 
 import androidx.recyclerview.widget.RecyclerView;
 

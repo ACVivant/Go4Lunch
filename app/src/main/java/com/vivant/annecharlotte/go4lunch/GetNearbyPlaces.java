@@ -30,7 +30,7 @@ import retrofit2.Response;
  */
 public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
 
-    //private final static String API_KEY = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI" ;
+    private final static String API_KEY = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI" ;
     private String googlePlaceData ,url;
     private GoogleMap mMap;
     private Context mContext;
@@ -45,6 +45,7 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
     private String LIKE = "resto_like";
     private String RATE = "resto_rate";
     private String PHOTO = "resto_photo";
+    private String IDRESTO = "resto_id";
     private boolean myLike;
 
     public String[] getTabIdNearbyRestaurant() {
@@ -72,7 +73,7 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
         DownloadUrl downloadUrl = new DownloadUrl();
         try {
             googlePlaceData = downloadUrl.readTheUrl(url);
-            Log.d(TAG, "doInBackground:");
+            Log.d(TAG, "doInBackground: "+ url);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -87,7 +88,6 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
         DataParser dataParser = new DataParser();
         nearbyPlacesList = dataParser.parse(s);
         tabIdNearbyRestaurant=displayNearbyPlaces(nearbyPlacesList);
-        Log.d(TAG, "onPostExecute: " + nearbyPlacesList.get(0).get("place_name"));
     }
 
     public List<HashMap<String, String>> getNearbyPlacesList() {
@@ -126,7 +126,8 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
                     Log.d(TAG, "onInfoWindowClick: " + tabIdNearbyRestaurant[position]);
 
                     ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-                    call = apiService.getRestaurantDetail(BuildConfig.apikey, tabIdNearbyRestaurant[position], "name,photo,url,formatted_phone_number,website,rating,address_component");
+                    //call = apiService.getRestaurantDetail(BuildConfig.apikey, tabIdNearbyRestaurant[position], "name,photo,url,formatted_phone_number,website,rating,address_component");
+                    call = apiService.getRestaurantDetail(API_KEY, tabIdNearbyRestaurant[position], "name,photo,url,formatted_phone_number,website,rating,address_component");
 
                     call.enqueue(new Callback<ListDetailResult>() {
                         @Override
@@ -140,6 +141,7 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
                             ListDetailResult posts = response.body();
                             mResto = posts.getResult();
                                     Intent WVIntent = new Intent(mContext, DetailRestoActivity.class);
+                                    WVIntent.putExtra(IDRESTO, mResto.getId());
                                     if(mResto.getWebsite()!=null) {
                                         WVIntent.putExtra(WEB, mResto.getWebsite());
                                     } else {

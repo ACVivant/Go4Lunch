@@ -23,7 +23,7 @@ public class User {
 
     public User() { }
 
-    public User(String uid, String username, String userEmail, String urlPicture) {
+    public User(String uid, String username, String userEmail, String urlPicture, String restoToday, List<String> restoLike) {
         this.uid = uid;
         this.username = username;
         this.userEmail = userEmail;

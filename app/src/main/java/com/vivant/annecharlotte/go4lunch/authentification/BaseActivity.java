@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch;
+package com.vivant.annecharlotte.go4lunch.authentification;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.vivant.annecharlotte.go4lunch.R;
 
 public abstract class BaseActivity extends AppCompatActivity {
     

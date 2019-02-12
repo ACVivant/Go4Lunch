@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch;
+package com.vivant.annecharlotte.go4lunch.ListResto;
 
 import android.util.Log;
 import android.view.View;

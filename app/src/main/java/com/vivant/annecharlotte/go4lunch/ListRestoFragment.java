@@ -41,6 +41,7 @@ public class ListRestoFragment extends Fragment {
     private String LIKE = "resto_like";
     private String RATE = "resto_rate";
     private String PHOTO = "resto_photo";
+    private String IDRESTO = "resto_id";
 
     private boolean myLike;
 
@@ -54,6 +55,9 @@ public class ListRestoFragment extends Fragment {
 
     private Call<ListDetailResult> call;
 
+    private static final String USER_ID = "userId";
+    private String userId;
+
 
     public ListRestoFragment() {
         // Required empty public constructor
@@ -62,6 +66,11 @@ public class ListRestoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        // On récupère l'identifiant de l'utilisateur
+        // pour l'instant ça ne fonctionne pas... le saveInstanteState est vide
+        //userId= savedInstanceState.getString(USER_ID);
+        userId = "GeSu0tz12iRSKnGMWLoCdVU7YRT2";
 
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_list_resto, container, false);
@@ -80,8 +89,8 @@ public class ListRestoFragment extends Fragment {
 
         for (int i = 0; i < nearbyId.length; i++) {
             Log.d(TAG, "onCreate: boucle sur les différents id: i: "+ i);
-            call = apiService.getRestaurantDetail(BuildConfig.apikey, nearbyId[i], "name,photo,url,formatted_phone_number,website,rating,address_component");
-            //call = apiService.getRestaurantDetail(API_KEY, myIdTab[i], "name,photo,url,formatted_phone_number,website,rating,address_component,opening_hours");
+            call = apiService.getRestaurantDetail(BuildConfig.apikey, nearbyId[i], "name,photo,url,formatted_phone_number,website,rating,address_component,id");
+            //call = apiService.getRestaurantDetail(API_KEY, myIdTab[i], "name,photo,url,formatted_phone_number,website,rating,address_component,opening_hours,id");
             // pb avec opening_hours
             //java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 43 column 26 path $.result.opening_hours
             // et photos semble toujours vide... pourtant a priori non
@@ -113,6 +122,9 @@ public class ListRestoFragment extends Fragment {
                         @Override
                         public void OnItemClicked(int position) {
                             Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
+                            WVIntent.putExtra(USER_ID,userId);
+                            WVIntent.putExtra(IDRESTO, listRestos.get(position).getId());
+                            Log.d(TAG, "OnItemClicked: IDRESTO "+ listRestos.get(position).getId());
                             if(listRestos.get(position).getWebsite()!=null) {
                             WVIntent.putExtra(WEB, listRestos.get(position).getWebsite());
                             } else {
