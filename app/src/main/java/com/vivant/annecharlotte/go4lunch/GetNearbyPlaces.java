@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.appevents.codeless.CodelessLoggingEventListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -54,6 +55,7 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
     private boolean myLike;
     private List<String> listRestoLike= new ArrayList<String>();
 
+    private static final String USER_ID = "userId";
     private String userId = "GeSu0tz12iRSKnGMWLoCdVU7YRT2";
 
     public String[] getTabIdNearbyRestaurant() {
@@ -120,15 +122,7 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
             // Markers
             //-------------------------------------------
             updateLikeColorPin(idOfPlace, latLng, nameOfPlace ,i);
-          /*  markerOptions.position(latLng)
-                    .title(nameOfPlace)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            //mMap.addMarker(markerOptions);
-            myMarker = mMap.addMarker(markerOptions);
-            myMarker.setTag(i);*/
 
-
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
             Log.d(TAG, "displayNearbyPlaces: " +i);
 
@@ -153,31 +147,51 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
                             }
 
                             ListDetailResult posts = response.body();
+
+                            // passage des infos dans un Intent pour DetailActivity
                             mResto = posts.getResult();
                             Intent WVIntent = new Intent(mContext, DetailRestoActivity.class);
+
+                            //Id
                             WVIntent.putExtra(IDRESTO, mResto.getId());
+                            Log.d(TAG, "onResponse: id " + mResto.getId());
+                            //URL website
                             if(mResto.getWebsite()!=null) {
                                 WVIntent.putExtra(WEB, mResto.getWebsite());
+                                Log.d(TAG, "onResponse: webiste " + mResto.getWebsite());
                             } else {
                                 WVIntent.putExtra(WEB, "no-website");
+                                Log.d(TAG, "onResponse: website no-website");
                             }
+                            //Name
                             WVIntent.putExtra(NAME, mResto.getName());
+                            Log.d(TAG, "onResponse: name "+ mResto.getName());
+                            //PhoneNumber
                             WVIntent.putExtra(TEL, mResto.getFormattedPhoneNumber());
+                            Log.d(TAG, "onResponse: phone " + mResto.getFormattedPhoneNumber());
+                            //Address
                             WVIntent.putExtra(ADDRESS, mResto.getAddressComponents().get(0).getShortName() + ", " + mResto.getAddressComponents().get(1).getShortName());
-                            WVIntent.putExtra(LIKE, myLike);
-
+                            Log.d(TAG, "onResponse: address 1 " + mResto.getAddressComponents().get(0).getShortName());
+                            Log.d(TAG, "onResponse: address 2 " + mResto.getAddressComponents().get(1).getShortName());
+                            //Rate
                             if(mResto.getRating()!=null){
                                 WVIntent.putExtra(RATE, mResto.getRating() );
+                                Log.d(TAG, "onResponse: rate " + mResto.getRating());
                             }
                             else {
                                 WVIntent.putExtra(RATE, 0 );
+                                Log.d(TAG, "onResponse: rate 0" );
                             }
-
+                            //Photo
                             if(mResto.getPhotos() != null && !mResto.getPhotos().isEmpty()){
                                 WVIntent.putExtra(PHOTO, mResto.getPhotos().get(0).getPhotoReference());
+                                Log.d(TAG, "onResponse: photo " + mResto.getPhotos().get(0).getPhotoReference());
                             } else {
                                 WVIntent.putExtra(PHOTO, "no-photo");
+                                Log.d(TAG, "onResponse: photo no-photo");
                             }
+                            //UserId
+                            WVIntent.putExtra(USER_ID, userId);
                             mContext.startActivity(WVIntent);
                         }
 
@@ -198,7 +212,7 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
     }
 
     //---------------------------------------------------------------------------------------------------
-    // Update Firebase
+    // Update Pin color from Firebase
     //---------------------------------------------------------------------------------------------------
     private void updateLikeColorPin(final String idOfPlace,final LatLng restoLatLng,final String nameOfResto,  final int index) {
         // On récupère l'id du resto de Place à partir de celui de Map...
