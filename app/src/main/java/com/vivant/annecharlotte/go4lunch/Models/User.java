@@ -3,6 +3,7 @@ package com.vivant.annecharlotte.go4lunch.Models;
 import com.google.firebase.firestore.ServerTimestamp;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -23,13 +24,13 @@ public class User {
 
     public User() { }
 
-    public User(String uid, String username, String userEmail, String urlPicture, String restoToday, List<String> restoLike) {
+    public User(String uid, String username, String userEmail, String urlPicture) {
         this.uid = uid;
         this.username = username;
         this.userEmail = userEmail;
         this.restoToday = restoToday;
         this.urlPicture = urlPicture;
-        this.restoLike = restoLike;
+        this.restoLike = new ArrayList<>();
 
     }
 

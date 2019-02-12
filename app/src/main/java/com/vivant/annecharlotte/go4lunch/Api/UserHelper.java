@@ -27,9 +27,7 @@ public class UserHelper {
 
     // --- CREATE ---
     public static Task<Void> createUser(String uid, String username, String userEmail,String urlPicture) {
-        List<String> restoLikeTest=new ArrayList<>();
-        restoLikeTest.add("restoLikeTest");
-        User userToCreate = new User(uid, username, userEmail, urlPicture, "restoTodayTest", restoLikeTest);
+        User userToCreate = new User(uid, username, userEmail, urlPicture);
         Log.d(TAG, "createUser: ");
         return UserHelper.getUsersCollection().document(uid).set(userToCreate);
     }

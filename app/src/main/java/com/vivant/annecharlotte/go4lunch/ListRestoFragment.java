@@ -19,12 +19,17 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
+import com.vivant.annecharlotte.go4lunch.Api.UserHelper;
 import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
+import com.vivant.annecharlotte.go4lunch.Models.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class ListRestoFragment extends Fragment {
@@ -44,7 +49,6 @@ public class ListRestoFragment extends Fragment {
     private String IDRESTO = "resto_id";
 
     private boolean myLike;
-
 
     private ListOfRestaurantsAdapter adapter;
     private RestaurantDetailResult mResto;
@@ -167,7 +171,6 @@ public class ListRestoFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
+
 }

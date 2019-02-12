@@ -79,7 +79,20 @@ public class DetailRestoActivity extends AppCompatActivity {
         idResto = getIntent().getStringExtra(IDRESTO);
         Log.d(TAG, "onCreate: idresto " +idResto);
 
+
+        //----------------------------------------------------------------------------------------
+        // Display infos on restaurant
+        //---------------------------------------------------------------------------------------
+        String restoName = getIntent().getStringExtra(NAME);
+        String restoAddress = getIntent().getStringExtra(ADDRESS);
+        nameTV = (TextView) findViewById(R.id.name_detail);
+        nameTV.setText(restoName);
+        addressTV = (TextView) findViewById(R.id.address_detail);
+        addressTV.setText(restoAddress);
+
+        //-----------------------------------------------------------------------------------------
         // Like or not
+        //-------------------------------------------------------------------------------------------
         likeThisResto = (ImageView) findViewById(R.id.like_detail_button);
         restoLike = getIntent().getExtras().getBoolean(LIKE);
         Log.d(TAG, "onCreate: like " + restoLike);
@@ -94,22 +107,18 @@ public class DetailRestoActivity extends AppCompatActivity {
             }
         });
 
-        // Display infos on restaurant
-        String restoName = getIntent().getStringExtra(NAME);
-        String restoAddress = getIntent().getStringExtra(ADDRESS);
-        nameTV = (TextView) findViewById(R.id.name_detail);
-        nameTV.setText(restoName);
-        addressTV = (TextView) findViewById(R.id.address_detail);
-        addressTV.setText(restoAddress);
-
+        //------------------------------------------------------------------------------------------
         // Rating
+        //-------------------------------------------------------------------------------------------
         double restoRate = getIntent().getExtras().getDouble(RATE);
         star1 = (ImageView) findViewById(R.id.star1_detail);
         star2 = (ImageView) findViewById(R.id.star2_detail);
         star3 = (ImageView) findViewById(R.id.star3_detail);
         Rate myRate = new Rate(restoRate, star1, star2, star3);
 
+        //-------------------------------------------------------------------------------------------
         // Photo
+        //---------------------------------------------------------------------------------------------
         String restoPhoto = getIntent().getStringExtra(PHOTO);
         photoIV = (ImageView) findViewById(R.id.photo_detail);
         if(restoPhoto.equals("no-photo")){
@@ -119,7 +128,9 @@ public class DetailRestoActivity extends AppCompatActivity {
             Glide.with(this).load(photoUrl).into(photoIV);
         }
 
+        //-----------------------------------------------------------------------------------------------
         // Call
+        //-----------------------------------------------------------------------------------------------
         //restoTel = getIntent().getStringExtra(TEL);
         restoTel = "06 28 08 57 50";
         toPhone = (ImageView) findViewById(R.id.phone_detail_button);
@@ -208,9 +219,21 @@ public class DetailRestoActivity extends AppCompatActivity {
     }
 
     private void updateLikeView(boolean restolike) {
-        if (restoLike) {
-            likeThisResto.setImageResource(R.drawable.ic_action_star);
-        }else {likeThisResto.setImageResource(R.drawable.ic_action_star_no);}
+        UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                listRestoLike = documentSnapshot.toObject(User.class).getRestoLike();
+                if(listRestoLike!=null) {
+                    if (listRestoLike.contains(idResto)) {
+                        likeThisResto.setImageResource(R.drawable.ic_action_star);
+                    } else {
+                        likeThisResto.setImageResource(R.drawable.ic_action_star_no);
+                    }
+                }
+                UserHelper.updateLikedResto(listRestoLike, userId);
+
+            }
+        });
     }
 
 }

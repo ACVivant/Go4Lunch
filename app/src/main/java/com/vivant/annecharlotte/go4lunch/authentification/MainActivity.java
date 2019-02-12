@@ -157,7 +157,7 @@ public class MainActivity extends BaseActivity {
     // 1 - Http request that create user in firestore
 
     private void createUserInFirestore(){
-        if (this.getCurrentUser() != null){
+        if (this.getCurrentUser() != null && !this.getCurrentUser().getUid().equals(userId)){
             String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
             String username = this.getCurrentUser().getDisplayName();
             String uid = this.getCurrentUser().getUid();
