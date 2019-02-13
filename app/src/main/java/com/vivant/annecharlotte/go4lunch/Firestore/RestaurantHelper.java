@@ -1,11 +1,10 @@
-package com.vivant.annecharlotte.go4lunch.Api;
+package com.vivant.annecharlotte.go4lunch.Firestore;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
-import com.vivant.annecharlotte.go4lunch.Models.User;
 
 import java.util.List;
 

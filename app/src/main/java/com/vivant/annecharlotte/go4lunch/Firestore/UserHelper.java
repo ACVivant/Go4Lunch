@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch.Api;
+package com.vivant.annecharlotte.go4lunch.Firestore;
 
 import android.util.Log;
 
@@ -9,8 +9,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.vivant.annecharlotte.go4lunch.Models.User;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -63,7 +61,7 @@ public class UserHelper {
     }
 
     // -- GET ALL USERS --
-    public static Query getAllUsers(String user){
+    public static Query getAllUsers(){
         return UserHelper.getUsersCollection().orderBy("restoToday", Query.Direction.DESCENDING);
     }
 }

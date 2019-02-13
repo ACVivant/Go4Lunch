@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.vivant.annecharlotte.go4lunch.authentification.BaseActivity;
 import com.vivant.annecharlotte.go4lunch.authentification.ProfileActivity;
 
@@ -39,7 +40,6 @@ public class LunchActivity extends BaseActivity
     final Fragment fragment2 = new ListRestoFragment();
     final Fragment fragment3 = new ListWorkmatesFragment();
 
-
     final FragmentManager fm = getSupportFragmentManager();
     Fragment active = fragment1;
 
@@ -48,6 +48,9 @@ public class LunchActivity extends BaseActivity
     private String userId;
 
     private NavigationView navigationView;
+
+    //Pourquoi est ce que je ne peux pas faire ça?
+    //private FirebaseFirestore db = new FirebaseFirestore();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

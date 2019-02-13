@@ -19,7 +19,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.vivant.annecharlotte.go4lunch.Api.UserHelper;
+import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.LunchActivity;
 import com.vivant.annecharlotte.go4lunch.Models.User;
 import com.vivant.annecharlotte.go4lunch.R;

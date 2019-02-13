@@ -15,10 +15,9 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.material.snackbar.Snackbar;
-import com.vivant.annecharlotte.go4lunch.Api.UserHelper;
+import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.LunchActivity;
 import com.vivant.annecharlotte.go4lunch.R;
-import com.vivant.annecharlotte.go4lunch.authentification.BaseActivity;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
@@ -50,7 +49,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         layoutLinks();
         updateView();
-        userId = this.getCurrentUser().getUid();
+        //userId = this.getCurrentUser().getUid();
        // printHashKey(this);
     }
 
@@ -157,6 +156,7 @@ public class MainActivity extends BaseActivity {
     // 1 - Http request that create user in firestore
 
     private void createUserInFirestore(){
+        userId = this.getCurrentUser().getUid();
         if (this.getCurrentUser() != null && !this.getCurrentUser().getUid().equals(userId)){
             String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
             String username = this.getCurrentUser().getDisplayName();

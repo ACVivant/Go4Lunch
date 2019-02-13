@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.List;
@@ -102,7 +103,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         if (ContextCompat.checkSelfPermission(this.getContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(this.getContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mLocationPermissionGranted = true;
-                //initMap();
+                initMap();
 
             } else {
                 ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
@@ -128,7 +129,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                         Log.d(TAG, "onRequestPermissionsResult: Permissions granted");
                         mLocationPermissionGranted = true;
                         //initialize our map
-                        //initMap();
+                        initMap();
                     }
                 }
             }
@@ -343,6 +344,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 */
+
 
 }
 
