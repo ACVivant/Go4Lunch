@@ -19,17 +19,13 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
-import com.vivant.annecharlotte.go4lunch.Api.UserHelper;
 import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
-import com.vivant.annecharlotte.go4lunch.Models.User;
+import com.vivant.annecharlotte.go4lunch.View.ListOfRestaurantsAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class ListRestoFragment extends Fragment {

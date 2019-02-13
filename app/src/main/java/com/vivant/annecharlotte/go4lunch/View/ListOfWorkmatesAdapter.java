@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch;
+package com.vivant.annecharlotte.go4lunch.View;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,19 +7,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.RequestManager;
-import com.facebook.appevents.codeless.CodelessLoggingEventListener;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
+import com.vivant.annecharlotte.go4lunch.Models.User;
+import com.vivant.annecharlotte.go4lunch.R;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * Created by Anne-Charlotte Vivant on 06/02/2019.
+ * Created by Anne-Charlotte Vivant on 13/02/2019.
  */
-public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaurantsViewholder> {
+public class ListOfWorkmatesAdapter extends RecyclerView.Adapter<ListOfWorkmatesViewholder> {
 
-    private List<RestaurantDetailResult> restoList;
+    private List<User> workmatesList;
     private RequestManager glide;
     private OnItemClickedListener mListener;
     private int length;
@@ -35,27 +37,27 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
     }
 
     // Constructor
-    public ListOfRestaurantsAdapter(List<RestaurantDetailResult> restoList, RequestManager glide, int length) {
-        this.restoList = restoList;
+    public ListOfWorkmatesAdapter(List<User> workmatesList, RequestManager glide, int length) {
+        this.workmatesList = workmatesList;
         this.glide = glide;
         this.length =  length;
-        Log.d(TAG, "ListOfRestaurantsAdapter: constructor");
+        Log.d(TAG, "ListOfWorkmatesdapter: constructor");
     }
 
     @Override
-    public ListOfRestaurantsViewholder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ListOfWorkmatesViewholder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Creates view holder and inflates its xml layout
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.item_restaurant, parent, false);
+        View view = inflater.inflate(R.layout.item_workmates, parent, false);
         Log.d(TAG, "onCreateViewHolder");
-        return new ListOfRestaurantsViewholder(view, mListener, context);
+        return new ListOfWorkmatesViewholder(view, mListener, context);
     }
 
     // update view holder
     @Override
-    public void onBindViewHolder(ListOfRestaurantsViewholder viewHolder, int position) {
-        viewHolder.updateWithDetailsRestaurants(this.restoList.get(position), this.glide);
+    public void onBindViewHolder(ListOfWorkmatesViewholder viewHolder, int position) {
+        viewHolder.updateWithUsers(this.workmatesList.get(position), this.glide);
         Log.d(TAG, "onBindViewHolder");
     }
 

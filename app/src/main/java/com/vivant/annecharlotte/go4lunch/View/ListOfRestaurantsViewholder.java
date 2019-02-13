@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch;
+package com.vivant.annecharlotte.go4lunch.View;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,8 +7,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
+import com.vivant.annecharlotte.go4lunch.BuildConfig;
 import com.vivant.annecharlotte.go4lunch.ListResto.Rate;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
+import com.vivant.annecharlotte.go4lunch.R;
+import com.vivant.annecharlotte.go4lunch.View.ListOfRestaurantsAdapter;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -77,7 +80,7 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
        // Images
         if (restaurantDetail.getPhotos() != null && !restaurantDetail.getPhotos().isEmpty()){
             this.photo.setImageResource(R.drawable.ic_gps);
-                glide.load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+restaurantDetail.getPhotos().get(0).getPhotoReference()+"&key="+BuildConfig.apikey).into(photo);
+                glide.load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+restaurantDetail.getPhotos().get(0).getPhotoReference()+"&key="+ BuildConfig.apikey).into(photo);
       } else {
             this.photo.setImageResource(R.drawable.ic_menu_camera);
         }
