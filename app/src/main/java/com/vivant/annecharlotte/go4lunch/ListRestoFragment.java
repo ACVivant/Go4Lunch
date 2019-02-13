@@ -47,6 +47,7 @@ public class ListRestoFragment extends Fragment {
     private String RATE = "resto_rate";
     private String PHOTO = "resto_photo";
     private String IDRESTO = "resto_id";
+    private String DISTANCE = "resto_distance";
 
     private boolean myLike;
 
@@ -151,6 +152,7 @@ public class ListRestoFragment extends Fragment {
                             } else {
                                 WVIntent.putExtra(PHOTO, "no-photo");
                             }
+
 
                             startActivity(WVIntent);
                         }

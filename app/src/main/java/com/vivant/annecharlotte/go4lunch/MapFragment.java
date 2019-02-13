@@ -65,6 +65,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     private Marker currentUserLocationMarker;
     double lat, lng;
     private int proximityRadius = 1000;
+    private Location currentLocation;
+    private float distance;
 
     private List<HashMap<String, String>> nearbyPlacesList;
 
@@ -193,6 +195,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
 
+
         try {
             if (mLocationPermissionGranted) {
                 Task location = mFusedLocationProviderClient.getLastLocation();
@@ -201,8 +204,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "onComplete: found location");
-                            Location currentLocation = (Location) task.getResult();
+                            currentLocation = (Location) task.getResult();
                             //mMap.clear();
+
+                            Log.d(TAG, "onComplete: lat " + currentLocation.getLatitude() + " lng " +currentLocation.getLongitude());
 
                             NearbyRestaurantsSingleton myRestaurants = NearbyRestaurantsSingleton.getInstance(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), mMap, getContext());
                             String[] nearbyId= myRestaurants.getNearbyId();

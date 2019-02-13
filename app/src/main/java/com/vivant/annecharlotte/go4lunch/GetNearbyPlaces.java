@@ -2,11 +2,13 @@ package com.vivant.annecharlotte.go4lunch;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.appevents.codeless.CodelessLoggingEventListener;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -34,7 +36,7 @@ import retrofit2.Response;
 /**
  * Created by Anne-Charlotte Vivant on 05/02/2019.
  */
-public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
+public class GetNearbyPlaces extends AsyncTask<Object, String, String> implements LocationListener {
 
     private final static String API_KEY = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI" ;
     private String googlePlaceData ,url;
@@ -43,6 +45,7 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
     private Marker myMarker;
     private Call<ListDetailResult> call;
     private RestaurantDetailResult mResto;
+    private float distance;
 
     private String WEB = "resto_web";
     private String TEL = "resto_phone";
@@ -52,6 +55,7 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
     private String RATE = "resto_rate";
     private String PHOTO = "resto_photo";
     private String IDRESTO = "resto_id";
+    private String DISTANCE = "resto_distance";
     private boolean myLike;
     private List<String> listRestoLike= new ArrayList<String>();
 
@@ -118,10 +122,14 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
             double lng = Double.parseDouble(googleNearbyPlace.get("lng"));
             LatLng latLng = new LatLng(lat, lng);
 
+            // remplacer par currant_latitude et current_longitude dans Map quand on aura réussi à tout transférer là-bas
+            float results[] = new float[10];
+            Location.distanceBetween(49.2335883, 2.8880683, lat, lng,results);
+            distance = results[0];
             //-------------------------------------------
             // Markers
             //-------------------------------------------
-            updateLikeColorPin(idOfPlace, latLng, nameOfPlace ,i);
+            updateLikeColorPin(idOfPlace, latLng, nameOfPlace ,i, distance);
 
             mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
             Log.d(TAG, "displayNearbyPlaces: " +i);
@@ -190,6 +198,8 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
                                 WVIntent.putExtra(PHOTO, "no-photo");
                                 Log.d(TAG, "onResponse: photo no-photo");
                             }
+                            //Distance
+                            WVIntent.putExtra(DISTANCE, distance);
                             //UserId
                             WVIntent.putExtra(USER_ID, userId);
                             mContext.startActivity(WVIntent);
@@ -214,7 +224,7 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
     //---------------------------------------------------------------------------------------------------
     // Update Pin color from Firebase
     //---------------------------------------------------------------------------------------------------
-    private void updateLikeColorPin(final String idOfPlace,final LatLng restoLatLng,final String nameOfResto,  final int index) {
+    private void updateLikeColorPin(final String idOfPlace, final LatLng restoLatLng, final String nameOfResto, final int index, final float distance) {
         // On récupère l'id du resto de Place à partir de celui de Map...
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         call = apiService.getRestaurantDetail(API_KEY, idOfPlace, "id");
@@ -232,7 +242,7 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
                 mResto = posts.getResult();
                 final String idResto = mResto.getId();
 
-                // On ajuste la couleur de l'éplingle ne fonction
+                // On ajuste la couleur de l'épingle en fonction des likes de l'utilisateur
                 final MarkerOptions markerOptions = new MarkerOptions();
 
                 UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -243,14 +253,14 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
                             Log.d(TAG, "onSuccess: idresto " +idResto);
                             if (listRestoLike.contains(idResto)) {
                                 markerOptions.position(restoLatLng)
-                                        .title(nameOfResto)
+                                        .title(nameOfResto + " " + Math.round(distance)+"m")
                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                                 //mMap.addMarker(markerOptions);
                                 myMarker = mMap.addMarker(markerOptions);
                                 myMarker.setTag(index);
                             } else {
                                 markerOptions.position(restoLatLng)
-                                        .title(nameOfResto)
+                                        .title(nameOfResto+ " " + Math.round(distance)+"m")
                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                                 //mMap.addMarker(markerOptions);
                                 myMarker = mMap.addMarker(markerOptions);
@@ -269,6 +279,10 @@ public class GetNearbyPlaces extends AsyncTask<Object, String, String> {
         });
     }
 
+    @Override
+    public void onLocationChanged(android.location.Location location) {
+
+    }
 }
 
 
