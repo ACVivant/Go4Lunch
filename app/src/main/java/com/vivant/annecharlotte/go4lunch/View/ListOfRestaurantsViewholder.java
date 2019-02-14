@@ -79,7 +79,7 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
 
        // Images
         if (restaurantDetail.getPhotos() != null && !restaurantDetail.getPhotos().isEmpty()){
-            this.photo.setImageResource(R.drawable.ic_gps);
+            //this.photo.setImageResource(R.drawable.ic_gps);
                 glide.load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+restaurantDetail.getPhotos().get(0).getPhotoReference()+"&key="+ BuildConfig.apikey).into(photo);
       } else {
             this.photo.setImageResource(R.drawable.ic_menu_camera);

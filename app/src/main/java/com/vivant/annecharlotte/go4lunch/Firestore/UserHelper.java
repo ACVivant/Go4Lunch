@@ -3,6 +3,8 @@ package com.vivant.annecharlotte.go4lunch.Firestore;
 import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -17,6 +19,9 @@ import java.util.List;
 public class UserHelper {
     private static final String COLLECTION_NAME = "users";
     private static final String TAG = "USERHELPER";
+
+    FirebaseFirestore mFirebaseFirestore;
+    FirebaseAuth mFirebaseAuth;
 
     // --- COLLECTION REFERENCE ---
     public static CollectionReference getUsersCollection(){
@@ -33,6 +38,11 @@ public class UserHelper {
     // --- GET ---
     public static Task<DocumentSnapshot> getUser(String uid){
         return UserHelper.getUsersCollection().document(uid).get();
+    }
+
+    // --- GET CURRENT USER ID ---
+    public static String getCurrentUserId() {
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     // --- UPDATE NAME---
