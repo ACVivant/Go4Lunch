@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch;
+package com.vivant.annecharlotte.go4lunch.authentification;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -6,13 +6,17 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.vivant.annecharlotte.go4lunch.R;
 
 public abstract class BaseActivity extends AppCompatActivity {
+    
+    private final static String TAG = "BASEACTIVITY";
 
     // --------------------
     // LIFE CYCLE
@@ -25,6 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public abstract int getFragmentLayout();
+
 
     // --------------------
     // UI
@@ -44,6 +49,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
+                Log.d(TAG, "onFailure: ");
             }
         };
     }
@@ -53,7 +59,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     // --------------------
 
     @Nullable
-    protected FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser(); }
+    protected FirebaseUser getCurrentUser(){
+        Log.d(TAG, "getCurrentUser: ");
+        return FirebaseAuth.getInstance().getCurrentUser(); }
 
-    protected Boolean isCurrentUserLogged(){ return (this.getCurrentUser() != null); }
+    protected Boolean isCurrentUserLogged(){
+        Log.d(TAG, "isCurrentUserLogged: ");
+        return (this.getCurrentUser() != null); }
 }

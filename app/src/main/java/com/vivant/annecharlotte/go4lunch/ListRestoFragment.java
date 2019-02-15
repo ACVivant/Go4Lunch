@@ -21,8 +21,10 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
 import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
+import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
+import com.vivant.annecharlotte.go4lunch.View.ListOfRestaurantsAdapter;
 
 import java.util.ArrayList;
 
@@ -32,7 +34,7 @@ public class ListRestoFragment extends Fragment {
     private RecyclerView mRecyclerView;
 
     private final static String TAG = "ListRestoFragment" ;
-    private final static String API_KEY = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI" ;
+    //private final static String API_KEY = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI" ;
     private String TAG_API = "details";
     private String WEB = "resto_web";
     private String TEL = "resto_phone";
@@ -41,9 +43,10 @@ public class ListRestoFragment extends Fragment {
     private String LIKE = "resto_like";
     private String RATE = "resto_rate";
     private String PHOTO = "resto_photo";
+    private String IDRESTO = "resto_id";
+    private String DISTANCE = "resto_distance";
 
     private boolean myLike;
-
 
     private ListOfRestaurantsAdapter adapter;
     private RestaurantDetailResult mResto;
@@ -54,6 +57,9 @@ public class ListRestoFragment extends Fragment {
 
     private Call<ListDetailResult> call;
 
+    private static final String USER_ID = "userId";
+    private String userId;
+
 
     public ListRestoFragment() {
         // Required empty public constructor
@@ -63,9 +69,13 @@ public class ListRestoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        // On récupère l'identifiant de l'utilisateur
+        userId= UserHelper.getCurrentUserId();
+
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_list_resto, container, false);
         mRecyclerView = view.findViewById(R.id.fragment_restaurants_recyclerview);
+        ((LunchActivity)getActivity()).setActionBarTitle(getResources().getString(R.string.TB_title));
         Log.d(TAG, "onCreateView: view");
 
         // Call to the Google Places API
@@ -80,8 +90,8 @@ public class ListRestoFragment extends Fragment {
 
         for (int i = 0; i < nearbyId.length; i++) {
             Log.d(TAG, "onCreate: boucle sur les différents id: i: "+ i);
-            call = apiService.getRestaurantDetail(API_KEY, nearbyId[i], "name,photo,url,formatted_phone_number,website,rating,address_component");
-            //call = apiService.getRestaurantDetail(API_KEY, myIdTab[i], "name,photo,url,formatted_phone_number,website,rating,address_component,opening_hours");
+            call = apiService.getRestaurantDetail(BuildConfig.apikey, nearbyId[i], "name,photo,url,formatted_phone_number,website,rating,address_component,id");
+            //call = apiService.getRestaurantDetail(API_KEY, myIdTab[i], "name,photo,url,formatted_phone_number,website,rating,address_component,opening_hours,id");
             // pb avec opening_hours
             //java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 43 column 26 path $.result.opening_hours
             // et photos semble toujours vide... pourtant a priori non
@@ -113,6 +123,9 @@ public class ListRestoFragment extends Fragment {
                         @Override
                         public void OnItemClicked(int position) {
                             Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
+                            WVIntent.putExtra(USER_ID,userId);
+                            WVIntent.putExtra(IDRESTO, listRestos.get(position).getId());
+                            Log.d(TAG, "OnItemClicked: IDRESTO "+ listRestos.get(position).getId());
                             if(listRestos.get(position).getWebsite()!=null) {
                             WVIntent.putExtra(WEB, listRestos.get(position).getWebsite());
                             } else {
@@ -136,6 +149,7 @@ public class ListRestoFragment extends Fragment {
                                 WVIntent.putExtra(PHOTO, "no-photo");
                             }
 
+
                             startActivity(WVIntent);
                         }
                     });
@@ -155,7 +169,6 @@ public class ListRestoFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
+
 }

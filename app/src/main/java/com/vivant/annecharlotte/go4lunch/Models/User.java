@@ -3,6 +3,7 @@ package com.vivant.annecharlotte.go4lunch.Models;
 import com.google.firebase.firestore.ServerTimestamp;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -16,6 +17,7 @@ public class User {
     private String username;
     private String userEmail;
     private String restoToday;
+    private String restoTodayName;
     @Nullable
     private String urlPicture;
     private List<String> restoLike;
@@ -23,13 +25,14 @@ public class User {
 
     public User() { }
 
-    public User(String uid, String username, String userEmail, String restoToday,String urlPicture, List<String> restoLike) {
+    public User(String uid, String username, String userEmail, String urlPicture) {
         this.uid = uid;
         this.username = username;
         this.userEmail = userEmail;
         this.restoToday = restoToday;
+        this.restoTodayName = restoTodayName;
         this.urlPicture = urlPicture;
-        this.restoLike = restoLike;
+        this.restoLike = new ArrayList<>();
 
     }
 
@@ -38,6 +41,7 @@ public class User {
     public String getUsername() { return username; }
     public String getUserEmail() { return  userEmail;}
     public String getRestoToday() { return restoToday;}
+    public String getRestoTodayName() {return restoTodayName;}
     public String getUrlPicture() { return urlPicture; }
     public List<String> getRestoLike() { return restoLike; }
 
@@ -46,6 +50,7 @@ public class User {
     public void setUsername(String username) { this.username = username; }
     public void setUserEmail(String userEmail) { this.userEmail = userEmail;}
     public void setRestoToday(String restoToday) {this.restoToday = restoToday;}
+    public void setRestoTodayName(String restoTodayName) {this.restoTodayName = restoTodayName;}
     public void setUrlPicture(String urlPicture) { this.urlPicture = urlPicture; }
     public void setRestoLike(List<String> restoLike) {this.restoLike = restoLike;}
 }

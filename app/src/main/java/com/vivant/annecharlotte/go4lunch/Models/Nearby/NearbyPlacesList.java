@@ -4,7 +4,7 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class GithubUserInfo {
+public class NearbyPlacesList {
 
     @SerializedName("html_attributions")
     @Expose

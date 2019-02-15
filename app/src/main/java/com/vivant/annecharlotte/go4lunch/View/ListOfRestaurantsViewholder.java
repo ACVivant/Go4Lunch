@@ -1,13 +1,17 @@
-package com.vivant.annecharlotte.go4lunch;
+package com.vivant.annecharlotte.go4lunch.View;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
-import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
+import com.vivant.annecharlotte.go4lunch.BuildConfig;
+import com.vivant.annecharlotte.go4lunch.ListResto.Rate;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
+import com.vivant.annecharlotte.go4lunch.R;
+import com.vivant.annecharlotte.go4lunch.View.ListOfRestaurantsAdapter;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,14 +22,17 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
 
     private TextView nameTextView, addressTextView, openTextView, proximityTextView, loversTextView;
     private ImageView star1, star2, star3, photo;
+    private Context mContext;
 
     private final static String TAG = "VIEWHOLDER";
 
-    private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
+    //private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
 
 
-    public ListOfRestaurantsViewholder(View itemView, final ListOfRestaurantsAdapter.OnItemClickedListener listener) {
+    public ListOfRestaurantsViewholder(View itemView, final ListOfRestaurantsAdapter.OnItemClickedListener listener, Context context) {
         super(itemView);
+
+        mContext = context;
 
         Log.d(TAG, "ListOfRestaurantsViewholder: constructeur");
         nameTextView = (TextView) itemView.findViewById(R.id.restaurant_name);
@@ -72,8 +79,8 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
 
        // Images
         if (restaurantDetail.getPhotos() != null && !restaurantDetail.getPhotos().isEmpty()){
-            this.photo.setImageResource(R.drawable.ic_gps);
-                glide.load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+restaurantDetail.getPhotos().get(0).getPhotoReference()+"&key="+key).into(photo);
+            //this.photo.setImageResource(R.drawable.ic_gps);
+                glide.load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+restaurantDetail.getPhotos().get(0).getPhotoReference()+"&key="+ BuildConfig.apikey).into(photo);
       } else {
             this.photo.setImageResource(R.drawable.ic_menu_camera);
         }

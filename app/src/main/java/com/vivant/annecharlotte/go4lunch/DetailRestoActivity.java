@@ -6,28 +6,26 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.Target;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
+import com.vivant.annecharlotte.go4lunch.ListResto.Rate;
+import com.vivant.annecharlotte.go4lunch.Models.User;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DetailRestoActivity extends AppCompatActivity {
 
@@ -38,7 +36,9 @@ public class DetailRestoActivity extends AppCompatActivity {
     private String LIKE = "resto_like";
     private String RATE = "resto_rate";
     private String PHOTO = "resto_photo";
-
+    private String IDRESTO = "resto_id";
+    private boolean restoLike;
+    private List<String> listRestoLike= new ArrayList<String>();
     private TextView nameTV;
     private TextView addressTV;
     private ImageView photoIV;
@@ -47,11 +47,17 @@ public class DetailRestoActivity extends AppCompatActivity {
     private ImageView star3;
     private ImageView toPhone;
     private ImageView toWebsite;
-    private ImageView like;
+    private ImageView likeThisResto;
+    private FloatingActionButton myRestoToday;
 
     private String restoTel;
+    private String idResto;
 
-    private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
+    private User currentUser;
+    private static final String USER_ID = "userId";
+    private String userId;
+
+    //private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
     private final static String TAG = "DETAILRESTOACTIVITY";
 
     private static final int REQUEST_CALL = 1;
@@ -61,9 +67,18 @@ public class DetailRestoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_resto);
 
-        boolean restoLike = getIntent().getExtras().getBoolean(LIKE);
+        userId = getIntent().getStringExtra(USER_ID);
+        Log.d(TAG, "onCreate: userId " + userId);
 
+        Log.d(TAG, "onCreate");
+
+        idResto = getIntent().getStringExtra(IDRESTO);
+        Log.d(TAG, "onCreate: idresto " +idResto);
+
+
+        //----------------------------------------------------------------------------------------
         // Display infos on restaurant
+        //---------------------------------------------------------------------------------------
         String restoName = getIntent().getStringExtra(NAME);
         String restoAddress = getIntent().getStringExtra(ADDRESS);
         nameTV = (TextView) findViewById(R.id.name_detail);
@@ -71,24 +86,47 @@ public class DetailRestoActivity extends AppCompatActivity {
         addressTV = (TextView) findViewById(R.id.address_detail);
         addressTV.setText(restoAddress);
 
+        //-----------------------------------------------------------------------------------------
+        // Like or not
+        //-------------------------------------------------------------------------------------------
+        likeThisResto = (ImageView) findViewById(R.id.like_detail_button);
+        restoLike = getIntent().getExtras().getBoolean(LIKE);
+        Log.d(TAG, "onCreate: like " + restoLike);
+              // mise à jour de la vue
+        updateLikeView(restoLike);
+        likeThisResto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                 // mise à jour de Firestore
+                updateLikeInFirebase(idResto);
+                //updateLikeView(!restoLike);
+            }
+        });
+
+        //------------------------------------------------------------------------------------------
         // Rating
+        //-------------------------------------------------------------------------------------------
         double restoRate = getIntent().getExtras().getDouble(RATE);
         star1 = (ImageView) findViewById(R.id.star1_detail);
         star2 = (ImageView) findViewById(R.id.star2_detail);
         star3 = (ImageView) findViewById(R.id.star3_detail);
         Rate myRate = new Rate(restoRate, star1, star2, star3);
 
+        //-------------------------------------------------------------------------------------------
         // Photo
+        //---------------------------------------------------------------------------------------------
         String restoPhoto = getIntent().getStringExtra(PHOTO);
         photoIV = (ImageView) findViewById(R.id.photo_detail);
         if(restoPhoto.equals("no-photo")){
             photoIV.setImageResource(R.drawable.ic_camera);
         } else {
-            String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + restoPhoto + "&key=" + key;
+            String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + restoPhoto + "&key=" + BuildConfig.apikey;
             Glide.with(this).load(photoUrl).into(photoIV);
         }
 
+        //-----------------------------------------------------------------------------------------------
         // Call
+        //-----------------------------------------------------------------------------------------------
         //restoTel = getIntent().getStringExtra(TEL);
         restoTel = "06 28 08 57 50";
         toPhone = (ImageView) findViewById(R.id.phone_detail_button);
@@ -99,6 +137,9 @@ public class DetailRestoActivity extends AppCompatActivity {
                 Log.d(TAG, "onCreate: restoTel " + restoTel);
             }
         });
+
+        // Choose this restaurant today
+        myRestoToday = (FloatingActionButton) findViewById(R.id.restoToday_FloatingButton);
 
         //--------------------------------------------------------------------------------------------------
         // Website
@@ -147,4 +188,48 @@ public class DetailRestoActivity extends AppCompatActivity {
             }
         }
     }
+
+    //---------------------------------------------------------------------------------------------------
+    // Update Firebase
+    //---------------------------------------------------------------------------------------------------
+    private void updateLikeInFirebase(final String idResto) {
+        Log.d(TAG, "updateLikeInFirebase: idresto " +idResto);
+
+        UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                listRestoLike = documentSnapshot.toObject(User.class).getRestoLike();
+                if(listRestoLike!=null) {
+                    if (listRestoLike.contains(idResto)) {
+                        listRestoLike.remove(idResto);
+                        likeThisResto.setImageResource(R.drawable.ic_action_star_no);
+                    } else {
+                        listRestoLike.add(idResto);
+                        likeThisResto.setImageResource(R.drawable.ic_action_star);
+                    }
+                }
+                UserHelper.updateLikedResto(listRestoLike, userId);
+
+            }
+        });
+    }
+
+    private void updateLikeView(boolean restolike) {
+        UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                listRestoLike = documentSnapshot.toObject(User.class).getRestoLike();
+                if(listRestoLike!=null) {
+                    if (listRestoLike.contains(idResto)) {
+                        likeThisResto.setImageResource(R.drawable.ic_action_star);
+                    } else {
+                        likeThisResto.setImageResource(R.drawable.ic_action_star_no);
+                    }
+                }
+                UserHelper.updateLikedResto(listRestoLike, userId);
+
+            }
+        });
+    }
+
 }

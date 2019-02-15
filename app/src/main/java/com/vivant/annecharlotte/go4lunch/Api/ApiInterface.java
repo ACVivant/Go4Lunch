@@ -3,6 +3,7 @@ package com.vivant.annecharlotte.go4lunch.Api;
 import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
+import com.vivant.annecharlotte.go4lunch.Models.Nearby.NearbyPlacesList;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -18,4 +19,10 @@ public interface ApiInterface {
                                                @Query("placeid") String restaurantId,
                                                @Query("fields") String fields);
 
+    @GET("nearbysearch/json?")
+    Call<NearbyPlacesList> getNearBy(@Query("location") String location,
+                                     @Query("radius") int radius,
+                                     @Query("type") String type,
+                                     @Query("keyword") String keyword,
+                                     @Query("key") String key);
 }

@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch;
+package com.vivant.annecharlotte.go4lunch.View;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.RequestManager;
-import com.facebook.appevents.codeless.CodelessLoggingEventListener;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
+import com.vivant.annecharlotte.go4lunch.R;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_restaurant, parent, false);
         Log.d(TAG, "onCreateViewHolder");
-        return new ListOfRestaurantsViewholder(view, mListener);
+        return new ListOfRestaurantsViewholder(view, mListener, context);
     }
 
     // update view holder

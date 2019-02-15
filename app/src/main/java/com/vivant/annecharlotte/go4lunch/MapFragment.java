@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.List;
@@ -65,6 +66,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     private Marker currentUserLocationMarker;
     double lat, lng;
     private int proximityRadius = 1000;
+    private Location currentLocation;
+    private float distance;
 
     private List<HashMap<String, String>> nearbyPlacesList;
 
@@ -84,6 +87,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         mView = inflater.inflate(R.layout.fragment_map, container, false);
         mGps = (ImageView) mView.findViewById(R.id.ic_gps);
 
+        ((LunchActivity)getActivity()).setActionBarTitle(getResources().getString(R.string.TB_title));
+
         getLocationPermission();
         if (mLocationPermissionGranted) initMap();
 
@@ -100,7 +105,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         if (ContextCompat.checkSelfPermission(this.getContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(this.getContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mLocationPermissionGranted = true;
-                //initMap();
+                initMap();
 
             } else {
                 ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
@@ -126,7 +131,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                         Log.d(TAG, "onRequestPermissionsResult: Permissions granted");
                         mLocationPermissionGranted = true;
                         //initialize our map
-                        //initMap();
+                        initMap();
                     }
                 }
             }
@@ -163,7 +168,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                 return;
             }
             mMap.setMyLocationEnabled(true);
-            // because the default place pf the locationButton is under the search bar we have to remove the default one to put a personalized one
+            // because the default place of the locationButton is under the search bar we have to remove the default one to put a personalized one
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
             init();
@@ -193,6 +198,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
 
+
         try {
             if (mLocationPermissionGranted) {
                 Task location = mFusedLocationProviderClient.getLastLocation();
@@ -201,14 +207,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "onComplete: found location");
-                            Location currentLocation = (Location) task.getResult();
+                            currentLocation = (Location) task.getResult();
                             //mMap.clear();
 
-                            NearbyRestaurantsSingleton myRestaurants = NearbyRestaurantsSingleton.getInstance(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), mMap, getContext());
+                            Log.d(TAG, "onComplete: lat " + currentLocation.getLatitude() + " lng " +currentLocation.getLongitude());
+
+                            /*NearbyRestaurantsSingleton myRestaurants = NearbyRestaurantsSingleton.getInstance(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), mMap, getContext());
                             String[] nearbyId= myRestaurants.getNearbyId();
                             Log.d(TAG, "onComplete: nearbyId 1 " + nearbyId[1]);
                             Log.d(TAG, "onComplete: nearbyId 2 " + nearbyId[2]);
-                            Log.d(TAG, "onComplete: nearbyId 3 " + nearbyId[3]);
+                            Log.d(TAG, "onComplete: nearbyId 3 " + nearbyId[3]);*/
 
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM));
 
@@ -338,6 +346,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 */
+
 
 }
 

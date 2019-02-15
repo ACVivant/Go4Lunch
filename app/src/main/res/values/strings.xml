@@ -4,6 +4,7 @@
 
     <string name="login_facebook">"S'authentifier avec Facebook"</string>
     <string name="login_google">"S'authentifier avec Google"</string>
+    <string name="login_already">"Commencer"</string>
 
     <!-- NAVIGATION DRAWER -->
     <string name="ND_title">"Go4Lunch"</string>
@@ -21,6 +22,7 @@
     <!-- TOP BAR NAVIGATION -->
     <string name="TB_title">"J'ai faim!"</string>
     <string name="TB_search_text">"Je cherche un resto"</string>
+    <string name="TB_workmates">"mes collègues"</string>
 
     <!-- NOTIFICATION SERVICE -->
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
@@ -68,5 +70,10 @@
 
     <!-- WEBSITE -->
     <string name="no_website">"L'adresse du site web n'est pas disponible"</string>
+
+    <!--WORKMATES -->
+    <string name="not_decided_ex">"Gaspard n'a pas encore décidé."</string>
+    <string name="not_decided">" n'a pas encore décidé."</string>
+    <string name="decided">" mange au restaurant: "</string>
 
 </resources>

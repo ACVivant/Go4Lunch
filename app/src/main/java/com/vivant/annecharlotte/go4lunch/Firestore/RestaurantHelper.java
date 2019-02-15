@@ -1,11 +1,11 @@
-package com.vivant.annecharlotte.go4lunch.Api;
+package com.vivant.annecharlotte.go4lunch.Firestore;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
-import com.vivant.annecharlotte.go4lunch.Models.User;
 
 import java.util.List;
 
@@ -21,8 +21,8 @@ public class RestaurantHelper {
     }
 
     // --- CREATE ---
-    public static Task<Void> createRestaurant(String restoId, String restoName, List<String> usersToday, List<String> usersLike) {
-        Restaurant restaurantToCreate = new Restaurant(restoId, restoName, usersToday, usersLike);
+    public static Task<Void> createRestaurant(String restoId, String restoName, int distance) {
+        Restaurant restaurantToCreate = new Restaurant(restoId, restoName, distance);
         return RestaurantHelper.getRestaurantsCollection().document(restoId).set(restaurantToCreate);
     }
 
@@ -41,8 +41,9 @@ public class RestaurantHelper {
         return RestaurantHelper.getRestaurantsCollection().document(restoId).update("usersToday", usersToday);
     }
 
-    // --- UPDATE USERS LIKE---
-    public static Task<Void> updateUsersLike(List<String> usersLike, String restoId) {
-        return RestaurantHelper.getRestaurantsCollection().document(restoId).update("usersLike", usersLike);
+    // -- GET ALL NEARBY RESTAURANT --
+    public static Query getAllNearbyRestaurants(){
+        return RestaurantHelper.getRestaurantsCollection().orderBy("distance", Query.Direction.ASCENDING);
     }
+
 }

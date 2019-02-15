@@ -54,9 +54,9 @@
         <activity
             android:name=".LunchActivity"
             android:label="@string/title_activity_lunch"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoTitle" />
         <activity
-            android:name=".MainActivity"
+            android:name=".authentification.MainActivity"
             android:theme="@style/AppTheme.NoTitle"> <!-- DISABLE TOOLBAR IN MAIN ACTIVITY -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -65,7 +65,7 @@
             </intent-filter>
         </activity> <!-- PROFILE ACTIVITY -->
         <activity
-            android:name=".ProfileActivity"
+            android:name=".authentification.ProfileActivity"
             android:label="@string/toolbar_title_login_activity"
             android:parentActivityName=".LunchActivity" /> <!-- Maps Android Key -->
         <meta-data
@@ -73,10 +73,12 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyADUp0sSiKbsMF6Q2V7M4fRdubHR1_S1Q4" />
+            android:value="@string/mapapikey" />
         <meta-data
             android:name="com.google.android.places.API_KEY"
-            android:value="AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI" />
+            android:value="@string/apikey" />
+
+
     </application>
 
 </manifest>
