@@ -212,11 +212,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
                             Log.d(TAG, "onComplete: lat " + currentLocation.getLatitude() + " lng " +currentLocation.getLongitude());
 
-                            /*NearbyRestaurantsSingleton myRestaurants = NearbyRestaurantsSingleton.getInstance(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), mMap, getContext());
+                            NearbyRestaurantsSingleton myRestaurants = NearbyRestaurantsSingleton.getInstance(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), mMap, getContext());
                             String[] nearbyId= myRestaurants.getNearbyId();
                             Log.d(TAG, "onComplete: nearbyId 1 " + nearbyId[1]);
                             Log.d(TAG, "onComplete: nearbyId 2 " + nearbyId[2]);
-                            Log.d(TAG, "onComplete: nearbyId 3 " + nearbyId[3]);*/
+                            Log.d(TAG, "onComplete: nearbyId 3 " + nearbyId[3]);
 
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM));
 
