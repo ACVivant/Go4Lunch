@@ -5,15 +5,21 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
+
 /**
  * Created by Anne-Charlotte Vivant on 07/02/2019.
  */
-public class ListDetailResult {    @SerializedName("html_attributions")
-@Expose
-private List<Object> htmlAttributions = null;
+public class ListDetailResult {
+    @SerializedName("html_attributions")
+    @Expose
+    private List<Object> htmlAttributions = null;
+    @SerializedName("next_page_token")
+    @Expose
+    private String nextPageToken;
     @SerializedName("result")
     @Expose
-    private RestaurantDetailResult result;
+    private RestaurantDetailResult result = null;
     @SerializedName("status")
     @Expose
     private String status;
@@ -26,11 +32,19 @@ private List<Object> htmlAttributions = null;
         this.htmlAttributions = htmlAttributions;
     }
 
+    public String getNextPageToken() {
+        return nextPageToken;
+    }
+
+    public void setNextPageToken(String nextPageToken) {
+        this.nextPageToken = nextPageToken;
+    }
+
     public RestaurantDetailResult getResult() {
         return result;
     }
 
-    public void setResult(RestaurantDetailResult result) {
+    public void setResults(RestaurantDetailResult result) {
         this.result = result;
     }
 

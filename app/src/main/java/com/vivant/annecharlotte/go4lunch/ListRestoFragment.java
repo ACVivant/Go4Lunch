@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
 import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
+import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.View.ListOfRestaurantsAdapter;
@@ -69,13 +70,12 @@ public class ListRestoFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // On récupère l'identifiant de l'utilisateur
-        // pour l'instant ça ne fonctionne pas... le saveInstanteState est vide
-        //userId= savedInstanceState.getString(USER_ID);
-        userId = "GeSu0tz12iRSKnGMWLoCdVU7YRT2";
+        userId= UserHelper.getCurrentUserId();
 
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_list_resto, container, false);
         mRecyclerView = view.findViewById(R.id.fragment_restaurants_recyclerview);
+        ((LunchActivity)getActivity()).setActionBarTitle(getResources().getString(R.string.TB_title));
         Log.d(TAG, "onCreateView: view");
 
         // Call to the Google Places API

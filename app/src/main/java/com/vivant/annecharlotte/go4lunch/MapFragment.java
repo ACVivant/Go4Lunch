@@ -87,6 +87,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         mView = inflater.inflate(R.layout.fragment_map, container, false);
         mGps = (ImageView) mView.findViewById(R.id.ic_gps);
 
+        ((LunchActivity)getActivity()).setActionBarTitle(getResources().getString(R.string.TB_title));
+
         getLocationPermission();
         if (mLocationPermissionGranted) initMap();
 
@@ -166,7 +168,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                 return;
             }
             mMap.setMyLocationEnabled(true);
-            // because the default place pf the locationButton is under the search bar we have to remove the default one to put a personalized one
+            // because the default place of the locationButton is under the search bar we have to remove the default one to put a personalized one
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
             init();
@@ -210,11 +212,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
                             Log.d(TAG, "onComplete: lat " + currentLocation.getLatitude() + " lng " +currentLocation.getLongitude());
 
-                            NearbyRestaurantsSingleton myRestaurants = NearbyRestaurantsSingleton.getInstance(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), mMap, getContext());
+                            /*NearbyRestaurantsSingleton myRestaurants = NearbyRestaurantsSingleton.getInstance(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), mMap, getContext());
                             String[] nearbyId= myRestaurants.getNearbyId();
                             Log.d(TAG, "onComplete: nearbyId 1 " + nearbyId[1]);
                             Log.d(TAG, "onComplete: nearbyId 2 " + nearbyId[2]);
-                            Log.d(TAG, "onComplete: nearbyId 3 " + nearbyId[3]);
+                            Log.d(TAG, "onComplete: nearbyId 3 " + nearbyId[3]);*/
 
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM));
 

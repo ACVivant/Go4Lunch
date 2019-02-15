@@ -165,7 +165,6 @@ public class MainActivity extends BaseActivity {
             UserHelper.createUser(uid, username, userEmail, urlPicture).addOnFailureListener(this.onFailureListener());
             Log.d(TAG, "createUserInFirestore: ");
         }
-
     }
     // --------------------
     // UTILS

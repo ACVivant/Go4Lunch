@@ -61,7 +61,7 @@ public void addNearbyRestaurants() {
     transferData[0] = mMap;
     transferData[1] = url;
     getNearbyPlaces.execute(transferData);
-    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, DEFAULT_ZOOM));
+   // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, DEFAULT_ZOOM));
 
     // pourquoi est-ce que je récupère un tableau vide? Probablement parce que la tableau est généré onPostExecute? Comment dire d'attendre pour le récupérer?
    // nearbyId = getNearbyPlaces.getTabIdNearbyRestaurant();

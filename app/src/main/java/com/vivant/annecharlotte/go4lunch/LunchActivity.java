@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.os.PersistableBundle;
@@ -13,6 +14,12 @@ import android.util.Log;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
+import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
+import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
+import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
+import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
+import com.vivant.annecharlotte.go4lunch.Models.Nearby.NearbyPlacesList;
 import com.vivant.annecharlotte.go4lunch.authentification.BaseActivity;
 import com.vivant.annecharlotte.go4lunch.authentification.ProfileActivity;
 
@@ -23,11 +30,19 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LunchActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -44,13 +59,10 @@ public class LunchActivity extends BaseActivity
     Fragment active = fragment1;
 
     private String TAG = "LUNCH";
-    private static final String USER_ID = "userId";
-    private String userId;
 
     private NavigationView navigationView;
 
-    //Pourquoi est ce que je ne peux pas faire ça?
-    //private FirebaseFirestore db = new FirebaseFirestore();
+    private Call<NearbyPlacesList> call;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,17 +83,17 @@ public class LunchActivity extends BaseActivity
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        userId = getIntent().getStringExtra(USER_ID);
-        Bundle args = new Bundle();
-        args.putString(USER_ID,userId);
-        // Comment je fais passer mon userId à mes fragments???
-
         fm.beginTransaction().add(R.id.lunch_container, fragment3, "3").hide(fragment3).commit();
         fm.beginTransaction().add(R.id.lunch_container, fragment2, "2").hide(fragment2).commit();
         fm.beginTransaction().add(R.id.lunch_container, fragment1, "1").commit();
 
         layoutLinks();
         updateUIWhenCreating();
+        //searchNearbyRestaurants();
+    }
+
+    public void setActionBarTitle(String bibi) {
+        getSupportActionBar().setTitle(bibi);
     }
 
     protected void layoutLinks() {
@@ -181,9 +193,41 @@ public class LunchActivity extends BaseActivity
         }
     }
 
+    private void searchNearbyRestaurants(){
+        String keyword = "";
+        String key = BuildConfig.apikey;
+        String location = "49.23359, 2.88807";
+        int radius=500;
+        String type = "restaurant";
+
+        ApiInterface googleMapService = ApiClient.getClient().create(ApiInterface.class);
+        call = googleMapService.getNearBy(location, radius, type, keyword, key);
+        call.enqueue(new Callback<NearbyPlacesList>() {
+            @Override
+            public void onResponse(Call<NearbyPlacesList> call, Response<NearbyPlacesList> response) {
+                if (response.isSuccessful()) {
+                    List<GooglePlacesResult> results = response.body().getResults();
+
+                    Log.d(TAG, "onResponse: " + results.get(0).getName());
+                    Log.d(TAG, "onResponse: " + results.get(1).getName());
+                    Log.d(TAG, "onResponse: " + results.get(2).getName());
+                } else {
+                    Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "onResponse: request failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NearbyPlacesList> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                Log.d(TAG, "onFailure: " +t.getMessage());
+            }
+        });
+
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(USER_ID, userId);
     }
 }
