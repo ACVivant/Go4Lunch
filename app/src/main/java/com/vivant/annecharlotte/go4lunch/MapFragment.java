@@ -45,6 +45,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     MapView mMapView;
     View mView;
 
+    private static final String LISTNEARBY = "ListOfNearbyRestaurants";
+    private static final String MYLAT = "UserCurrentLatitude";
+    private static final String MYLNG = "UserCurrentLongitude";
     private final static String TAG = "MapFragment";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -89,10 +92,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
         ((LunchActivity)getActivity()).setActionBarTitle(getResources().getString(R.string.TB_title));
 
-        getLocationPermission();
-        if (mLocationPermissionGranted) initMap();
+        //getLocationPermission();
+        //if (mLocationPermissionGranted) initMap();
 
         return mView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated");
+
+        // AAAARGH c'est toujours nul!!!!
+        if (savedInstanceState!=null) {
+            Log.d(TAG, "onActivityCreated: Bundle non null");
+            lat = getArguments().getDouble(MYLAT);
+            lng = getArguments().getDouble(MYLNG);
+            Log.d(TAG, "onActivityCreated: latitude " +lat);
+            Log.d(TAG, "onActivityCreated: latitude " +lng);
+        }
+        //ici je dois récupérer le tableau généré par lunchactivity avec les infos sur les restos nearby
     }
 
     //----------------------------------------------------------------------------------------------------------------------------

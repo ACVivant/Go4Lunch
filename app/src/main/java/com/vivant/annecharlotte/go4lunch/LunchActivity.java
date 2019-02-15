@@ -1,11 +1,18 @@
 package com.vivant.annecharlotte.go4lunch;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.os.PersistableBundle;
@@ -24,6 +31,8 @@ import com.vivant.annecharlotte.go4lunch.authentification.BaseActivity;
 import com.vivant.annecharlotte.go4lunch.authentification.ProfileActivity;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -51,6 +60,7 @@ public class LunchActivity extends BaseActivity
     private TextView emailTextView;
     private ImageView photoImageView;
 
+    //final Fragment fragment1 = new ListWorkmatesFragment();
     final Fragment fragment1 = new MapFragment();
     final Fragment fragment2 = new ListRestoFragment();
     final Fragment fragment3 = new ListWorkmatesFragment();
@@ -58,11 +68,25 @@ public class LunchActivity extends BaseActivity
     final FragmentManager fm = getSupportFragmentManager();
     Fragment active = fragment1;
 
-    private String TAG = "LUNCH";
+    private String TAG = "LUNCHACTIVITY";
+    private static final String LISTNEARBY = "ListOfNearbyRestaurants";
+    private static final String MYLAT = "UserCurrentLatitude";
+    private static final String MYLNG = "UserCurrentLongitude";
+
+    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private Location currentLocation;
 
     private NavigationView navigationView;
 
     private Call<NearbyPlacesList> call;
+    private List<GooglePlacesResult> results;
+
+    private boolean mLocationPermissionGranted = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +113,8 @@ public class LunchActivity extends BaseActivity
 
         layoutLinks();
         updateUIWhenCreating();
-        //searchNearbyRestaurants();
+        getLocationPermission(); // Enchaine sur la recherche des restos à proximité
+        Log.d(TAG, "onCreate");
     }
 
     public void setActionBarTitle(String bibi) {
@@ -194,11 +219,17 @@ public class LunchActivity extends BaseActivity
     }
 
     private void searchNearbyRestaurants(){
+        Log.d(TAG, "searchNearbyRestaurants: entrée");
         String keyword = "";
         String key = BuildConfig.apikey;
-        String location = "49.23359, 2.88807";
+        //String location = "49.23359, 2.88807";
         int radius=500;
         String type = "restaurant";
+
+        String lat = String.valueOf(currentLocation.getLatitude());
+        String lng = String.valueOf(currentLocation.getLongitude());
+
+        String location = lat+","+lng;
 
         ApiInterface googleMapService = ApiClient.getClient().create(ApiInterface.class);
         call = googleMapService.getNearBy(location, radius, type, keyword, key);
@@ -206,11 +237,18 @@ public class LunchActivity extends BaseActivity
             @Override
             public void onResponse(Call<NearbyPlacesList> call, Response<NearbyPlacesList> response) {
                 if (response.isSuccessful()) {
-                    List<GooglePlacesResult> results = response.body().getResults();
+                    results = response.body().getResults();
 
                     Log.d(TAG, "onResponse: " + results.get(0).getName());
-                    Log.d(TAG, "onResponse: " + results.get(1).getName());
-                    Log.d(TAG, "onResponse: " + results.get(2).getName());
+                    Log.d(TAG, "onResponse: " + results.get(0).getId());
+                    Log.d(TAG, "onResponse: " + results.get(0).getGeometry().getLocation().getLat());
+
+                    //Comment est-ce que je peux passer mon objet à mon fragment???
+/*                    Bundle bundle = new Bundle();
+                    bundle.put????(LISTNEARBY, results);
+                    fragment1.setArguments(bundle);
+                    fragment2.setArguments(bundle);*/
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
                     Log.d(TAG, "onResponse: request failed");
@@ -226,8 +264,71 @@ public class LunchActivity extends BaseActivity
 
     }
 
+    //----------------------------------------------------------------------------------------------------------------------------
+    // Verify permissions
+    //----------------------------------------------------------------------------------------------------------------------------
+    private void getLocationPermission() {
+        Log.d(TAG, "getLocationPermission: getting location permissions");
+        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if (ContextCompat.checkSelfPermission(this, FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                mLocationPermissionGranted = true;
+
+                mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+                Task location = mFusedLocationProviderClient.getLastLocation();
+                location.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "onComplete: found location");
+                            currentLocation = (Location) task.getResult();
+                            Log.d(TAG, "onComplete: lat " + currentLocation.getLatitude() + " lng " +currentLocation.getLongitude());
+
+                            searchNearbyRestaurants();
+
+                        }
+                    }
+                });
+
+            } else {
+                ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_REQUEST_CODE);
+            }
+        }else {
+            ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionsResult: called");
+        mLocationPermissionGranted = false;
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE: {
+                if (grantResults.length > 0) {
+                    for (int i = 0; i < grantResults.length; i++) {
+                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                            mLocationPermissionGranted = false;
+                            Log.d(TAG, "onRequestPermissionsResult: permissions failed");
+                            return;
+                        }
+                        Log.d(TAG, "onRequestPermissionsResult: Permissions granted");
+                        mLocationPermissionGranted = true;
+                        getLocationPermission();
+                    }
+                }
+            }
+        }
+    }
+
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        Bundle bundle = new Bundle();
+        bundle.putDouble(MYLAT, currentLocation.getLatitude());
+        bundle.putDouble(MYLNG, currentLocation.getLongitude());
+        fragment1.setArguments(bundle);
     }
 }

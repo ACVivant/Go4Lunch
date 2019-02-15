@@ -171,4 +171,10 @@ public class ListRestoFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onActivityCreated(@androidx.annotation.Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //ici je dois récupérer le tableau généré par lunchactivity avec les infos sur les restos nearby
+    }
+
 }
