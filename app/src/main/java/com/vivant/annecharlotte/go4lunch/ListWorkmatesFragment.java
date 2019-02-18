@@ -44,7 +44,7 @@ public class ListWorkmatesFragment extends Fragment {
         view =  inflater.inflate(R.layout.fragment_list_workmates, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_workmates_recyclerview);
 
-        ((LunchActivity)getActivity()).setActionBarTitle(getResources().getString(R.string.TB_workmates));
+        //((LunchActivity)getActivity()).setActionBarTitle(getResources().getString(R.string.TB_workmates));
 
         setupRecyclerView();
         //setupToolbar();
@@ -58,7 +58,8 @@ public class ListWorkmatesFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        Query allUsers= UserHelper.getAllUsers();
+        Query allUsers= UserHelper.getAllUsers()
+                .orderBy("restoToday", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setQuery(allUsers, User.class)

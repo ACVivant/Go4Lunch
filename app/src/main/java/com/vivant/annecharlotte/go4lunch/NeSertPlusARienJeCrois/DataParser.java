@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch.NeSetPlusARienJeCrois;
+package com.vivant.annecharlotte.go4lunch.NeSertPlusARienJeCrois;
 
 import android.util.Log;
 

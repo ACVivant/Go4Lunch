@@ -45,6 +45,16 @@ public class UserHelper {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
+    // --- GET CURRENT USER NAME ---
+    public static String getCurrentUserName() {
+        return FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+    }
+
+    // --- GET CURRENT USER URL PICTURE ---
+    public static String getCurrentUserUrlPicture() {
+        return FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString();
+    }
+
     // --- UPDATE NAME---
     public static Task<Void> updateUsername(String username, String uid) {
         return UserHelper.getUsersCollection().document(uid).update("username", username);

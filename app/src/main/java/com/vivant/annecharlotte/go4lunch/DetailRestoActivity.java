@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Intent;
@@ -17,14 +19,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantHelper;
 import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.ListResto.Rate;
+import com.vivant.annecharlotte.go4lunch.Models.ClientsToday;
 import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
 import com.vivant.annecharlotte.go4lunch.Models.User;
+import com.vivant.annecharlotte.go4lunch.Utils.MyDividerItemDecoration;
+import com.vivant.annecharlotte.go4lunch.View.ListOfClientsAdapter;
+import com.vivant.annecharlotte.go4lunch.View.ListOfWorkmatesAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +53,7 @@ public class DetailRestoActivity extends AppCompatActivity {
     private List<String> listRestoLike= new ArrayList<String>();
     private List<String> listClientToday= new ArrayList<String>();
     private List<String> listClientTodayName= new ArrayList<String>();
+    private List<User> detailListClientToday = new ArrayList<>();
     private TextView nameTV;
     private TextView addressTV;
     private ImageView photoIV;
@@ -67,6 +77,9 @@ public class DetailRestoActivity extends AppCompatActivity {
     private final static String TAG = "DETAILRESTOACTIVITY";
 
     private static final int REQUEST_CALL = 1;
+
+    private ListOfClientsAdapter adapter;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,6 +185,13 @@ public class DetailRestoActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //---------------------------------------------------------------------------------------------
+        // RecyclerView
+        //-----------------------------------------------------------------------------------------------
+        recyclerView = (RecyclerView) findViewById(R.id.fragment_workmates_detailresto_recyclerview);
+        setupRecyclerView();
+
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -269,8 +289,31 @@ public class DetailRestoActivity extends AppCompatActivity {
                     firstUser.add(userId);
                     RestaurantHelper.updateUsersToday(firstUser, idResto);
                 }
-            }
-        });
+
+                //On récupère la fiche de l'utilisateur courant
+                //UserHelper.getUser(userId);
+               /* currentUser = documentSnapshot.toObject(User.class);
+                Log.d(TAG, "onSuccess: username " + UserHelper.getCurrentUserName());
+                currentUser.setUid(userId);
+                currentUser.setUsername(UserHelper.getCurrentUserName());
+                currentUser.setUrlPicture(UserHelper.getCurrentUserUrlPicture());
+                Log.d(TAG, "onSuccess: username currentUser " + currentUser.getUsername());
+                RestaurantHelper.addDetailUserToday(currentUser, idResto, "allUsers");*/
+
+              /*  detailListClientToday = documentSnapshot.toObject(Restaurant.class).getDetailUsersToday();
+                        if(detailListClientToday!=null) {
+                            if (detailListClientToday.contains(currentUser)) {
+                                Log.d(TAG, "onSuccess: removecurrentUser");
+                                detailListClientToday.remove(currentUser);
+                            } else {
+                                Log.d(TAG, "onSuccess: addcurentUser");
+                                Log.d(TAG, "onSuccess: currentUser" +currentUser.getUsername());
+                                detailListClientToday.add(currentUser);
+                                RestaurantHelper.updateDetailUsersToday(detailListClientToday, idResto);
+                            }
+                        }*/
+                    }
+                });
     }
 
     private void updateLikeView() {
@@ -310,5 +353,26 @@ public class DetailRestoActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    //Recyclerview
+    //------------------------------------------------------------------------------------------------
+
+    private void setupRecyclerView() {
+        Log.d(TAG, "setupRecyclerView");
+        Query clients = RestaurantHelper.getRestaurantsCollection()
+                .document(idResto)
+                .collection("clientsToday");
+
+        //Query clients = RestaurantHelper.getAllClients(idResto);
+        FirestoreRecyclerOptions<ClientsToday> options = new FirestoreRecyclerOptions.Builder<ClientsToday>()
+                .setQuery(clients, ClientsToday.class)
+                .build();
+
+        adapter = new ListOfClientsAdapter(options, Glide.with(recyclerView));
+        recyclerView.setHasFixedSize(true); // for performances reasons
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
     }
 }

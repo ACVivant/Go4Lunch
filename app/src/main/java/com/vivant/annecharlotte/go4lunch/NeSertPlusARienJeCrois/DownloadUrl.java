@@ -1,6 +1,5 @@
-package com.vivant.annecharlotte.go4lunch.NeSetPlusARienJeCrois;
+package com.vivant.annecharlotte.go4lunch.NeSertPlusARienJeCrois;
 
-import android.net.UrlQuerySanitizer;
 import android.util.Log;
 
 import java.io.BufferedReader;

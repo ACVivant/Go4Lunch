@@ -76,4 +76,7 @@
     <string name="not_decided">" n'a pas encore décidé."</string>
     <string name="decided">" mange au restaurant: "</string>
 
+    <!--DETAIL -->
+    <string name="isjoining">" vient."</string>
+
 </resources>

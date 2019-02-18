@@ -91,8 +91,6 @@ public class LunchActivity extends BaseActivity
 
     private boolean mLocationPermissionGranted = false;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -248,7 +246,6 @@ public class LunchActivity extends BaseActivity
                     Log.d(TAG, "onResponse: " + results.get(0).getId());
                     Log.d(TAG, "onResponse: " + results.get(0).getGeometry().getLocation().getLat());
 
-
                     for (int i=0; i<results.size(); i++) {
                         if(!RestaurantHelper.getRestaurant(results.get(i).getId()).isSuccessful()) {   // Ce test ne fonctionne pas, comment créer le restaurant seulement s'il n'existe pa???
                             RestaurantHelper.createRestaurant(results.get(i).getId(), results.get(i).getName());
@@ -298,7 +295,7 @@ public class LunchActivity extends BaseActivity
                         if (task.isSuccessful()) {
                             Log.d(TAG, "onComplete: found location");
                             currentLocation = (Location) task.getResult();
-                            Log.d(TAG, "onComplete: lat " + currentLocation.getLatitude() + " lng " +currentLocation.getLongitude());
+                            //Log.d(TAG, "onComplete: lat " + currentLocation.getLatitude() + " lng " +currentLocation.getLongitude());
 
                             searchNearbyRestaurants();
                         }
