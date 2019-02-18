@@ -13,28 +13,28 @@ public class Restaurant {
     private String restoId;
     private String restoName;
     private List<String> usersToday;
-    private int distance;
+    private List<String> nameUsersToday;
 
 
     public Restaurant() { }
 
-    public Restaurant(String restoId, String restoName, int distance) {
+    public Restaurant(String restoId, String restoName) {
         this.restoId = restoId;
         this.restoName = restoName;
         this.usersToday = new ArrayList<>();
-        this.distance = distance;
+        this.nameUsersToday = new ArrayList<>();
     }
 
     // --- GETTERS ---
     public String getRestoId() { return restoId; }
     public String getRestoName() { return restoName; }
     public List<String> getUsersToday() { return  usersToday;}
-    public int getDistance() {return distance;}
+    public List<String> getNameUsersToday() { return  nameUsersToday;}
 
     // --- SETTERS ---
     public void setRestoId(String restoId) { this.restoId = restoId; }
     public void setRestoName(String restoName) { this.restoName = restoName; }
     public void setUsersToday(List<String> usersToday) {this.usersToday = usersToday;}
-    public void setDistance(int distance) {this.distance = distance;}
+    public void setNameUsersToday(List<String> nameUsersToday) {this.nameUsersToday = nameUsersToday;}
 }
 

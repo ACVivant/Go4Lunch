@@ -81,15 +81,11 @@ public class ListRestoFragment extends Fragment {
         // Call to the Google Places API
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        // Pourquoi est-ce qu'une nouvelle instance cherche à être créee alors qu'on a déjà celle du MapFragment?
-       /* NearbyRestaurantsSingleton myRestaurants = NearbyRestaurantsSingleton.getInstance(new LatLng(40, 40), mMap);
-        nearbyId= myRestaurants.getNearbyId();
-        Log.d(TAG, "onComplete: nearbyId 1 " + nearbyId[1]);
-        Log.d(TAG, "onComplete: nearbyId 2 " + nearbyId[2]);
-        Log.d(TAG, "onComplete: nearbyId 3 " + nearbyId[3]);*/
+        // Il faudra adapter tout quand on arrivera à récupérer les données depuis LunchActivity
 
         for (int i = 0; i < nearbyId.length; i++) {
             Log.d(TAG, "onCreate: boucle sur les différents id: i: "+ i);
+            // Doublon par rapport ) l'appel depuis Map, à gérer avec le cache?
             call = apiService.getRestaurantDetail(BuildConfig.apikey, nearbyId[i], "name,photo,url,formatted_phone_number,website,rating,address_component,id");
             //call = apiService.getRestaurantDetail(API_KEY, myIdTab[i], "name,photo,url,formatted_phone_number,website,rating,address_component,opening_hours,id");
             // pb avec opening_hours

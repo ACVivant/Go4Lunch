@@ -21,8 +21,8 @@ public class RestaurantHelper {
     }
 
     // --- CREATE ---
-    public static Task<Void> createRestaurant(String restoId, String restoName, int distance) {
-        Restaurant restaurantToCreate = new Restaurant(restoId, restoName, distance);
+    public static Task<Void> createRestaurant(String restoId, String restoName) {
+        Restaurant restaurantToCreate = new Restaurant(restoId, restoName);
         return RestaurantHelper.getRestaurantsCollection().document(restoId).set(restaurantToCreate);
     }
 
@@ -39,6 +39,11 @@ public class RestaurantHelper {
     // --- UPDATE TODAY'S USERS---
     public static Task<Void> updateUsersToday(List<String> usersToday, String restoId) {
         return RestaurantHelper.getRestaurantsCollection().document(restoId).update("usersToday", usersToday);
+    }
+
+    // --- UPDATE TODAY'S USERS NAME---
+    public static Task<Void> updateNameUsersToday(List<String> nameUsersToday, String restoId) {
+        return RestaurantHelper.getRestaurantsCollection().document(restoId).update("usersToday", nameUsersToday);
     }
 
     // -- GET ALL NEARBY RESTAURANT --

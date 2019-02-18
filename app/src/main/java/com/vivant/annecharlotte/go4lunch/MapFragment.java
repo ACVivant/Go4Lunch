@@ -5,9 +5,14 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -18,8 +23,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -28,18 +35,30 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
+import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
+import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
+import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
+import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
+import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
+import com.vivant.annecharlotte.go4lunch.Models.Nearby.NearbyPlacesList;
+import com.vivant.annecharlotte.go4lunch.Models.User;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback
-       , GoogleApiClient.ConnectionCallbacks {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     GoogleMap mGoogleMap;
     MapView mMapView;
@@ -55,23 +74,39 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     private static final float DEFAULT_ZOOM = 15f;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136)); // entire world
 
+    // For Intent trasfer to DetailActivity
+    private String WEB = "resto_web";
+    private String TEL = "resto_phone";
+    private String NAME = "resto_name";
+    private String ADDRESS = "resto_address";
+    private String LIKE = "resto_like";
+    private String RATE = "resto_rate";
+    private String PHOTO = "resto_photo";
+    private String IDRESTO = "resto_id";
+    private String DISTANCE = "resto_distance";
+
     //widgets
     private AutoCompleteTextView mSearchText;
     private ImageView mGps;
 
     //Vars
+    private RestaurantDetailResult mResto;
+    private List<String> listRestoLike= new ArrayList<String>();
+    private Marker myMarker;
     private boolean mLocationPermissionGranted = false;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private GoogleApiClient mGoogleApiCLient;
     private LocationRequest mLocationRequest;
-    private Location lastLocation;
+    private double myLatitude;
+    private double myLongitude;
     private Marker currentUserLocationMarker;
     double lat, lng;
     private int proximityRadius = 1000;
     private Location currentLocation;
     private float distance;
 
+    private Call<ListDetailResult> call;
     private List<HashMap<String, String>> nearbyPlacesList;
 
     public MapFragment() {
@@ -89,8 +124,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_map, container, false);
         mGps = (ImageView) mView.findViewById(R.id.ic_gps);
-
-        ((LunchActivity)getActivity()).setActionBarTitle(getResources().getString(R.string.TB_title));
 
         //getLocationPermission();
         //if (mLocationPermissionGranted) initMap();
@@ -110,51 +143,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
             lng = getArguments().getDouble(MYLNG);
             Log.d(TAG, "onActivityCreated: latitude " +lat);
             Log.d(TAG, "onActivityCreated: latitude " +lng);
+        } else {
+            myLatitude = 49.2335883;
+            myLongitude = 2.8880683;
+            Log.d(TAG, "onActivityCreated: else... valeurs lat lng par défaut");
+            Toast.makeText(this.getContext(), "Carte localisée par défaut, car nous n'avons pas l'autorisation de vous géolocaliser", Toast.LENGTH_LONG).show();
         }
+
+        initMap();
+
+
+
         //ici je dois récupérer le tableau généré par lunchactivity avec les infos sur les restos nearby
-    }
+        // En attendant...
 
-    //----------------------------------------------------------------------------------------------------------------------------
-    // Verify permissions
-    //----------------------------------------------------------------------------------------------------------------------------
-    private void getLocationPermission() {
-        Log.d(TAG, "getLocationPermission: getting location permissions");
-        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+        //puis
+       //displayNearbyPlaces(de la liste qu'on a récupérée);
 
-        if (ContextCompat.checkSelfPermission(this.getContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if (ContextCompat.checkSelfPermission(this.getContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                mLocationPermissionGranted = true;
-                initMap();
-
-            } else {
-                ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
-            }
-        }else {
-            ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionsResult: called");
-        mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case LOCATION_PERMISSION_REQUEST_CODE: {
-                if (grantResults.length>0) {
-                    for (int i =0; i< grantResults.length; i++) {
-                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                            mLocationPermissionGranted = false;
-                            Log.d(TAG, "onRequestPermissionsResult: permissions failed");
-                            return;
-                        }
-                        Log.d(TAG, "onRequestPermissionsResult: Permissions granted");
-                        mLocationPermissionGranted = true;
-                        //initialize our map
-                        initMap();
-                    }
-                }
-            }
-        }
     }
 
     //-------------------------------------------------------------------------------------------------------------
@@ -177,42 +182,194 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         Log.d(TAG, "onMapReady: Map is ready");
         //Toast.makeText(this, "Map is ready", Toast.LENGTH_LONG).show();
         mMap = googleMap;
-
-        if (mLocationPermissionGranted) {
-            getDeviceLocation();
-
-            // Add the blue point for current location  on the map and the possibility to recenter the map on current location
-            if ( getActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    getActivity().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            mMap.setMyLocationEnabled(true);
-            // because the default place of the locationButton is under the search bar we have to remove the default one to put a personalized one
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude, myLongitude), DEFAULT_ZOOM));
 
             init();
         }
-    }
+
 
     private void init() {
         Log.d(TAG, "init: initialiazing");
-
-        buildGoogleApiClient();
-
+       // buildGoogleApiClient();
        // hideSoftKeyboard();
 
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: clicked gps icon");
-                getDeviceLocation();
-
-
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude, myLongitude), DEFAULT_ZOOM));
             }
         });
     }
 
-    private void getDeviceLocation() {
+    private void displayNearbyPlaces(List<GooglePlacesResult> nearbyPlacesList) {
+
+        for (int i=0; i<nearbyPlacesList.size(); i++) {
+            MarkerOptions markerOptions = new MarkerOptions();
+
+            final GooglePlacesResult googleNearbyPlace = nearbyPlacesList.get(i);
+            String nameOfPlace = googleNearbyPlace.getName();
+            String idOfPlace = googleNearbyPlace.getId();
+            double lat = googleNearbyPlace.getGeometry().getLocation().getLat();
+            double lng = googleNearbyPlace.getGeometry().getLocation().getLng();
+
+            float results[] = new float[10];
+            Location.distanceBetween(myLatitude, myLongitude, lat, lng,results);
+            distance = results[0];
+
+            LatLng latLng = new LatLng(lat, lng);
+            updateLikeColorPin(idOfPlace, latLng, nameOfPlace, i);
+
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    launchRestaurantDetail(marker, googleNearbyPlace);
+                }
+            });
+
+        }
+    }
+
+    //---------------------------------------------------------------------------------------------------
+    // Update Pin color from Firebase
+    //---------------------------------------------------------------------------------------------------
+    private void updateLikeColorPin(final String idOfPlace, final LatLng restoLatLng, final String nameOfResto, final int index) {
+        // On récupère l'id du resto de Place à partir de celui de Map...
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        call = apiService.getRestaurantDetail(BuildConfig.apikey, idOfPlace, "id");
+
+        call.enqueue(new Callback<ListDetailResult>() {
+            @Override
+            public void onResponse(Call<ListDetailResult> call, Response<ListDetailResult> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getContext(), "Code: " + response.code(), Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "onResponse: erreur");
+                    return;
+                }
+
+                ListDetailResult posts = response.body();
+                mResto = posts.getResult();
+                final String idResto = mResto.getId();
+
+                // On ajuste la couleur de l'épingle en fonction des likes de l'utilisateur
+                final MarkerOptions markerOptions = new MarkerOptions();
+
+                UserHelper.getUser(UserHelper.getCurrentUserId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        listRestoLike = documentSnapshot.toObject(User.class).getRestoLike();
+                        if(listRestoLike!=null) {
+                            Log.d(TAG, "onSuccess: idresto " +idResto);
+                            if (listRestoLike.contains(idResto)) {
+                                markerOptions.position(restoLatLng)
+                                        .title(nameOfResto + " " + Math.round(distance)+"m")
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                                //mMap.addMarker(markerOptions);
+                                myMarker = mMap.addMarker(markerOptions);
+                                myMarker.setTag(index);
+                            } else {
+                                markerOptions.position(restoLatLng)
+                                        .title(nameOfResto+ " " + Math.round(distance)+"m")
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                                //mMap.addMarker(markerOptions);
+                                myMarker = mMap.addMarker(markerOptions);
+                                myMarker.setTag(index);
+                            }
+                        }
+                        UserHelper.updateLikedResto(listRestoLike, UserHelper.getCurrentUserId());
+                    }
+                });
+            }
+            @Override
+            public void onFailure(Call<ListDetailResult> call, Throwable t) {
+                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e(TAG, t.toString());
+            }
+        });
+    }
+
+    //--------------------------------------------------------------------------------------------------------------------
+    // gère le clic sur la bulle d'info
+    //--------------------------------------------------------------------------------------------------------------------
+      private void launchRestaurantDetail(Marker marker, GooglePlacesResult googlePlace) {
+            int position = (int)(marker.getTag());
+            Log.d(TAG, "onInfoWindowClick: " + googlePlace.getId());
+
+            ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+            //call = apiService.getRestaurantDetail(BuildConfig.apikey, tabIdNearbyRestaurant[position], "name,photo,url,formatted_phone_number,website,rating,address_component");
+            call = apiService.getRestaurantDetail(BuildConfig.apikey, googlePlace.getId(), "name,photo,url,formatted_phone_number,website,rating,address_component,id");
+
+            call.enqueue(new Callback<ListDetailResult>() {
+                @Override
+                public void onResponse(Call<ListDetailResult> call, Response<ListDetailResult> response) {
+                    if (!response.isSuccessful()) {
+                        Toast.makeText(getContext(), "Code: " + response.code(), Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "onResponse: erreur");
+                        return;
+                    }
+
+                    ListDetailResult posts = response.body();
+
+                    // passage des infos dans un Intent pour DetailActivity
+                    mResto = posts.getResult();
+                    Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
+
+                    //Id
+                    WVIntent.putExtra(IDRESTO, mResto.getId());
+                    Log.d(TAG, "onResponse: id " + mResto.getId());
+                    //URL website
+                    if(mResto.getWebsite()!=null) {
+                        WVIntent.putExtra(WEB, mResto.getWebsite());
+                        Log.d(TAG, "onResponse: webiste " + mResto.getWebsite());
+                    } else {
+                        WVIntent.putExtra(WEB, "no-website");
+                        Log.d(TAG, "onResponse: website no-website");
+                    }
+                    //Name
+                    WVIntent.putExtra(NAME, mResto.getName());
+                    Log.d(TAG, "onResponse: name "+ mResto.getName());
+                    //PhoneNumber
+                    WVIntent.putExtra(TEL, mResto.getFormattedPhoneNumber());
+                    Log.d(TAG, "onResponse: phone " + mResto.getFormattedPhoneNumber());
+                    //Address
+                    WVIntent.putExtra(ADDRESS, mResto.getAddressComponents().get(0).getShortName() + ", " + mResto.getAddressComponents().get(1).getShortName());
+                    Log.d(TAG, "onResponse: address 1 " + mResto.getAddressComponents().get(0).getShortName());
+                    Log.d(TAG, "onResponse: address 2 " + mResto.getAddressComponents().get(1).getShortName());
+                    //Rate
+                    if(mResto.getRating()!=null){
+                        WVIntent.putExtra(RATE, mResto.getRating() );
+                        Log.d(TAG, "onResponse: rate " + mResto.getRating());
+                    }
+                    else {
+                        WVIntent.putExtra(RATE, 0 );
+                        Log.d(TAG, "onResponse: rate 0" );
+                    }
+                    //Photo
+                    if(mResto.getPhotos() != null && !mResto.getPhotos().isEmpty()){
+                        WVIntent.putExtra(PHOTO, mResto.getPhotos().get(0).getPhotoReference());
+                        Log.d(TAG, "onResponse: photo " + mResto.getPhotos().get(0).getPhotoReference());
+                    } else {
+                        WVIntent.putExtra(PHOTO, "no-photo");
+                        Log.d(TAG, "onResponse: photo no-photo");
+                    }
+                    //Distance
+                    WVIntent.putExtra(DISTANCE, distance);
+                    //UserId
+                   startActivity(WVIntent);
+                }
+
+                @Override
+                public void onFailure(Call<ListDetailResult> call, Throwable t) {
+                    Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                    Log.e(TAG, t.toString());
+                }
+            });
+        }
+    }
+
+
+    /*private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation: getting the devices current location");
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
@@ -250,7 +407,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         } catch (SecurityException e) {
             Log.e(TAG, "getDeviceLocation: SecurityException " + e.getMessage());
         }
-    }
+    }*/
 /*
     //------------------------------------------------------------------------------------------------------------------
     //Nearby restaurants
@@ -326,7 +483,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     // connection
     //-----------------------------------------------------------------------------------------------------------------
 
-    protected synchronized void buildGoogleApiClient() {
+ /*   protected synchronized void buildGoogleApiClient() {
         mGoogleApiCLient = new GoogleApiClient
                 .Builder(getContext())
                 .addConnectionCallbacks(this)
@@ -338,21 +495,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                 .build();
 
         mGoogleApiCLient.connect();
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-    /*    mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1100);
-        mLocationRequest.setFastestInterval(1100);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);*/
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
+    }*/
 
     //------------------------------------------------------------------------------------------------------
     // ...
@@ -367,7 +510,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 */
 
 
-}
+
 
 
 

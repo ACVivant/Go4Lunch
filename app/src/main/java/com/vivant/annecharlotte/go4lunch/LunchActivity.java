@@ -12,6 +12,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -20,13 +21,17 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
+import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantHelper;
+import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
 import com.vivant.annecharlotte.go4lunch.Models.Nearby.NearbyPlacesList;
+import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
 import com.vivant.annecharlotte.go4lunch.authentification.BaseActivity;
 import com.vivant.annecharlotte.go4lunch.authentification.ProfileActivity;
 
@@ -243,11 +248,21 @@ public class LunchActivity extends BaseActivity
                     Log.d(TAG, "onResponse: " + results.get(0).getId());
                     Log.d(TAG, "onResponse: " + results.get(0).getGeometry().getLocation().getLat());
 
+
+                    for (int i=0; i<results.size(); i++) {
+                        if(!RestaurantHelper.getRestaurant(results.get(i).getId()).isSuccessful()) {   // Ce test ne fonctionne pas, comment créer le restaurant seulement s'il n'existe pa???
+                            RestaurantHelper.createRestaurant(results.get(i).getId(), results.get(i).getName());
+                        }
+                    }
+
                     //Comment est-ce que je peux passer mon objet à mon fragment???
 /*                    Bundle bundle = new Bundle();
                     bundle.put????(LISTNEARBY, results);
                     fragment1.setArguments(bundle);
                     fragment2.setArguments(bundle);*/
+
+
+
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
@@ -286,7 +301,6 @@ public class LunchActivity extends BaseActivity
                             Log.d(TAG, "onComplete: lat " + currentLocation.getLatitude() + " lng " +currentLocation.getLongitude());
 
                             searchNearbyRestaurants();
-
                         }
                     }
                 });
@@ -322,7 +336,7 @@ public class LunchActivity extends BaseActivity
     }
 
 
-    @Override
+    /*@Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -330,5 +344,5 @@ public class LunchActivity extends BaseActivity
         bundle.putDouble(MYLAT, currentLocation.getLatitude());
         bundle.putDouble(MYLNG, currentLocation.getLongitude());
         fragment1.setArguments(bundle);
-    }
+    }*/
 }

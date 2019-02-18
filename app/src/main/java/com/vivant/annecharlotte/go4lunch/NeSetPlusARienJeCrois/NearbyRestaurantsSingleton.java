@@ -1,11 +1,11 @@
-package com.vivant.annecharlotte.go4lunch;
+package com.vivant.annecharlotte.go4lunch.NeSetPlusARienJeCrois;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.vivant.annecharlotte.go4lunch.BuildConfig;
 
 /**
  * Created by Anne-Charlotte Vivant on 08/02/2019.

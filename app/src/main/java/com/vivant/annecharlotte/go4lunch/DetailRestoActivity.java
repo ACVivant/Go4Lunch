@@ -20,8 +20,10 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantHelper;
 import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.ListResto.Rate;
+import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
 import com.vivant.annecharlotte.go4lunch.Models.User;
 
 import java.util.ArrayList;
@@ -38,7 +40,10 @@ public class DetailRestoActivity extends AppCompatActivity {
     private String PHOTO = "resto_photo";
     private String IDRESTO = "resto_id";
     private boolean restoLike;
+    private String restoToday;
     private List<String> listRestoLike= new ArrayList<String>();
+    private List<String> listClientToday= new ArrayList<String>();
+    private List<String> listClientTodayName= new ArrayList<String>();
     private TextView nameTV;
     private TextView addressTV;
     private ImageView photoIV;
@@ -48,7 +53,7 @@ public class DetailRestoActivity extends AppCompatActivity {
     private ImageView toPhone;
     private ImageView toWebsite;
     private ImageView likeThisResto;
-    private FloatingActionButton myRestoToday;
+    private FloatingActionButton myRestoTodayBtn;
 
     private String restoTel;
     private String idResto;
@@ -56,6 +61,7 @@ public class DetailRestoActivity extends AppCompatActivity {
     private User currentUser;
     private static final String USER_ID = "userId";
     private String userId;
+    private String restoName;
 
     //private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
     private final static String TAG = "DETAILRESTOACTIVITY";
@@ -79,7 +85,7 @@ public class DetailRestoActivity extends AppCompatActivity {
         //----------------------------------------------------------------------------------------
         // Display infos on restaurant
         //---------------------------------------------------------------------------------------
-        String restoName = getIntent().getStringExtra(NAME);
+        restoName = getIntent().getStringExtra(NAME);
         String restoAddress = getIntent().getStringExtra(ADDRESS);
         nameTV = (TextView) findViewById(R.id.name_detail);
         nameTV.setText(restoName);
@@ -90,19 +96,31 @@ public class DetailRestoActivity extends AppCompatActivity {
         // Like or not
         //-------------------------------------------------------------------------------------------
         likeThisResto = (ImageView) findViewById(R.id.like_detail_button);
-        restoLike = getIntent().getExtras().getBoolean(LIKE);
+        //restoLike = getIntent().getExtras().getBoolean(LIKE);
         Log.d(TAG, "onCreate: like " + restoLike);
               // mise à jour de la vue
-        updateLikeView(restoLike);
+        updateLikeView();
         likeThisResto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                  // mise à jour de Firestore
                 updateLikeInFirebase(idResto);
-                //updateLikeView(!restoLike);
             }
         });
 
+        //------------------------------------------------------------------------------------------
+        // Choose this restaurant today
+        //------------------------------------------------------------------------------------------
+        myRestoTodayBtn = (FloatingActionButton) findViewById(R.id.restoToday_FloatingButton);
+        // mise à jour de la vue
+        updateTodayView();
+        myRestoTodayBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //mise à jour de Firestore
+                updateRestoTodayInFirebase(idResto);
+            }
+        });
         //------------------------------------------------------------------------------------------
         // Rating
         //-------------------------------------------------------------------------------------------
@@ -137,10 +155,6 @@ public class DetailRestoActivity extends AppCompatActivity {
                 Log.d(TAG, "onCreate: restoTel " + restoTel);
             }
         });
-
-        // Choose this restaurant today
-        myRestoToday = (FloatingActionButton) findViewById(R.id.restoToday_FloatingButton);
-
         //--------------------------------------------------------------------------------------------------
         // Website
         //-------------------------------------------------------------------------------------------------
@@ -209,12 +223,57 @@ public class DetailRestoActivity extends AppCompatActivity {
                     }
                 }
                 UserHelper.updateLikedResto(listRestoLike, userId);
-
             }
         });
     }
 
-    private void updateLikeView(boolean restolike) {
+    private void updateRestoTodayInFirebase(final String idResto) {
+        Log.d(TAG, "updateRestoTodayInFirebase: idresto " +idResto);
+
+        //Mise à jour de User
+        UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                            @Override
+                                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                                String restoToday = documentSnapshot.toObject(User.class).getRestoToday();
+                                                                if (restoToday != null) {
+                                                                    if (restoToday.equals(idResto)) {
+                                                                        restoToday = "";
+                                                                        myRestoTodayBtn.setImageResource(R.drawable.ic_validation_no);
+                                                                        UserHelper.updateTodayResto(restoToday,userId);
+
+                                                                    } else {
+                                                                        restoToday = idResto;
+                                                                        myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
+                                                                        UserHelper.updateTodayResto(restoToday,userId);
+                                                                    }
+                                                                }
+                                                                UserHelper.updateTodayResto(restoToday, userId);
+                                                            }
+                                                        });
+
+        //Mise à jour de Restaurant
+        RestaurantHelper.getRestaurant(idResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                listClientToday = documentSnapshot.toObject(Restaurant.class).getUsersToday();
+                if(listClientToday!=null) {
+                    if (listClientToday.contains(userId)) {
+                        listClientToday.remove(userId);
+                    } else {
+                        listClientToday.add(userId);
+                    }
+                    RestaurantHelper.updateUsersToday(listClientToday, idResto);
+                } else {
+                    RestaurantHelper.createRestaurant(idResto, restoName);
+                    List<String> firstUser = new ArrayList<>();
+                    firstUser.add(userId);
+                    RestaurantHelper.updateUsersToday(firstUser, idResto);
+                }
+            }
+        });
+    }
+
+    private void updateLikeView() {
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -225,11 +284,31 @@ public class DetailRestoActivity extends AppCompatActivity {
                     } else {
                         likeThisResto.setImageResource(R.drawable.ic_action_star_no);
                     }
+                } else {
+                    likeThisResto.setImageResource(R.drawable.ic_action_star_no);
                 }
-                UserHelper.updateLikedResto(listRestoLike, userId);
-
+               // UserHelper.updateLikedResto(listRestoLike, userId);
             }
         });
     }
 
+    private void updateTodayView() {
+        UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                restoToday = documentSnapshot.toObject(User.class).getRestoToday();
+                Log.d(TAG, "onSuccess: restoToday " +restoToday);
+                Log.d(TAG, "onSuccess: idresto "+idResto);
+                if (restoToday != null) {
+                    if (restoToday.equals(idResto)) {
+                        myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
+                    } else {
+                        myRestoTodayBtn.setImageResource(R.drawable.ic_validation_no);
+                    }
+                } else {
+                    myRestoTodayBtn.setImageResource(R.drawable.ic_validation_no);
+                }
+            }
+        });
+    }
 }

@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch;
+package com.vivant.annecharlotte.go4lunch.NeSetPlusARienJeCrois;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
+import com.vivant.annecharlotte.go4lunch.DetailRestoActivity;
 import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
