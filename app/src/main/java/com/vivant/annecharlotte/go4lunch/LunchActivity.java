@@ -8,9 +8,19 @@ import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -81,6 +91,7 @@ public class LunchActivity extends BaseActivity
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+    private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location currentLocation;
 
@@ -90,6 +101,8 @@ public class LunchActivity extends BaseActivity
     private List<GooglePlacesResult> results;
 
     private boolean mLocationPermissionGranted = false;
+
+    PlaceAutocompleteFragment mPlaceAutocompleteFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +131,21 @@ public class LunchActivity extends BaseActivity
         updateUIWhenCreating();
         getLocationPermission(); // Enchaine sur la recherche des restos à proximité
         Log.d(TAG, "onCreate");
+
+        /*mPlaceAutocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        mPlaceAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                Log.i(TAG, "onPlaceSelected: " +place.getName());
+            }
+
+            @Override
+            public void onError(Status status) {
+                Log.i(TAG, "onError: an error occured "+ status);
+
+            }
+        });*/
+
     }
 
     public void setActionBarTitle(String bibi) {
@@ -148,6 +176,37 @@ public class LunchActivity extends BaseActivity
         // Inflate the toolbar menu
         getMenuInflater().inflate(R.menu.toolbar, menu);
         return true;
+    }
+
+    // Configure the click on each item of the toolbar
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_activity_main_search:
+                try{
+
+                    LatLngBounds bounds = new LatLngBounds(new LatLng(40,2), new LatLng(42,3));
+                    // Create and custom our placeAutocomplete
+                    AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                            .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ESTABLISHMENT)
+                            .build();
+
+                    Intent intent = new PlaceAutocomplete
+                            .IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
+                            .setFilter(typeFilter)
+                            .setBoundsBias(bounds)
+                            .build(this);
+
+                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                } catch (GooglePlayServicesRepairableException e){
+                    Log.e("GooglePlayError", e.getMessage());
+                } catch (GooglePlayServicesNotAvailableException e){
+                    Log.e("GooglePlayError2", e.getMessage());
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

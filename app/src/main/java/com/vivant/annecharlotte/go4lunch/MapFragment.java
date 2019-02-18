@@ -31,6 +31,7 @@ import com.google.android.gms.location.LocationRequest;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -108,6 +109,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private Call<ListDetailResult> call;
     private List<HashMap<String, String>> nearbyPlacesList;
+    PlaceAutocompleteFragment mPlaceAutocompleteFragment;
 
     public MapFragment() {
         // Required empty public constructor
