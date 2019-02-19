@@ -184,8 +184,8 @@ public class LunchActivity extends BaseActivity
         switch (item.getItemId()){
             case R.id.menu_activity_main_search:
                 try{
-
-                    LatLngBounds bounds = new LatLngBounds(new LatLng(40,2), new LatLng(42,3));
+                    // Define the square zone where autocomplet must search
+                    LatLngBounds bounds = new LatLngBounds(new LatLng(currentLocation.getLatitude()-1,currentLocation.getLongitude()-1), new LatLng(currentLocation.getLatitude()+1,currentLocation.getLongitude()+1));
                     // Create and custom our placeAutocomplete
                     AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
                             .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ESTABLISHMENT)
@@ -206,6 +206,23 @@ public class LunchActivity extends BaseActivity
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    // Get back the result of the placeAutocomplete and open the DetailRestaurantActivity for the user's choice
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE){
+            if(resultCode == RESULT_OK){
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                Intent intent = new Intent(this, DetailRestoActivity.class);
+                intent.putExtra("idRestaurant", place.getId());
+                //tout un tas d'autres trucs à passer en intent...
+                startActivity(intent);
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+            } else if (resultCode == RESULT_CANCELED) {
+            }
         }
     }
 
