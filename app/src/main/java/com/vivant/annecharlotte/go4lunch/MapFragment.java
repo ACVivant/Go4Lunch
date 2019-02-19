@@ -48,11 +48,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
+import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantHelper;
 import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
 import com.vivant.annecharlotte.go4lunch.Models.Nearby.NearbyPlacesList;
+import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
 import com.vivant.annecharlotte.go4lunch.Models.User;
 
 import java.util.ArrayList;
@@ -110,6 +112,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Call<ListDetailResult> call;
     private List<HashMap<String, String>> nearbyPlacesList;
     PlaceAutocompleteFragment mPlaceAutocompleteFragment;
+    private ArrayList<String> tabIdResto;
+    private String restoName;
+    private double restoLat;
+    private double restoLng;
+    private String restoId;
 
     public MapFragment() {
         // Required empty public constructor
@@ -137,6 +144,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
+        tabIdResto = new ArrayList<String>();
 
         // AAAARGH c'est toujours nul!!!!
         if (savedInstanceState!=null) {
@@ -145,22 +153,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             lng = getArguments().getDouble(MYLNG);
             Log.d(TAG, "onActivityCreated: latitude " +lat);
             Log.d(TAG, "onActivityCreated: latitude " +lng);
+            tabIdResto = getArguments().getStringArrayList(LISTNEARBY);
         } else {
             myLatitude = 49.2335883;
             myLongitude = 2.8880683;
             Log.d(TAG, "onActivityCreated: else... valeurs lat lng par défaut");
-            Toast.makeText(this.getContext(), "Carte localisée par défaut, car nous n'avons pas l'autorisation de vous géolocaliser", Toast.LENGTH_LONG).show();
+            Toast.makeText(this.getContext(), "Carte localisée par défaut, car nous n'avons pas pu récupérer votre géolocalisation", Toast.LENGTH_LONG).show();
+            tabIdResto.add("4887b38c3213a5d2b791250af13e609ce791ce35");
+            tabIdResto.add("56d8f4f3544f4ec987599c6a8cabc573a47757e4");
+            tabIdResto.add("307aab42f541a5f1d3b326412325096b9ab73cbc");
+            tabIdResto.add("0cbdeb379a8ea6e178eb33883430839548d972e0");
+            tabIdResto.add("0b31f31f9c87dd4df32ccbc169d78f93f8d67ed2");
+            tabIdResto.add("624033b63c297776be6916e99eb5eab409343ab7");
         }
 
         initMap();
 
-
-
-        //ici je dois récupérer le tableau généré par lunchactivity avec les infos sur les restos nearby
-        // En attendant...
-
         //puis
        //displayNearbyPlaces(de la liste qu'on a récupérée);
+        displayNearbyPlaces(tabIdResto);
 
     }
 
@@ -205,7 +216,47 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    private void displayNearbyPlaces(List<GooglePlacesResult> nearbyPlacesList) {
+    private void displayNearbyPlaces(ArrayList<String> tabIdResto) {
+
+        for (int i=0; i<tabIdResto.size(); i++) {
+            MarkerOptions markerOptions = new MarkerOptions();
+
+            //On récupère les infos nécessaires pour le spins sur Firestore
+            RestaurantHelper.getRestaurant(tabIdResto.get(i)).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Log.d(TAG, "onSuccess: documentSnapShot ok ");
+                    Restaurant resto = documentSnapshot.toObject(Restaurant.class);
+                    restoName = resto.getRestoName();
+                    restoLat = resto.getLat();
+                    restoLng = resto.getLng();
+                    restoId = resto.getRestoId();
+                    Log.d(TAG, "onSuccess: restoName " + restoName);
+                    Log.d(TAG, "onSuccess: restoId " +restoId);
+                    // On affiche les pins
+                    LatLng restoLatLng = new LatLng(restoLat, restoLng);
+                    updateLikeColorPin(restoId, restoName, restoLatLng);
+                }
+            });
+
+            /*float results[] = new float[10];
+            Location.distanceBetween(myLatitude, myLongitude, lat, lng,results);
+            distance = results[0];*/
+
+
+
+
+           /* mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    launchRestaurantDetail(marker, googleNearbyPlace);
+                }
+            });*/
+
+        }
+    }
+
+  /*  private void displayNearbyPlaces(List<GooglePlacesResult> nearbyPlacesList) {
 
         for (int i=0; i<nearbyPlacesList.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();
@@ -231,12 +282,48 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             });
 
         }
-    }
+    }*/
 
     //---------------------------------------------------------------------------------------------------
     // Update Pin color from Firebase
     //---------------------------------------------------------------------------------------------------
-    private void updateLikeColorPin(final String idOfPlace, final LatLng restoLatLng, final String nameOfResto, final int index) {
+
+    private void updateLikeColorPin(final String id, final String name,final LatLng latLng) {
+
+        Log.d(TAG, "updateLikeColorPin: passage");
+        Log.d(TAG, "updateLikeColorPin: name " + name);
+        Log.d(TAG, "updateLikeColorPin: localisation " +latLng.latitude + " " + latLng.longitude);
+        Log.d(TAG, "updateLikeColorPin: id " +id);
+                // On ajuste la couleur de l'épingle en fonction des likes de l'utilisateur
+                final MarkerOptions markerOptions = new MarkerOptions();
+
+                UserHelper.getUser(UserHelper.getCurrentUserId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Log.d(TAG, "onSuccess: pin snapshot");
+                        listRestoLike = documentSnapshot.toObject(User.class).getRestoLike();
+                        if(listRestoLike!=null) {
+                            Log.d(TAG, "onSuccess: idresto " +id);
+                            if (listRestoLike.contains(id)) {
+                                markerOptions.position(latLng)
+                                        .title(name)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                                //mMap.addMarker(markerOptions);
+                                myMarker = mMap.addMarker(markerOptions);
+                            } else {
+                                markerOptions.position(latLng)
+                                        .title(name)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                                //mMap.addMarker(markerOptions);
+                                myMarker = mMap.addMarker(markerOptions);
+                            }
+                        }
+                    }
+        });
+    }
+
+
+   /* private void updateLikeColorPin(final String idOfPlace, final LatLng restoLatLng, final String nameOfResto, final int index) {
         // On récupère l'id du resto de Place à partir de celui de Map...
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         call = apiService.getRestaurantDetail(BuildConfig.apikey, idOfPlace, "id");
@@ -290,7 +377,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
     }
-
+*/
     //--------------------------------------------------------------------------------------------------------------------
     // gère le clic sur la bulle d'info
     //--------------------------------------------------------------------------------------------------------------------

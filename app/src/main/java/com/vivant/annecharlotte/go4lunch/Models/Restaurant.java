@@ -17,6 +17,8 @@ public class Restaurant {
     private String phone;
     private String website;
     private double rate;
+    private double lat;
+    private double lng;
     private List<String> usersToday;
     private List<String> nameUsersToday;
     private List<User> detailUsersToday;
@@ -32,7 +34,7 @@ public class Restaurant {
         this.detailUsersToday = new ArrayList<>();
     }
 
-    public Restaurant(String restoId, String restoName, String urlPhoto, String address, String phone, String website, double rate) {
+    public Restaurant(String restoId, String restoName, String urlPhoto, String address, String phone, String website, double rate, double lat, double lng) {
         this.restoId = restoId;
         this.restoName = restoName;
         this.urlPhoto = urlPhoto;
@@ -40,6 +42,8 @@ public class Restaurant {
         this.phone = phone;
         this.website= website;
         this.rate = rate;
+        this.lat = lat;
+        this.lng = lng;
         this.usersToday = new ArrayList<>();
         this.nameUsersToday = new ArrayList<>();
         this.detailUsersToday = new ArrayList<>();
@@ -53,6 +57,8 @@ public class Restaurant {
     public String getPhone() {return phone;}
     public String getWebsite() { return website;}
     public double getRate() { return  rate;}
+    public double getLat() { return lat;}
+    public  double getLng() { return lng;}
     public List<String> getUsersToday() { return  usersToday;}
     public List<String> getNameUsersToday() { return  nameUsersToday;}
     public List<User> getDetailUsersToday() { return  detailUsersToday;}
@@ -65,6 +71,8 @@ public class Restaurant {
     public void setPhone(String phone) { this.phone = phone;}
     public void setWebsite(String website) {this.website = website;}
     public void setRate(double rate) {this.rate = rate;}
+    public void setLat(double lat) {this.lat = lat;}
+    public void setLng(double lng) {this.lng = lng;}
     public void setUsersToday(List<String> usersToday) {this.usersToday = usersToday;}
     public void setNameUsersToday(List<String> nameUsersToday) {this.nameUsersToday = nameUsersToday;}
     public void setDetailUsersToday(List<User> detailUsersToday) {this.detailUsersToday = detailUsersToday;}
