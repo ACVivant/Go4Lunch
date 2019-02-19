@@ -34,6 +34,7 @@ public class ListRestoFragment extends Fragment {
     private RecyclerView mRecyclerView;
 
     private final static String TAG = "ListRestoFragment" ;
+    private static final String LISTNEARBY = "ListOfNearbyRestaurants";
     //private final static String API_KEY = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI" ;
     private String TAG_API = "details";
     private String WEB = "resto_web";
@@ -53,7 +54,7 @@ public class ListRestoFragment extends Fragment {
     public ArrayList<RestaurantDetailResult> listRestos = new ArrayList<>();
     GoogleMap mMap;
     //private String[] nearbyId;
-    private String[] nearbyId = {"ChIJFZNaZzuC6EcRRB3TmC-FHUk","ChIJ7xYvoDuC6EcRck_rg2c7PNQ","ChIJbffq7DaC6EcR5yUvXuFI6CE","ChIJB0WhETuC6EcRPKb-BTrYy7g","ChIJ_6CTOzuC6EcREpF_KeMn6Vg"};
+   private ArrayList<String> tabIdResto;
 
     private Call<ListDetailResult> call;
 
@@ -66,6 +67,71 @@ public class ListRestoFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@androidx.annotation.Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //ici je dois récupérer le tableau généré par lunchactivity avec la liste des id des restos à afficher
+
+/*        tabIdResto = new ArrayList<String>();
+        if (savedInstanceState != null) {
+            Log.d(TAG, "onActivityCreated: Bundle non null");
+            tabIdResto = getArguments().getStringArrayList(LISTNEARBY);
+        } else {
+            Log.d(TAG, "onActivityCreated: else... valeurs lat lng par défaut");
+            Toast.makeText(this.getContext(), "Carte localisée par défaut, car nous n'avons pas pu récupérer votre géolocalisation", Toast.LENGTH_LONG).show();
+            tabIdResto.add("4887b38c3213a5d2b791250af13e609ce791ce35");
+            tabIdResto.add("56d8f4f3544f4ec987599c6a8cabc573a47757e4");
+            tabIdResto.add("307aab42f541a5f1d3b326412325096b9ab73cbc");
+            tabIdResto.add("0cbdeb379a8ea6e178eb33883430839548d972e0");
+            tabIdResto.add("0b31f31f9c87dd4df32ccbc169d78f93f8d67ed2");
+            tabIdResto.add("624033b63c297776be6916e99eb5eab409343ab7");
+        }
+    */}
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        // On récupère l'identifiant de l'utilisateur
+        userId= UserHelper.getCurrentUserId();
+
+        tabIdResto = new ArrayList<String>();
+        if (savedInstanceState != null) {
+            Log.d(TAG, "onActivityCreated: Bundle non null");
+            tabIdResto = getArguments().getStringArrayList(LISTNEARBY);
+        } else {
+            tabIdResto.add("4887b38c3213a5d2b791250af13e609ce791ce35");
+            tabIdResto.add("ffafd36003fb667f48603a5fee35e55739c54845");
+            tabIdResto.add("56d8f4f3544f4ec987599c6a8cabc573a47757e4");
+            tabIdResto.add("307aab42f541a5f1d3b326412325096b9ab73cbc");
+            tabIdResto.add("0cbdeb379a8ea6e178eb33883430839548d972e0");
+            tabIdResto.add("0b31f31f9c87dd4df32ccbc169d78f93f8d67ed2");
+            tabIdResto.add("624033b63c297776be6916e99eb5eab409343ab7");
+        }
+
+        // Inflate the layout for this fragment
+        View view =  inflater.inflate(R.layout.fragment_list_resto, container, false);
+        mRecyclerView = view.findViewById(R.id.fragment_restaurants_recyclerview);
+        ((LunchActivity)getActivity()).setActionBarTitle(getResources().getString(R.string.TB_title));
+        Log.d(TAG, "onCreateView: view");
+
+                    adapter = new ListOfRestaurantsAdapter(tabIdResto, Glide.with(mRecyclerView), tabIdResto.size());
+                    mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    mRecyclerView.setAdapter(adapter);
+
+                    // Launch WebViewActiviy when user clicks on an articles item
+                    adapter.setOnItemClickedListener(new ListOfRestaurantsAdapter.OnItemClickedListener() {
+                        @Override
+                        public void OnItemClicked(int position) {
+                            Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
+                            WVIntent.putExtra(IDRESTO, tabIdResto.get(position));
+                            startActivity(WVIntent);
+                        }
+                    });
+
+        return view;
+    }
+
+  /*  @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -160,17 +226,13 @@ public class ListRestoFragment extends Fragment {
         }
 
         return view;
-    }
+    }*/
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    @Override
-    public void onActivityCreated(@androidx.annotation.Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        //ici je dois récupérer le tableau généré par lunchactivity avec les infos sur les restos nearby
-    }
+
 
 }

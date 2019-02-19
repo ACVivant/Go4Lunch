@@ -7,9 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.RequestManager;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantHelper;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
+import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
 import com.vivant.annecharlotte.go4lunch.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,9 +25,11 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaurantsViewholder> {
 
     private List<RestaurantDetailResult> restoList;
+    private ArrayList<String> restoIdList;
     private RequestManager glide;
     private OnItemClickedListener mListener;
     private int length;
+    private String id;
 
     private final static String TAG = "ADAPTER";
 
@@ -42,6 +49,14 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
         Log.d(TAG, "ListOfRestaurantsAdapter: constructor");
     }
 
+    // Constructor
+    public ListOfRestaurantsAdapter(ArrayList<String> restoIdList, RequestManager glide, int length) {
+        this.restoIdList = restoIdList;
+        this.glide = glide;
+        this.length =  length;
+        Log.d(TAG, "ListOfRestaurantsAdapter: constructor");
+    }
+
     @Override
     public ListOfRestaurantsViewholder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Creates view holder and inflates its xml layout
@@ -55,11 +70,17 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
     // update view holder
     @Override
     public void onBindViewHolder(ListOfRestaurantsViewholder viewHolder, int position) {
-        viewHolder.updateWithDetailsRestaurants(this.restoList.get(position), this.glide);
-        Log.d(TAG, "onBindViewHolder");
+        viewHolder.updateWithDetailsRestaurants(this.restoIdList.get(position), this.glide);
     }
 
-    // return the total count of items in the list
+/*    // update view holder
+    @Override
+    public void onBindViewHolder(ListOfRestaurantsViewholder viewHolder, int position) {
+        viewHolder.updateWithDetailsRestaurants(this.restoList.get(position), this.glide);
+        Log.d(TAG, "onBindViewHolder");
+    }*/
+
+        // return the total count of items in the list
     @Override
     public int getItemCount() {
         Log.d(TAG, "getItemCount: "+ length);

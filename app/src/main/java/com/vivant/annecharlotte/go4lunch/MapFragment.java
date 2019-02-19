@@ -160,6 +160,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Log.d(TAG, "onActivityCreated: else... valeurs lat lng par défaut");
             Toast.makeText(this.getContext(), "Carte localisée par défaut, car nous n'avons pas pu récupérer votre géolocalisation", Toast.LENGTH_LONG).show();
             tabIdResto.add("4887b38c3213a5d2b791250af13e609ce791ce35");
+            tabIdResto.add("ffafd36003fb667f48603a5fee35e55739c54845");
             tabIdResto.add("56d8f4f3544f4ec987599c6a8cabc573a47757e4");
             tabIdResto.add("307aab42f541a5f1d3b326412325096b9ab73cbc");
             tabIdResto.add("0cbdeb379a8ea6e178eb33883430839548d972e0");
