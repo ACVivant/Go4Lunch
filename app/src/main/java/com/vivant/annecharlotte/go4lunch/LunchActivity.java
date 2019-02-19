@@ -112,6 +112,9 @@ public class LunchActivity extends BaseActivity
 
     String hoursMonday, hoursTuesday, hoursWednesday, hoursThursday, hoursFriday, hoursSaturday, hoursSunday;
 
+    private int radius;
+    String type;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -298,8 +301,8 @@ public class LunchActivity extends BaseActivity
         String keyword = "";
         String key = BuildConfig.apikey;
         //String location = "49.23359, 2.88807";
-        int radius=500;
-        String type = "restaurant";
+        radius=500;
+        type = "restaurant";
 
         String lat = String.valueOf(currentLocation.getLatitude());
         String lng = String.valueOf(currentLocation.getLongitude());
