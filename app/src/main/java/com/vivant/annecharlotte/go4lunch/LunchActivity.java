@@ -1,6 +1,7 @@
 package com.vivant.annecharlotte.go4lunch;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -43,6 +44,7 @@ import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
 import com.vivant.annecharlotte.go4lunch.Models.Nearby.NearbyPlacesList;
 import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
+import com.vivant.annecharlotte.go4lunch.Models.User;
 import com.vivant.annecharlotte.go4lunch.authentification.BaseActivity;
 import com.vivant.annecharlotte.go4lunch.authentification.ProfileActivity;
 
@@ -88,6 +90,7 @@ public class LunchActivity extends BaseActivity
     private static final String LISTNEARBY = "ListOfNearbyRestaurants";
     private static final String MYLAT = "UserCurrentLatitude";
     private static final String MYLNG = "UserCurrentLongitude";
+    private String IDRESTO = "resto_id";
 
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -101,6 +104,7 @@ public class LunchActivity extends BaseActivity
     private Call<NearbyPlacesList> call;
     private List<GooglePlacesResult> results;
     private RestaurantDetailResult mResto;
+    Context mContext;
 
     private boolean mLocationPermissionGranted = false;
 
@@ -130,6 +134,8 @@ public class LunchActivity extends BaseActivity
         fm.beginTransaction().add(R.id.lunch_container, fragment3, "3").hide(fragment3).commit();
         fm.beginTransaction().add(R.id.lunch_container, fragment2, "2").hide(fragment2).commit();
         fm.beginTransaction().add(R.id.lunch_container, fragment1, "1").commit();
+
+        mContext = this;
 
         layoutLinks();
         updateUIWhenCreating();
@@ -223,7 +229,7 @@ public class LunchActivity extends BaseActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_mylunch) {
-            // Handle the camera action
+            startDetailActivity();
         } else if (id == R.id.nav_settings) {
 
 
@@ -345,6 +351,28 @@ public class LunchActivity extends BaseActivity
                 Log.d(TAG, "onFailure: " +t.getMessage());
             }
         });
+    }
+
+    private void startDetailActivity() {
+       String userId=  UserHelper.getCurrentUserId();
+       UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+           @Override
+           public void onSuccess(DocumentSnapshot documentSnapshot) {
+               User myUser = documentSnapshot.toObject(User.class);
+               String lunch = myUser.getRestoToday();
+               if (lunch.equals("")) {
+                   Toast.makeText(mContext, R.string.no_lunch, Toast.LENGTH_LONG).show();
+               } else {
+                   Intent WVIntent = new Intent(mContext, DetailRestoActivity.class);
+                   //Id
+                   WVIntent.putExtra(IDRESTO, lunch);
+                   Log.d(TAG, "onResponse: id " + lunch);
+                   startActivity(WVIntent);
+
+               }
+           }
+       });
+
     }
 
     private void launchRestaurantDetail(GooglePlacesResult googlePlace) {

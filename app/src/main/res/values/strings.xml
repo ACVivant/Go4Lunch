@@ -82,4 +82,6 @@
     <!--LISTRESTO -->
     <string name="no_openinghours">"Les horaires ne sont pas disponibles."</string>
 
+    <!-- LUNCH ACTIVITY -->
+    <string name="no_lunch">"Vous n'avez pas encore choisi de restaurant!"</string>
 </resources>

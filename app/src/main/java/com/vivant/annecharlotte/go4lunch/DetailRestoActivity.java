@@ -266,6 +266,7 @@ public class DetailRestoActivity extends AppCompatActivity {
                                                                 User myRestoToday = documentSnapshot.toObject(User.class);
                                                                 String restoToday = myRestoToday.getRestoToday();
                                                                 String restoTodayName = myRestoToday.getRestoTodayName();
+                                                                Log.d(TAG, "onSuccess: " + restoTodayName);
                                                                 if (restoToday != null) {
                                                                     if (restoToday.equals(idResto)) {
                                                                         restoToday = "";
@@ -276,6 +277,7 @@ public class DetailRestoActivity extends AppCompatActivity {
 
                                                                     } else {
                                                                         restoToday = idResto;
+                                                                        restoTodayName = restoName;
                                                                         myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
                                                                         UserHelper.updateTodayResto(restoToday,userId);
                                                                         UserHelper.updateTodayRestoName(restoTodayName,userId);
