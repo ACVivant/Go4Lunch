@@ -2,12 +2,15 @@ package com.vivant.annecharlotte.go4lunch;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -21,6 +24,8 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        final Context context = this;
 
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         String radiusString = sharedPreferences.getString(RADIUS_PREFS, "500");
@@ -69,6 +74,15 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
         spinnerType.setOnItemSelectedListener(this);
         spinnerType.setTag(TYPE_PREFS);
+
+        Button search = findViewById(R.id.settings_search_btn);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, LunchActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

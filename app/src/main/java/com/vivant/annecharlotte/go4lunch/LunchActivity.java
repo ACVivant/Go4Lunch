@@ -315,10 +315,6 @@ public class LunchActivity extends BaseActivity
         Log.d(TAG, "searchNearbyRestaurants: entrée");
         String keyword = "";
         String key = BuildConfig.apikey;
-        //String location = "49.23359, 2.88807";
-        radius=500;
-        type = "restaurant";
-
         String lat = String.valueOf(currentLocation.getLatitude());
         String lng = String.valueOf(currentLocation.getLongitude());
 
@@ -326,6 +322,8 @@ public class LunchActivity extends BaseActivity
         Log.d(TAG, "searchNearbyRestaurants: lat, lng " + location);
 
         ApiInterface googleMapService = ApiClient.getClient().create(ApiInterface.class);
+        Log.d(TAG, "searchNearbyRestaurants: radius "+ radius);
+        Log.d(TAG, "searchNearbyRestaurants: type " +type);
         call = googleMapService.getNearBy(location, radius, type, keyword, key);
         call.enqueue(new Callback<NearbyPlacesList>() {
             @Override
@@ -333,10 +331,10 @@ public class LunchActivity extends BaseActivity
                 if (response.isSuccessful()) {
                     results = response.body().getResults();
 
-                    Log.d(TAG, "onResponse: " + results.get(0).getName());
-                    Log.d(TAG, "onResponse: " + results.get(0).getId());
-                    Log.d(TAG, "onResponse: " + results.get(0).getPlaceId());
-                    Log.d(TAG, "onResponse: " + results.get(0).getGeometry().getLocation().getLat());
+                    Log.d(TAG, "searchNearbyRestaurants onResponse: " + results.get(1).getName());
+                    Log.d(TAG, "searchNearbyRestaurants onResponse: " + results.get(1).getId());
+                    Log.d(TAG, "searchNearbyRestaurants onResponse: " + results.get(1).getPlaceId());
+                    Log.d(TAG, "searchNearbyRestaurants onResponse: " + results.get(1).getGeometry().getLocation().getLat());
 
                     ArrayList<String> tabId = new ArrayList<>();
                     // j'enchaine sur un appel à place details pour enregistrer les infos des restos sur Firestore et pouvoir les récupérer depuis toute l'appli sans pb

@@ -101,4 +101,6 @@
     </string-array>
 
     <string name="notifications_onoff">"Souhaitez-vous recevoir une notification à midi vous indiquant les heureux collègues qui se joindront à vous??</string>
+
+    <string name="newsearch">"Relancer la recherche</string>
 </resources>
