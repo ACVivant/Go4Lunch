@@ -21,6 +21,7 @@ import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -99,6 +100,7 @@ public class LunchActivity extends BaseActivity
 
     private Call<NearbyPlacesList> call;
     private List<GooglePlacesResult> results;
+    private RestaurantDetailResult mResto;
 
     private boolean mLocationPermissionGranted = false;
 
@@ -131,20 +133,6 @@ public class LunchActivity extends BaseActivity
         updateUIWhenCreating();
         getLocationPermission(); // Enchaine sur la recherche des restos à proximité
         Log.d(TAG, "onCreate");
-
-        /*mPlaceAutocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-        mPlaceAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                Log.i(TAG, "onPlaceSelected: " +place.getName());
-            }
-
-            @Override
-            public void onError(Status status) {
-                Log.i(TAG, "onError: an error occured "+ status);
-
-            }
-        });*/
 
     }
 
@@ -309,6 +297,7 @@ public class LunchActivity extends BaseActivity
         String lng = String.valueOf(currentLocation.getLongitude());
 
         String location = lat+","+lng;
+        Log.d(TAG, "searchNearbyRestaurants: lat, lng " + location);
 
         ApiInterface googleMapService = ApiClient.getClient().create(ApiInterface.class);
         call = googleMapService.getNearBy(location, radius, type, keyword, key);
@@ -320,11 +309,16 @@ public class LunchActivity extends BaseActivity
 
                     Log.d(TAG, "onResponse: " + results.get(0).getName());
                     Log.d(TAG, "onResponse: " + results.get(0).getId());
+                    Log.d(TAG, "onResponse: " + results.get(0).getPlaceId());
                     Log.d(TAG, "onResponse: " + results.get(0).getGeometry().getLocation().getLat());
 
+
+                    // j'enchaine sur un appel à place details pour enregistrer les infos des restos sur Firestore et pouvoir les récupérer depuis toute l'appli sans pb
                     for (int i=0; i<results.size(); i++) {
-                        if(!RestaurantHelper.getRestaurant(results.get(i).getId()).isSuccessful()) {   // Ce test ne fonctionne pas, comment créer le restaurant seulement s'il n'existe pa???
-                            RestaurantHelper.createRestaurant(results.get(i).getId(), results.get(i).getName());
+                        // On regarde si ce resto a déjà une fiche sur Firestore et on ne fait la requête et ne crée la fiche que le cas échéant
+                        // Mais ce test n'est pas la bon, il est toujours true... donc comment faire???
+                        if(!RestaurantHelper.getRestaurant(results.get(i).getId()).isSuccessful()) {
+                            launchRestaurantDetail(results.get(i));
                         }
                     }
 
@@ -333,9 +327,6 @@ public class LunchActivity extends BaseActivity
                     bundle.put????(LISTNEARBY, results);
                     fragment1.setArguments(bundle);
                     fragment2.setArguments(bundle);*/
-
-
-
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
@@ -349,7 +340,59 @@ public class LunchActivity extends BaseActivity
                 Log.d(TAG, "onFailure: " +t.getMessage());
             }
         });
+    }
 
+    private void launchRestaurantDetail(GooglePlacesResult googlePlace) {
+        Log.d(TAG, "launchRestaurantDetail: place_id " + googlePlace.getPlaceId());
+        Call<ListDetailResult> call2;
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        call2 = apiService.getRestaurantDetail(BuildConfig.apikey, googlePlace.getPlaceId(), "name,rating,photo,url,formatted_phone_number,website,address_component,id");
+
+        call2.enqueue(new Callback<ListDetailResult>() {
+            @Override
+            public void onResponse(Call<ListDetailResult> call2, Response<ListDetailResult> response) {
+                if (!response.isSuccessful()) {
+                    Log.d(TAG, "onResponse: erreur");
+                    return;
+                }
+
+                // Enregistrement des infos sur Firestore
+                ListDetailResult posts = response.body();
+                mResto = posts.getResult();
+                    // préparation des données
+                String id = mResto.getId();
+                String name = mResto.getName();
+                String address = mResto.getAddressComponents().get(0).getShortName() + ", " + mResto.getAddressComponents().get(1).getShortName();
+                String phone = mResto.getFormattedPhoneNumber();
+
+                double rate;
+                if(mResto.getRating()!=null) {
+                    rate = mResto.getRating();
+                    Log.d(TAG, "onResponse: rate "+rate);
+                } else {
+                    rate =0.0;}
+
+                String website;
+                if(mResto.getWebsite()!=null) {
+                    website = mResto.getWebsite();
+                } else {
+                    website = "no-website";}
+
+                String photo;
+                if(mResto.getPhotos() != null && !mResto.getPhotos().isEmpty()){
+                    photo =  mResto.getPhotos().get(0).getPhotoReference();
+                } else {
+                   photo = "no-photo";
+                }
+                    // Transfert des données
+                RestaurantHelper.createDetailRestaurant(id, name , photo, address, phone, website, rate );
+            }
+
+            @Override
+            public void onFailure(Call<ListDetailResult> call2, Throwable t) {
+                Log.e(TAG, t.toString());
+            }
+        });
     }
 
     //----------------------------------------------------------------------------------------------------------------------------

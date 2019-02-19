@@ -28,6 +28,12 @@ public class RestaurantHelper {
         return RestaurantHelper.getRestaurantsCollection().document(restoId).set(restaurantToCreate);
     }
 
+    // --- CREATE ---
+    public static Task<Void> createDetailRestaurant(String restoId, String restoName, String urlPhoto, String address, String phone, String website, double rate) {
+        Restaurant restaurantToCreate = new Restaurant(restoId, restoName, urlPhoto, address, phone, website, rate);
+        return RestaurantHelper.getRestaurantsCollection().document(restoId).set(restaurantToCreate);
+    }
+
     // --- GET ---
     public static Task<DocumentSnapshot> getRestaurant(String restoId){
         return RestaurantHelper.getRestaurantsCollection().document(restoId).get();
