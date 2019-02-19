@@ -19,6 +19,9 @@ import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
 import com.vivant.annecharlotte.go4lunch.R;
 import com.vivant.annecharlotte.go4lunch.View.ListOfRestaurantsAdapter;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -68,7 +71,7 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
         });
     }
 
-    public void updateWithDetailsRestaurants(String restoId, final RequestManager glide) {
+    public void updateWithDetailsRestaurants(final String restoId, final RequestManager glide) {
 
         RestaurantHelper.getRestaurant(restoId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -99,16 +102,43 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
             distance = results[0];
             String dist =  Math.round(distance)+"m";
             proximityTextView.setText(dist);
+
+            //Horaires
+                String hours;
+                GregorianCalendar calendar =new GregorianCalendar();
+                calendar.setTime(new Date());
+                int today =calendar.get(calendar.DAY_OF_WEEK);
+
+                switch (today) {
+                    case GregorianCalendar.MONDAY:
+                        hours = resto.getHoursMonday();
+                        break;
+                    case GregorianCalendar.TUESDAY:
+                        hours = resto.getHoursTuedsay();
+                        break;
+                    case GregorianCalendar.WEDNESDAY:
+                        hours = resto.getHoursWednesday();
+                        break;
+                    case GregorianCalendar.THURSDAY:
+                        hours = resto.getHoursThursday();
+                        break;
+                    case GregorianCalendar.FRIDAY:
+                        hours = resto.getHoursFriday();
+                        break;
+                    case GregorianCalendar.SATURDAY:
+                        hours = resto.getHoursSaturday();
+                        break;
+                    case GregorianCalendar.SUNDAY:
+                        hours = resto.getHoursSunday();
+                        break;
+
+                    default:
+                        hours = "";
+                        break;
+                }
+                openTextView.setText(hours);
             }
         });
-
-       /* if(restaurantDetail.getOpeninghours().get(0).getOpenNow()) {
-        this.openTextView.setText("Ouvert en ce moment");
-        } else {
-            this.openTextView.setText("Fermé en ce moment");
-        }*/
-
-
 
     }
 

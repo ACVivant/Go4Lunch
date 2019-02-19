@@ -74,6 +74,10 @@ public class RestaurantDetailResult {
 
     public  List<OpeningHour> getOpeninghours() {return  openingHours;}
 
+    public void setOpeningHours(List<OpeningHour> openingHours) {
+        this.openingHours = openingHours;
+    }
+
     public List<AddressComponent> getAddressComponents() {
         return addressComponents;
     }

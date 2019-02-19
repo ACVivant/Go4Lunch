@@ -22,6 +22,7 @@ public class Restaurant {
     private List<String> usersToday;
     private List<String> nameUsersToday;
     private List<User> detailUsersToday;
+    private String hoursMonday, hoursTuedsay, hoursWednesday, hoursThursday, hoursFriday, hoursSaturday, hoursSunday;
 
 
     public Restaurant() { }
@@ -34,7 +35,7 @@ public class Restaurant {
         this.detailUsersToday = new ArrayList<>();
     }
 
-    public Restaurant(String restoId, String restoName, String urlPhoto, String address, String phone, String website, double rate, double lat, double lng) {
+    public Restaurant(String restoId, String restoName, String urlPhoto, String address, String phone, String website, double rate, double lat, double lng,String hoursMonday, String hoursTuesday, String hoursWednesday, String hoursThursday, String hoursFriday, String hoursSaturday, String  hoursSunday) {
         this.restoId = restoId;
         this.restoName = restoName;
         this.urlPhoto = urlPhoto;
@@ -44,6 +45,13 @@ public class Restaurant {
         this.rate = rate;
         this.lat = lat;
         this.lng = lng;
+        this.hoursMonday = hoursMonday;
+        this.hoursTuedsay = hoursTuesday;
+        this.hoursWednesday = hoursWednesday;
+        this.hoursThursday = hoursThursday;
+        this.hoursFriday = hoursFriday;
+        this.hoursSaturday = hoursSaturday;
+        this.hoursSunday = hoursSunday;
         this.usersToday = new ArrayList<>();
         this.nameUsersToday = new ArrayList<>();
         this.detailUsersToday = new ArrayList<>();
@@ -59,6 +67,13 @@ public class Restaurant {
     public double getRate() { return  rate;}
     public double getLat() { return lat;}
     public  double getLng() { return lng;}
+    public String getHoursMonday() {return hoursMonday;}
+    public String getHoursTuedsay() {return hoursTuedsay;}
+    public String getHoursWednesday() {return hoursWednesday;}
+    public String getHoursThursday() {return hoursThursday;}
+    public String getHoursFriday() {return hoursFriday;}
+    public String getHoursSaturday() {return hoursSaturday;}
+    public String getHoursSunday() {return hoursSunday;}
     public List<String> getUsersToday() { return  usersToday;}
     public List<String> getNameUsersToday() { return  nameUsersToday;}
     public List<User> getDetailUsersToday() { return  detailUsersToday;}
@@ -73,6 +88,13 @@ public class Restaurant {
     public void setRate(double rate) {this.rate = rate;}
     public void setLat(double lat) {this.lat = lat;}
     public void setLng(double lng) {this.lng = lng;}
+    public void setHoursMonday(String hoursMonday) {this.hoursMonday = hoursMonday;}
+    public void setHoursTuedsay(String hoursTuedsay) {this.hoursTuedsay = hoursTuedsay;}
+    public void setHoursWednesday(String hoursWednesday) {this.hoursWednesday = hoursWednesday;}
+    public void setHoursThursday(String hoursThursday) {this.hoursThursday = hoursThursday;}
+    public void setHoursFriday(String hoursFriday) {this.hoursFriday = hoursFriday;}
+    public void setHoursSaturday(String hoursSaturday) {this.hoursSaturday = hoursSaturday;}
+    public void setHoursSunday(String hoursSunday) {this.hoursSunday = hoursSunday;}
     public void setUsersToday(List<String> usersToday) {this.usersToday = usersToday;}
     public void setNameUsersToday(List<String> nameUsersToday) {this.nameUsersToday = nameUsersToday;}
     public void setDetailUsersToday(List<User> detailUsersToday) {this.detailUsersToday = detailUsersToday;}

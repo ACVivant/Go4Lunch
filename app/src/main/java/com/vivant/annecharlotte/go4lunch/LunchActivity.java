@@ -106,6 +106,8 @@ public class LunchActivity extends BaseActivity
 
     PlaceAutocompleteFragment mPlaceAutocompleteFragment;
 
+    String hoursMonday, hoursTuesday, hoursWednesday, hoursThursday, hoursFriday, hoursSaturday, hoursSunday;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -349,7 +351,7 @@ public class LunchActivity extends BaseActivity
         Log.d(TAG, "launchRestaurantDetail: place_id " + googlePlace.getPlaceId());
         Call<ListDetailResult> call2;
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        call2 = apiService.getRestaurantDetail(BuildConfig.apikey, googlePlace.getPlaceId(), "name,rating,photo,url,formatted_phone_number,website,address_component,id,geometry");
+        call2 = apiService.getRestaurantDetail(BuildConfig.apikey, googlePlace.getPlaceId(), "name,rating,photo,url,formatted_phone_number,website,address_component,id,geometry,opening_hours");
 
         call2.enqueue(new Callback<ListDetailResult>() {
             @Override
@@ -389,8 +391,24 @@ public class LunchActivity extends BaseActivity
                 } else {
                    photo = "no-photo";
                 }
+
+                // C'est toujours vide... pourquoi????
+                if(mResto.getOpeninghours()!= null&& !mResto.getOpeninghours().isEmpty()) {
+                    hoursMonday = mResto.getOpeninghours().get(0).getWeekdayText().get(0).toString();
+                    hoursTuesday = mResto.getOpeninghours().get(0).getWeekdayText().get(1).toString();
+                    Log.d(TAG, "onResponse: horaires mardi " + hoursTuesday);
+                    hoursWednesday = mResto.getOpeninghours().get(0).getWeekdayText().get(2).toString();
+                    hoursThursday = mResto.getOpeninghours().get(0).getWeekdayText().get(3).toString();
+                    hoursFriday = mResto.getOpeninghours().get(0).getWeekdayText().get(4).toString();
+                    hoursSaturday = mResto.getOpeninghours().get(0).getWeekdayText().get(5).toString();
+                    hoursSunday = mResto.getOpeninghours().get(0).getWeekdayText().get(6).toString();
+                } else {
+                    hoursMonday = hoursTuesday = hoursWednesday = hoursThursday = hoursFriday = hoursSaturday = hoursSunday = getResources().getString(R.string.no_openinghours);
+                    Log.d(TAG, "onResponse: pas d'horaires");
+                }
+
                     // Transfert des données
-                RestaurantHelper.createDetailRestaurant(id, name , photo, address, phone, website, rate, lat, lng );
+                RestaurantHelper.createDetailRestaurant(id, name , photo, address, phone, website, rate, lat, lng, hoursMonday, hoursTuesday, hoursWednesday, hoursThursday, hoursFriday, hoursSaturday, hoursSunday );
             }
 
             @Override

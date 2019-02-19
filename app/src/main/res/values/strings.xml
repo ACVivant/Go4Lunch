@@ -78,5 +78,8 @@
 
     <!--DETAIL -->
     <string name="isjoining">" vient."</string>
+    
+    <!--LISTRESTO -->
+    <string name="no_openinghours">"Les horaires ne sont pas disponibles."</string>
 
 </resources>

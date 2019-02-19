@@ -29,8 +29,8 @@ public class RestaurantHelper {
     }
 
     // --- CREATE ---
-    public static Task<Void> createDetailRestaurant(String restoId, String restoName, String urlPhoto, String address, String phone, String website, double rate, double lat, double lng) {
-        Restaurant restaurantToCreate = new Restaurant(restoId, restoName, urlPhoto, address, phone, website, rate, lat, lng);
+    public static Task<Void> createDetailRestaurant(String restoId, String restoName, String urlPhoto, String address, String phone, String website, double rate, double lat, double lng, String hoursMonday, String hoursTuesday, String hoursWednesday, String hoursThursday, String hoursFriday, String hoursSaturday, String  hoursSunday) {
+        Restaurant restaurantToCreate = new Restaurant(restoId, restoName, urlPhoto, address, phone, website, rate, lat, lng, hoursMonday, hoursTuesday, hoursWednesday, hoursThursday, hoursFriday, hoursSaturday, hoursSunday);
         return RestaurantHelper.getRestaurantsCollection().document(restoId).set(restaurantToCreate);
     }
 

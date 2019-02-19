@@ -114,12 +114,12 @@ public class ListRestoFragment extends Fragment {
             myLng = 2.8880683;
             myLatLng = new LatLng(myLat, myLng);
             tabIdResto.add("4887b38c3213a5d2b791250af13e609ce791ce35");
+            tabIdResto.add("624033b63c297776be6916e99eb5eab409343ab7");
             tabIdResto.add("ffafd36003fb667f48603a5fee35e55739c54845");
             tabIdResto.add("56d8f4f3544f4ec987599c6a8cabc573a47757e4");
             tabIdResto.add("307aab42f541a5f1d3b326412325096b9ab73cbc");
             tabIdResto.add("0cbdeb379a8ea6e178eb33883430839548d972e0");
             tabIdResto.add("0b31f31f9c87dd4df32ccbc169d78f93f8d67ed2");
-            tabIdResto.add("624033b63c297776be6916e99eb5eab409343ab7");
         }
 
         // Inflate the layout for this fragment
