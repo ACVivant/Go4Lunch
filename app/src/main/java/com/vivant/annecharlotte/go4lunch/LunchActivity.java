@@ -233,8 +233,9 @@ public class LunchActivity extends BaseActivity
 
         if (id == R.id.nav_mylunch) {
             startDetailActivity();
-        } else if (id == R.id.nav_settings) {
 
+        } else if (id == R.id.nav_settings) {
+            startSettingsActivity();
 
         } else if (id == R.id.nav_logout) {
             Intent intent = new Intent(this, ProfileActivity.class);
@@ -367,7 +368,6 @@ public class LunchActivity extends BaseActivity
                    Toast.makeText(mContext, R.string.no_lunch, Toast.LENGTH_LONG).show();
                } else {
                    Intent WVIntent = new Intent(mContext, DetailRestoActivity.class);
-                   //Id
                    WVIntent.putExtra(IDRESTO, lunch);
                    Log.d(TAG, "onResponse: id " + lunch);
                    startActivity(WVIntent);
@@ -375,7 +375,11 @@ public class LunchActivity extends BaseActivity
                }
            }
        });
+    }
 
+    private void startSettingsActivity() {
+        Intent intent = new Intent(mContext, SettingsActivity.class);
+        startActivity(intent);
     }
 
     private void launchRestaurantDetail(GooglePlacesResult googlePlace) {

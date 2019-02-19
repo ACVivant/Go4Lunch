@@ -78,10 +78,27 @@
 
     <!--DETAIL -->
     <string name="isjoining">" vient."</string>
-    
+
     <!--LISTRESTO -->
     <string name="no_openinghours">"Les horaires ne sont pas disponibles."</string>
 
     <!-- LUNCH ACTIVITY -->
     <string name="no_lunch">"Vous n'avez pas encore choisi de restaurant!"</string>
+
+    <!-- SETTINGS ACTIVITY -->
+    <string name="radius_text">"Sur quelle distance voulez-vous faire la recherche? (en mètres)</string>
+    <string-array name="radius_array">
+        <item>200</item>
+        <item>500</item>
+        <item>1000</item>
+    </string-array>
+
+    <string name="type_text">"Quel type d'établisseents recherchez-vous?</string>
+    <string-array name="type_array">
+        <item>restaurant</item>
+        <item>bar</item>
+        <item>cafe</item>
+    </string-array>
+
+    <string name="notifications_onoff">"Souhaitez-vous recevoir une notification à midi vous indiquant les heureux collègues qui se joindront à vous??</string>
 </resources>
