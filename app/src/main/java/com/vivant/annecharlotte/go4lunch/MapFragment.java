@@ -317,6 +317,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         myMarker.setTag(id);
                     }
                 }
+
+                String restoToday = documentSnapshot.toObject(User.class).getRestoToday();
+                if (restoToday.equals(id)) {
+                    markerOptions.position(latLng)
+                            .title(name)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                    //mMap.addMarker(markerOptions);
+                    myMarker = mMap.addMarker(markerOptions);
+                    myMarker.setTag(id);
+                }
             }
         });
     }
