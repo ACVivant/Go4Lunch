@@ -263,17 +263,22 @@ public class DetailRestoActivity extends AppCompatActivity {
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                             @Override
                                                             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                                String restoToday = documentSnapshot.toObject(User.class).getRestoToday();
+                                                                User myRestoToday = documentSnapshot.toObject(User.class);
+                                                                String restoToday = myRestoToday.getRestoToday();
+                                                                String restoTodayName = myRestoToday.getRestoTodayName();
                                                                 if (restoToday != null) {
                                                                     if (restoToday.equals(idResto)) {
                                                                         restoToday = "";
+                                                                        restoTodayName ="";
                                                                         myRestoTodayBtn.setImageResource(R.drawable.ic_validation_no);
                                                                         UserHelper.updateTodayResto(restoToday,userId);
+                                                                        UserHelper.updateTodayRestoName(restoTodayName,userId);
 
                                                                     } else {
                                                                         restoToday = idResto;
                                                                         myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
                                                                         UserHelper.updateTodayResto(restoToday,userId);
+                                                                        UserHelper.updateTodayRestoName(restoTodayName,userId);
                                                                     }
                                                                 }
                                                                 UserHelper.updateTodayResto(restoToday, userId);
