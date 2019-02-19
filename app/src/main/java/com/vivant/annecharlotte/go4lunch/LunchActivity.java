@@ -3,6 +3,7 @@ package com.vivant.annecharlotte.go4lunch;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -92,6 +93,10 @@ public class LunchActivity extends BaseActivity
     private static final String MYLNG = "UserCurrentLongitude";
     private String IDRESTO = "resto_id";
 
+    public static final String SHARED_PREFS = "SharedPrefsPerso";
+    public static final String RADIUS_PREFS = "radiusForSearch";
+    public static final String TYPE_PREFS = "typeOfSearch";
+
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -140,6 +145,7 @@ public class LunchActivity extends BaseActivity
 
         mContext = this;
 
+        loadPrefs();
         layoutLinks();
         updateUIWhenCreating();
         getLocationPermission(); // Enchaine sur la recherche des restos à proximité
@@ -149,6 +155,14 @@ public class LunchActivity extends BaseActivity
 
     public void setActionBarTitle(String bibi) {
         getSupportActionBar().setTitle(bibi);
+    }
+
+    private void loadPrefs() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+
+        String radiusString = sharedPreferences.getString(RADIUS_PREFS, "500");
+        radius  = Integer.parseInt(radiusString);
+        type = sharedPreferences.getString(TYPE_PREFS, "restaurant");
     }
 
     protected void layoutLinks() {
