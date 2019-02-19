@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
 import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
@@ -46,6 +47,8 @@ public class ListRestoFragment extends Fragment {
     private String PHOTO = "resto_photo";
     private String IDRESTO = "resto_id";
     private String DISTANCE = "resto_distance";
+    private static final String MYLAT = "UserCurrentLatitude";
+    private static final String MYLNG = "UserCurrentLongitude";
 
     private boolean myLike;
 
@@ -60,6 +63,10 @@ public class ListRestoFragment extends Fragment {
 
     private static final String USER_ID = "userId";
     private String userId;
+
+    private double myLat;
+    private double myLng;
+    private LatLng myLatLng;
 
 
     public ListRestoFragment() {
@@ -96,9 +103,16 @@ public class ListRestoFragment extends Fragment {
 
         tabIdResto = new ArrayList<String>();
         if (savedInstanceState != null) {
+            myLat = getArguments().getDouble(MYLAT);
+            myLng = getArguments().getDouble(MYLNG);
+            myLatLng = new LatLng(myLat, myLng);
             Log.d(TAG, "onActivityCreated: Bundle non null");
             tabIdResto = getArguments().getStringArrayList(LISTNEARBY);
         } else {
+            // En attendant de les réucpérer proprement
+            myLat = 49.2335883;
+            myLng = 2.8880683;
+            myLatLng = new LatLng(myLat, myLng);
             tabIdResto.add("4887b38c3213a5d2b791250af13e609ce791ce35");
             tabIdResto.add("ffafd36003fb667f48603a5fee35e55739c54845");
             tabIdResto.add("56d8f4f3544f4ec987599c6a8cabc573a47757e4");
@@ -114,7 +128,7 @@ public class ListRestoFragment extends Fragment {
         ((LunchActivity)getActivity()).setActionBarTitle(getResources().getString(R.string.TB_title));
         Log.d(TAG, "onCreateView: view");
 
-                    adapter = new ListOfRestaurantsAdapter(tabIdResto, Glide.with(mRecyclerView), tabIdResto.size());
+                    adapter = new ListOfRestaurantsAdapter(tabIdResto, Glide.with(mRecyclerView), tabIdResto.size(), myLatLng );
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     mRecyclerView.setAdapter(adapter);
 

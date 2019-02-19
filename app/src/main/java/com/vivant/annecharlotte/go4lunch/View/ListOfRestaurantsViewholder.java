@@ -1,12 +1,14 @@
 package com.vivant.annecharlotte.go4lunch.View;
 
 import android.content.Context;
+import android.location.Location;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.vivant.annecharlotte.go4lunch.BuildConfig;
@@ -27,16 +29,19 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
     private TextView nameTextView, addressTextView, openTextView, proximityTextView, loversTextView;
     private ImageView star1, star2, star3, photo;
     private Context mContext;
+    private float distance;
+    private LatLng myLatLng;
 
     private final static String TAG = "VIEWHOLDER";
 
     //private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
 
 
-    public ListOfRestaurantsViewholder(View itemView, final ListOfRestaurantsAdapter.OnItemClickedListener listener, Context context) {
+    public ListOfRestaurantsViewholder(View itemView, final ListOfRestaurantsAdapter.OnItemClickedListener listener, Context context, LatLng latLng) {
         super(itemView);
 
         mContext = context;
+        myLatLng = latLng;
 
         Log.d(TAG, "ListOfRestaurantsViewholder: constructeur");
         nameTextView = (TextView) itemView.findViewById(R.id.restaurant_name);
@@ -84,6 +89,16 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
                     photo.setImageResource(R.drawable.ic_menu_camera);
                 }
 
+                //Distance
+                float results[] = new float[10];
+                double restoLat = resto.getLat();
+                double restoLng = resto.getLng();
+                double myLatitude = myLatLng.latitude;
+                double myLongitude = myLatLng.longitude;
+            Location.distanceBetween(myLatitude, myLongitude, restoLat, restoLng,results);
+            distance = results[0];
+            String dist =  Math.round(distance)+"m";
+            proximityTextView.setText(dist);
             }
         });
 

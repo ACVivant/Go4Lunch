@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.RequestManager;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantHelper;
@@ -17,6 +18,7 @@ import com.vivant.annecharlotte.go4lunch.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -30,6 +32,7 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
     private OnItemClickedListener mListener;
     private int length;
     private String id;
+    private LatLng latlng;
 
     private final static String TAG = "ADAPTER";
 
@@ -50,12 +53,14 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
     }
 
     // Constructor
-    public ListOfRestaurantsAdapter(ArrayList<String> restoIdList, RequestManager glide, int length) {
+    public ListOfRestaurantsAdapter(ArrayList<String> restoIdList, RequestManager glide, int length, LatLng latLng) {
         this.restoIdList = restoIdList;
         this.glide = glide;
         this.length =  length;
+        this.latlng = latLng;
         Log.d(TAG, "ListOfRestaurantsAdapter: constructor");
     }
+
 
     @Override
     public ListOfRestaurantsViewholder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -64,7 +69,7 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_restaurant, parent, false);
         Log.d(TAG, "onCreateViewHolder");
-        return new ListOfRestaurantsViewholder(view, mListener, context);
+        return new ListOfRestaurantsViewholder(view, mListener, context, latlng);
     }
 
     // update view holder
