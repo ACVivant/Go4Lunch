@@ -94,7 +94,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     //Vars
     private RestaurantDetailResult mResto;
-    private List<String> listRestoLike= new ArrayList<String>();
+    private List<String> listRestoLike = new ArrayList<String>();
     private Marker myMarker;
     private boolean mLocationPermissionGranted = false;
     private GoogleMap mMap;
@@ -147,12 +147,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         tabIdResto = new ArrayList<String>();
 
         // AAAARGH c'est toujours nul!!!!
-        if (savedInstanceState!=null) {
+        if (savedInstanceState != null) {
             Log.d(TAG, "onActivityCreated: Bundle non null");
             lat = getArguments().getDouble(MYLAT);
             lng = getArguments().getDouble(MYLNG);
-            Log.d(TAG, "onActivityCreated: latitude " +lat);
-            Log.d(TAG, "onActivityCreated: latitude " +lng);
+            Log.d(TAG, "onActivityCreated: latitude " + lat);
+            Log.d(TAG, "onActivityCreated: latitude " + lng);
             tabIdResto = getArguments().getStringArrayList(LISTNEARBY);
         } else {
             myLatitude = 49.2335883;
@@ -170,7 +170,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         initMap();
 
         //puis
-       //displayNearbyPlaces(de la liste qu'on a récupérée);
+        //displayNearbyPlaces(de la liste qu'on a récupérée);
         displayNearbyPlaces(tabIdResto);
 
     }
@@ -198,14 +198,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude, myLongitude), DEFAULT_ZOOM));
 
-            init();
-        }
+        init();
+    }
 
 
     private void init() {
         Log.d(TAG, "init: initialiazing");
-       // buildGoogleApiClient();
-       // hideSoftKeyboard();
+        // buildGoogleApiClient();
+        // hideSoftKeyboard();
 
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,10 +218,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void displayNearbyPlaces(ArrayList<String> tabIdResto) {
 
-        for (int i=0; i<tabIdResto.size(); i++) {
-            MarkerOptions markerOptions = new MarkerOptions();
+        for (int i = 0; i < tabIdResto.size(); i++) {
 
-            //On récupère les infos nécessaires pour le spins sur Firestore
+            //On récupère les infos nécessaires pour les pins sur Firestore
             RestaurantHelper.getRestaurant(tabIdResto.get(i)).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -232,27 +231,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     restoLng = resto.getLng();
                     restoId = resto.getRestoId();
                     Log.d(TAG, "onSuccess: restoName " + restoName);
-                    Log.d(TAG, "onSuccess: restoId " +restoId);
+                    Log.d(TAG, "onSuccess: restoId " + restoId);
                     // On affiche les pins
                     LatLng restoLatLng = new LatLng(restoLat, restoLng);
                     updateLikeColorPin(restoId, restoName, restoLatLng);
+
+                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                        @Override
+                        public void onInfoWindowClick(Marker marker) {
+                            launchRestaurantDetail(marker, restoId);
+                        }
+                    });
                 }
             });
 
             /*float results[] = new float[10];
             Location.distanceBetween(myLatitude, myLongitude, lat, lng,results);
             distance = results[0];*/
-
-
-
-
-           /* mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                @Override
-                public void onInfoWindowClick(Marker marker) {
-                    launchRestaurantDetail(marker, googleNearbyPlace);
-                }
-            });*/
-
         }
     }
 
@@ -288,100 +283,113 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     // Update Pin color from Firebase
     //---------------------------------------------------------------------------------------------------
 
-    private void updateLikeColorPin(final String id, final String name,final LatLng latLng) {
+    private void updateLikeColorPin(final String id, final String name, final LatLng latLng) {
 
         Log.d(TAG, "updateLikeColorPin: passage");
         Log.d(TAG, "updateLikeColorPin: name " + name);
-        Log.d(TAG, "updateLikeColorPin: localisation " +latLng.latitude + " " + latLng.longitude);
-        Log.d(TAG, "updateLikeColorPin: id " +id);
-                // On ajuste la couleur de l'épingle en fonction des likes de l'utilisateur
-                final MarkerOptions markerOptions = new MarkerOptions();
+        Log.d(TAG, "updateLikeColorPin: localisation " + latLng.latitude + " " + latLng.longitude);
+        Log.d(TAG, "updateLikeColorPin: id " + id);
 
-                UserHelper.getUser(UserHelper.getCurrentUserId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Log.d(TAG, "onSuccess: pin snapshot");
-                        listRestoLike = documentSnapshot.toObject(User.class).getRestoLike();
-                        if(listRestoLike!=null) {
-                            Log.d(TAG, "onSuccess: idresto " +id);
-                            if (listRestoLike.contains(id)) {
-                                markerOptions.position(latLng)
-                                        .title(name)
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                                //mMap.addMarker(markerOptions);
-                                myMarker = mMap.addMarker(markerOptions);
-                            } else {
-                                markerOptions.position(latLng)
-                                        .title(name)
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                                //mMap.addMarker(markerOptions);
-                                myMarker = mMap.addMarker(markerOptions);
-                            }
-                        }
-                    }
-        });
-    }
+        // On ajuste la couleur de l'épingle en fonction des likes de l'utilisateur
+        final MarkerOptions markerOptions = new MarkerOptions();
 
-
-   /* private void updateLikeColorPin(final String idOfPlace, final LatLng restoLatLng, final String nameOfResto, final int index) {
-        // On récupère l'id du resto de Place à partir de celui de Map...
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        call = apiService.getRestaurantDetail(BuildConfig.apikey, idOfPlace, "id");
-
-        call.enqueue(new Callback<ListDetailResult>() {
+        UserHelper.getUser(UserHelper.getCurrentUserId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onResponse(Call<ListDetailResult> call, Response<ListDetailResult> response) {
-                if (!response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Code: " + response.code(), Toast.LENGTH_LONG).show();
-                    Log.d(TAG, "onResponse: erreur");
-                    return;
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Log.d(TAG, "onSuccess: pin snapshot");
+                listRestoLike = documentSnapshot.toObject(User.class).getRestoLike();
+                if (listRestoLike != null) {
+                    Log.d(TAG, "onSuccess: idresto " + id);
+                    if (listRestoLike.contains(id)) {
+                        markerOptions.position(latLng)
+                                .title(name)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                        //mMap.addMarker(markerOptions);
+                        myMarker = mMap.addMarker(markerOptions);
+                        myMarker.setTag(id);
+                    } else {
+                        markerOptions.position(latLng)
+                                .title(name)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                        //mMap.addMarker(markerOptions);
+                        myMarker = mMap.addMarker(markerOptions);
+                        myMarker.setTag(id);
+                    }
                 }
-
-                ListDetailResult posts = response.body();
-                mResto = posts.getResult();
-                final String idResto = mResto.getId();
-
-                // On ajuste la couleur de l'épingle en fonction des likes de l'utilisateur
-                final MarkerOptions markerOptions = new MarkerOptions();
-
-                UserHelper.getUser(UserHelper.getCurrentUserId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        listRestoLike = documentSnapshot.toObject(User.class).getRestoLike();
-                        if(listRestoLike!=null) {
-                            Log.d(TAG, "onSuccess: idresto " +idResto);
-                            if (listRestoLike.contains(idResto)) {
-                                markerOptions.position(restoLatLng)
-                                        .title(nameOfResto + " " + Math.round(distance)+"m")
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                                //mMap.addMarker(markerOptions);
-                                myMarker = mMap.addMarker(markerOptions);
-                                myMarker.setTag(index);
-                            } else {
-                                markerOptions.position(restoLatLng)
-                                        .title(nameOfResto+ " " + Math.round(distance)+"m")
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                                //mMap.addMarker(markerOptions);
-                                myMarker = mMap.addMarker(markerOptions);
-                                myMarker.setTag(index);
-                            }
-                        }
-                        UserHelper.updateLikedResto(listRestoLike, UserHelper.getCurrentUserId());
-                    }
-                });
-            }
-            @Override
-            public void onFailure(Call<ListDetailResult> call, Throwable t) {
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-                Log.e(TAG, t.toString());
             }
         });
     }
-*/
+
+
+    /* private void updateLikeColorPin(final String idOfPlace, final LatLng restoLatLng, final String nameOfResto, final int index) {
+         // On récupère l'id du resto de Place à partir de celui de Map...
+         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+         call = apiService.getRestaurantDetail(BuildConfig.apikey, idOfPlace, "id");
+
+         call.enqueue(new Callback<ListDetailResult>() {
+             @Override
+             public void onResponse(Call<ListDetailResult> call, Response<ListDetailResult> response) {
+                 if (!response.isSuccessful()) {
+                     Toast.makeText(getContext(), "Code: " + response.code(), Toast.LENGTH_LONG).show();
+                     Log.d(TAG, "onResponse: erreur");
+                     return;
+                 }
+
+                 ListDetailResult posts = response.body();
+                 mResto = posts.getResult();
+                 final String idResto = mResto.getId();
+
+                 // On ajuste la couleur de l'épingle en fonction des likes de l'utilisateur
+                 final MarkerOptions markerOptions = new MarkerOptions();
+
+                 UserHelper.getUser(UserHelper.getCurrentUserId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                     @Override
+                     public void onSuccess(DocumentSnapshot documentSnapshot) {
+                         listRestoLike = documentSnapshot.toObject(User.class).getRestoLike();
+                         if(listRestoLike!=null) {
+                             Log.d(TAG, "onSuccess: idresto " +idResto);
+                             if (listRestoLike.contains(idResto)) {
+                                 markerOptions.position(restoLatLng)
+                                         .title(nameOfResto + " " + Math.round(distance)+"m")
+                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                                 //mMap.addMarker(markerOptions);
+                                 myMarker = mMap.addMarker(markerOptions);
+                                 myMarker.setTag(index);
+                             } else {
+                                 markerOptions.position(restoLatLng)
+                                         .title(nameOfResto+ " " + Math.round(distance)+"m")
+                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                                 //mMap.addMarker(markerOptions);
+                                 myMarker = mMap.addMarker(markerOptions);
+                                 myMarker.setTag(index);
+                             }
+                         }
+                         UserHelper.updateLikedResto(listRestoLike, UserHelper.getCurrentUserId());
+                     }
+                 });
+             }
+             @Override
+             public void onFailure(Call<ListDetailResult> call, Throwable t) {
+                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                 Log.e(TAG, t.toString());
+             }
+         });
+     }
+ */
     //--------------------------------------------------------------------------------------------------------------------
     // gère le clic sur la bulle d'info
     //--------------------------------------------------------------------------------------------------------------------
-      private void launchRestaurantDetail(Marker marker, GooglePlacesResult googlePlace) {
+    private void launchRestaurantDetail(Marker marker, String id) {
+        String ref = (String) marker.getTag();
+        Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
+        //Id
+        WVIntent.putExtra(IDRESTO, ref);
+        Log.d(TAG, "onResponse: id " + ref);
+        startActivity(WVIntent);
+    }
+}
+
+     /* private void launchRestaurantDetail(Marker marker, GooglePlacesResult googlePlace) {
             int position = (int)(marker.getTag());
             Log.d(TAG, "onInfoWindowClick: " + googlePlace.getId());
 
@@ -456,7 +464,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             });
         }
     }
-
+*/
 
     /*private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation: getting the devices current location");
