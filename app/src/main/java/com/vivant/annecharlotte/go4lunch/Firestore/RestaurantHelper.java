@@ -44,34 +44,14 @@ public class RestaurantHelper {
         return RestaurantHelper.getRestaurantsCollection().document(restoId).update("restoname", restoName);
     }
 
-    // --- UPDATE DETAIL TODAY'S USERS---
-    public static Task<Void> updateDetailUsersToday(List<User> detailUsersToday, String restoId) {
-        return RestaurantHelper.getRestaurantsCollection().document(restoId).update("detailUsersToday", detailUsersToday);
-    }
-
     // --- UPDATE TODAY'S USERS---
     public static Task<Void> updateUsersToday(List<String> usersToday, String restoId) {
         return RestaurantHelper.getRestaurantsCollection().document(restoId).update("usersToday", usersToday);
     }
 
-    // --- UPDATE TODAY'S USERS NAME---
-    public static Task<Void> updateNameUsersToday(List<String> nameUsersToday, String restoId) {
-        return RestaurantHelper.getRestaurantsCollection().document(restoId).update("usersToday", nameUsersToday);
-    }
-
-    // --- ADD DETAIL TODAY'S USER---
-    public static Task<DocumentReference> addDetailUserToday(User iAmUserToday, String restoId, String allUsers) {
-        return RestaurantHelper.getRestaurantsCollection().document(restoId).collection(allUsers).add(iAmUserToday);
-    }
-
     // -- GET ALL NEARBY RESTAURANT --
     public static Query getAllNearbyRestaurants(){
         return RestaurantHelper.getRestaurantsCollection().orderBy("distance", Query.Direction.ASCENDING);
-    }
-
-    // -- GET ALL USERS FOR A RESTAURANT --
-    public static Query getAllClients(String restoId){
-        return RestaurantHelper.getRestaurantsCollection().document(restoId).collection("clientsToday");
     }
 
 }

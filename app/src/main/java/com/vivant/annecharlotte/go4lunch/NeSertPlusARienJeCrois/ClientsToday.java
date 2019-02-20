@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch.Models;
+package com.vivant.annecharlotte.go4lunch.NeSertPlusARienJeCrois;
 
 import com.google.firebase.firestore.ServerTimestamp;
 

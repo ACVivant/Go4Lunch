@@ -20,8 +20,6 @@ public class Restaurant {
     private double lat;
     private double lng;
     private List<String> usersToday;
-    private List<String> nameUsersToday;
-    private List<User> detailUsersToday;
     private String hoursMonday, hoursTuedsay, hoursWednesday, hoursThursday, hoursFriday, hoursSaturday, hoursSunday;
 
 
@@ -31,8 +29,6 @@ public class Restaurant {
         this.restoId = restoId;
         this.restoName = restoName;
         this.usersToday = new ArrayList<>();
-        this.nameUsersToday = new ArrayList<>();
-        this.detailUsersToday = new ArrayList<>();
     }
 
     public Restaurant(String restoId, String restoName, String urlPhoto, String address, String phone, String website, double rate, double lat, double lng,String hoursMonday, String hoursTuesday, String hoursWednesday, String hoursThursday, String hoursFriday, String hoursSaturday, String  hoursSunday) {
@@ -53,8 +49,6 @@ public class Restaurant {
         this.hoursSaturday = hoursSaturday;
         this.hoursSunday = hoursSunday;
         this.usersToday = new ArrayList<>();
-        this.nameUsersToday = new ArrayList<>();
-        this.detailUsersToday = new ArrayList<>();
     }
 
     // --- GETTERS ---
@@ -75,8 +69,6 @@ public class Restaurant {
     public String getHoursSaturday() {return hoursSaturday;}
     public String getHoursSunday() {return hoursSunday;}
     public List<String> getUsersToday() { return  usersToday;}
-    public List<String> getNameUsersToday() { return  nameUsersToday;}
-    public List<User> getDetailUsersToday() { return  detailUsersToday;}
 
     // --- SETTERS ---
     public void setRestoId(String restoId) { this.restoId = restoId; }
@@ -96,7 +88,5 @@ public class Restaurant {
     public void setHoursSaturday(String hoursSaturday) {this.hoursSaturday = hoursSaturday;}
     public void setHoursSunday(String hoursSunday) {this.hoursSunday = hoursSunday;}
     public void setUsersToday(List<String> usersToday) {this.usersToday = usersToday;}
-    public void setNameUsersToday(List<String> nameUsersToday) {this.nameUsersToday = nameUsersToday;}
-    public void setDetailUsersToday(List<User> detailUsersToday) {this.detailUsersToday = detailUsersToday;}
 }
 

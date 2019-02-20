@@ -10,13 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantHelper;
-import com.vivant.annecharlotte.go4lunch.Models.ClientsToday;
-import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
-import com.vivant.annecharlotte.go4lunch.Models.User;
+import com.vivant.annecharlotte.go4lunch.NeSertPlusARienJeCrois.ClientsToday;
 import com.vivant.annecharlotte.go4lunch.R;
 
 import androidx.annotation.NonNull;
