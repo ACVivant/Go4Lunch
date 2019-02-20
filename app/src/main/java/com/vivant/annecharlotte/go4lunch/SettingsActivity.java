@@ -7,17 +7,25 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Switch;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "SettingsActivity";
     public static final String SHARED_PREFS = "SharedPrefsPerso";
     public static final String RADIUS_PREFS = "radiusForSearch";
     public static final String TYPE_PREFS = "typeOfSearch";
+    public static final String NOTIF_PREFS = "notifications";
+
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+
+    private Switch notif;
 
 
     @Override
@@ -26,8 +34,10 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         setContentView(R.layout.activity_settings);
 
         final Context context = this;
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
 
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        final SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         String radiusString = sharedPreferences.getString(RADIUS_PREFS, "500");
         String type = sharedPreferences.getString(TYPE_PREFS, "restaurant");
 
@@ -75,10 +85,14 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         spinnerType.setOnItemSelectedListener(this);
         spinnerType.setTag(TYPE_PREFS);
 
+        notif = findViewById(R.id.switch_notifications);
+        notif.setChecked(sharedPreferences.getBoolean(NOTIF_PREFS, true));
+
         Button search = findViewById(R.id.settings_search_btn);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                editor.putBoolean(NOTIF_PREFS, notif.isChecked());
                 Intent intent = new Intent(context, LunchActivity.class);
                 startActivity(intent);
             }
@@ -108,5 +122,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        editor.putBoolean(NOTIF_PREFS, notif.isChecked());
     }
 }

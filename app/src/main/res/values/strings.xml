@@ -103,4 +103,9 @@
     <string name="notifications_onoff">"Souhaitez-vous recevoir une notification à midi vous indiquant les heureux collègues qui se joindront à vous??</string>
 
     <string name="newsearch">"Relancer la recherche</string>
+
+    <!-- NOTIFICATION ACITIVTY -->
+    <string name="notif_title">"Mon resto du jour"</string>
+    <string name="notif_message1">"Aujourd'hui votre pause repas se fera chez: "</string>
+    <string name="notif_message2">"Vous y passerez un bon moment avec:  "</string>
 </resources>
