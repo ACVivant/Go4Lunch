@@ -35,29 +35,45 @@ public class NotificationsService extends FirebaseMessagingService {
 
 
     private String userName;
+    private String userId;
     private String restoTodayId;
     private String restoTodayName;
     private String restoTodayAddress;
     private List<String> listUserId = new ArrayList<String>();
     private String listNames="";
     private String myMessage;
+    private boolean todayBoolean;
+    private boolean notifOk;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        // On regarde si l'utilisateur veut recevoir les notifications
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        Boolean notifOk = sharedPreferences.getBoolean(NOTIF_PREFS, true);
+        notifOk = sharedPreferences.getBoolean(NOTIF_PREFS, true);
+        userId = UserHelper.getCurrentUserId();
 
-        // On envoie le message uniquement si l'utilisateur est OK
-        // rajouter une condition qui vérifie que l'utilisateur a choisi un resto
+        // On regarde si l'utilisateur veut recevoir les notifications
+        checkIfNotifToday();
+    }
 
-        if (notifOk) {
-            if (remoteMessage.getNotification() != null) {
-                Log.d(TAG, "onMessageReceived: switch " + notifOk);
-                createPersonalizedMessage();
+
+    private void checkIfNotifToday() {
+
+        // On vérifie que l'utilisateur a sélecitonné un resto pour aujourd'hui
+        UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User user = documentSnapshot.toObject(User.class);
+                String today = user.getRestoToday();
+                if (!today.equals("")) {
+                    // On vérifie qu'il a souscrit à l'envoi de notifications
+                    if (notifOk) {
+                        Log.d(TAG, "onMessageReceived: switch " + notifOk);
+                        createPersonalizedMessage();
+                    }
+                }
             }
-        }
+        });
     }
 
     private void sendVisualNotification(String messageBody) {
@@ -101,7 +117,6 @@ public class NotificationsService extends FirebaseMessagingService {
 
     private void createPersonalizedMessage() {
         myMessage = getString(R.string.notif_message1);
-        final String userId = UserHelper.getCurrentUserId();
 
         // Je récupère l'id du restoToday de l'utilisateur
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
