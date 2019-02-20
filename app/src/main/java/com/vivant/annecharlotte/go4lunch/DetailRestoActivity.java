@@ -32,6 +32,7 @@ import com.vivant.annecharlotte.go4lunch.NeSertPlusARienJeCrois.ClientsToday;
 import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
 import com.vivant.annecharlotte.go4lunch.Models.User;
 import com.vivant.annecharlotte.go4lunch.View.ListOfClientsAdapter;
+import com.vivant.annecharlotte.go4lunch.View.ListOfRestaurantsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,13 +80,14 @@ public class DetailRestoActivity extends AppCompatActivity {
 
     private ListOfClientsAdapter adapter;
     private RecyclerView recyclerView;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_resto);
 
-        final Context context = this;
+        context = this;
 
         userId = UserHelper.getCurrentUserId();
         //userId = getIntent().getStringExtra(USER_ID);
@@ -390,7 +392,7 @@ public class DetailRestoActivity extends AppCompatActivity {
     //------------------------------------------------------------------------------------------------
 
     private void setupRecyclerView() {
-        Log.d(TAG, "setupRecyclerView");
+/*        Log.d(TAG, "setupRecyclerView");
         Query clients = RestaurantHelper.getRestaurantsCollection()
                 .document(idResto)
                 .collection("clientsToday");
@@ -403,6 +405,19 @@ public class DetailRestoActivity extends AppCompatActivity {
         adapter = new ListOfClientsAdapter(options, Glide.with(recyclerView));
         recyclerView.setHasFixedSize(true); // for performances reasons
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);*/
+
+RestaurantHelper.getRestaurant(idResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+    @Override
+    public void onSuccess(DocumentSnapshot documentSnapshot) {
+        List<String> listId = documentSnapshot.toObject(Restaurant.class).getUsersToday();
+
+        adapter = new ListOfClientsAdapter(listId, Glide.with(recyclerView), listId.size());
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
+    }
+});
+
+
     }
 }

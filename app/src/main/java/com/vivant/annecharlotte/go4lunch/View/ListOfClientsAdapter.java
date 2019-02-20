@@ -12,8 +12,13 @@ import android.widget.TextView;
 import com.bumptech.glide.RequestManager;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.NeSertPlusARienJeCrois.ClientsToday;
 import com.vivant.annecharlotte.go4lunch.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,59 +26,61 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * Created by Anne-Charlotte Vivant on 18/02/2019.
  */
-public class ListOfClientsAdapter extends FirestoreRecyclerAdapter<ClientsToday, com.vivant.annecharlotte.go4lunch.View.ListOfClientsAdapter.ListOfClientsHolder> {
+public class ListOfClientsAdapter extends RecyclerView.Adapter<ListOfClientsViewholder> {
 
-    private static final String TAG = "ListOfClientsAdapter";
-        String text;
-        private RequestManager glide;
-        Context context;
+/*    private List<RestaurantDetailResult> restoList;
+    private ArrayList<String> restoIdList;
+    private RequestManager glide;
+    private OnItemClickedListener mListener;
+    private int length;
+    private String id;
+    private LatLng latlng;*/
 
-        public ListOfClientsAdapter(@NonNull FirestoreRecyclerOptions<ClientsToday> options, RequestManager glide) {
-            super(options);
-            this.glide = glide;
-            Log.d(TAG, "ListOfClientsAdapter: constructeur");
-        }
+    private List<String> clientsList;
+    private ArrayList<String> clientsIdList;
+    private RequestManager glide;
+    private OnItemClickedListener mListener;
+    private int length;
+    private String id;
 
-        @Override
-        protected void onBindViewHolder(@NonNull com.vivant.annecharlotte.go4lunch.View.ListOfClientsAdapter.ListOfClientsHolder listOfClientsHolder, int i, @NonNull ClientsToday clientsToday) {
+    private final static String TAG = "CLIENTSADAPTER";
 
-            if (clientsToday.getUsername()!= null && !clientsToday.getUsername().isEmpty()) {
-                Log.d(TAG, "onBindViewHolder: " + clientsToday.getUsername());
-                text = clientsToday.getUrlPicture() + context.getString(R.string.isjoining);
-                listOfClientsHolder.textUser.setTypeface(null, Typeface.NORMAL);
-                listOfClientsHolder.textUser.setTextColor(context.getResources().getColor(R.color.colorMyBlack));
-            }
-            listOfClientsHolder.textUser.setText(text);
-
-            // Images
-           /* if (user.getUrlPicture() != null && !user.getUrlPicture().isEmpty()){
-                String urlPhoto = user.getUrlPicture();
-                glide.load(urlPhoto)
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(userHolder.imageUser);
-            } else {
-                userHolder.imageUser.setImageResource(R.drawable.baseline_people_24);
-            }*/
-        }
-
-        @NonNull
-        @Override
-        public com.vivant.annecharlotte.go4lunch.View.ListOfClientsAdapter.ListOfClientsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_workmates, parent, false);
-            context = parent.getContext();
-            return new com.vivant.annecharlotte.go4lunch.View.ListOfClientsAdapter.ListOfClientsHolder(view);
-        }
-
-        class ListOfClientsHolder extends RecyclerView.ViewHolder {
-
-            TextView textUser;
-            ImageView imageUser;
-
-            public ListOfClientsHolder(@NonNull View itemView) {
-                super(itemView);
-                textUser = itemView.findViewById(R.id.workmates_TextView);
-                imageUser = itemView.findViewById(R.id.workmates_ImageView);
-                Log.d(TAG, "ListOfClientsHolder");
-            }
-        }
+    public interface OnItemClickedListener{
+        void OnItemClicked(int position);
     }
+
+    public void setOnItemClickedListener(OnItemClickedListener listener) {
+        mListener = listener;
+    }
+
+    // Constructor
+    public ListOfClientsAdapter(List<String> clientsList, RequestManager glide, int length) {
+        this.clientsList = clientsList;
+        this.glide = glide;
+        this.length =  length;
+        Log.d(TAG, "ListOfClientsAdapter: constructor");
+    }
+
+    @Override
+    public ListOfClientsViewholder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // Creates view holder and inflates its xml layout
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.item_workmates, parent, false);
+        Log.d(TAG, "onCreateViewHolder");
+        return new ListOfClientsViewholder(view, mListener, context);
+    }
+
+    // update view holder
+    @Override
+    public void onBindViewHolder(ListOfClientsViewholder viewHolder, int position) {
+        viewHolder.updateWithDetails(this.clientsList.get(position), this.glide);
+    }
+
+    // return the total count of items in the list
+    @Override
+    public int getItemCount() {
+        Log.d(TAG, "getItemCount: "+ length);
+        return length ;
+    }
+}
