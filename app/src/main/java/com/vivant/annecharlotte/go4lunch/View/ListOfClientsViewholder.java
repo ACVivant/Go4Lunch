@@ -1,6 +1,7 @@
 package com.vivant.annecharlotte.go4lunch.View;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -60,11 +62,16 @@ public class ListOfClientsViewholder extends RecyclerView.ViewHolder{
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User client = documentSnapshot.toObject(User.class);
-                nameTextView.setText(client.getUsername());
+                String text = client.getUsername() + mContext.getResources().getString(R.string.isjoining);
+                nameTextView.setText(text);
+                nameTextView.setTypeface(null, Typeface.NORMAL);
+                nameTextView.setTextColor(mContext.getResources().getColor(R.color.colorMyBlack));
 
                 // Images
                 if (client.getUrlPicture().length()>0){
-                    glide.load(client.getUrlPicture()).into(photo);
+                    glide.load(client.getUrlPicture())
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(photo);
                 } else {
                     photo.setImageResource(R.drawable.baseline_people_24);
                 }
