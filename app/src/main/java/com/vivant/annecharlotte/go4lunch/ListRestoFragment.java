@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
 import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
@@ -49,6 +50,7 @@ public class ListRestoFragment extends Fragment implements DisplayNearbyPlaces{
     private String RATE = "resto_rate";
     private String PHOTO = "resto_photo";
     private String IDRESTO = "resto_id";
+    private String PLACEIDRESTO = "resto_place_id";
     private String DISTANCE = "resto_distance";
     private static final String MYLAT = "UserCurrentLatitude";
     private static final String MYLNG = "UserCurrentLongitude";
@@ -220,9 +222,7 @@ public class ListRestoFragment extends Fragment implements DisplayNearbyPlaces{
 
     @Override
     public void updateNearbyPlaces(final List<GooglePlacesResult> googlePlacesResults) {
-        listResto = googlePlacesResults;
-        Log.d(TAG, "updateNearbyPlaces: nom du deuxième resto " + listResto.get(1).getName());
-        Log.d(TAG, "updateNearbyPlaces: mylatlng "+ myLatLng.latitude +" lon " + myLatLng.longitude);
+        //listResto = googlePlacesResults;
 
         // On récupère l'identifiant de l'utilisateur
         userId= UserHelper.getCurrentUserId();
@@ -233,6 +233,7 @@ public class ListRestoFragment extends Fragment implements DisplayNearbyPlaces{
         // Il faudra adapter tout quand on arrivera à récupérer les données depuis LunchActivity
 
         for (int i = 0; i < googlePlacesResults.size(); i++) {
+
             Log.d(TAG, "onCreate: boucle sur les différents id: i: "+ i);
 
             Log.d(TAG, "updateNearbyPlaces: id " + googlePlacesResults.get(i).getId());
@@ -265,35 +266,11 @@ public class ListRestoFragment extends Fragment implements DisplayNearbyPlaces{
                     adapter.setOnItemClickedListener(new ListOfRestaurantsAdapter.OnItemClickedListener() {
                         @Override
                         public void OnItemClicked(int position) {
-                            /*Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
-                            WVIntent.putExtra(USER_ID,userId);
-                            WVIntent.putExtra(IDRESTO, listRestos.get(position).getId());
-                            Log.d(TAG, "OnItemClicked: IDRESTO "+ listRestos.get(position).getId());
-                            if(listRestos.get(position).getWebsite()!=null) {
-                                WVIntent.putExtra(WEB, listRestos.get(position).getWebsite());
-                            } else {
-                                WVIntent.putExtra(WEB, "no-website");
-                            }
-                            WVIntent.putExtra(NAME, listRestos.get(position).getName());
-                            WVIntent.putExtra(TEL, listRestos.get(position).getFormattedPhoneNumber());
-                            WVIntent.putExtra(ADDRESS, listRestos.get(position).getAddressComponents().get(0).getShortName() + ", " + listRestos.get(position).getAddressComponents().get(1).getShortName());
-                            WVIntent.putExtra(LIKE, myLike);
-                            if(mResto.getRating()!=null){
-                                WVIntent.putExtra(RATE, listRestos.get(position).getRating() );
-                            }
-                            else {
-                                WVIntent.putExtra(RATE, 0 );
-                            }
-
-
-                            if(mResto.getPhotos() != null && !mResto.getPhotos().isEmpty()){
-                                WVIntent.putExtra(PHOTO, listRestos.get(position).getPhotos().get(0).getPhotoReference());
-                            } else {
-                                WVIntent.putExtra(PHOTO, "no-photo");
-                            }
-
-
-                            startActivity(WVIntent);*/
+                            Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
+                            Log.d(TAG, "OnItemClicked: placeid " +googlePlacesResults.get(position).getPlaceId());
+                            WVIntent.putExtra(IDRESTO, googlePlacesResults.get(position).getId());
+                            WVIntent.putExtra(PLACEIDRESTO, googlePlacesResults.get(position).getPlaceId());
+                            startActivity(WVIntent);
                         }
                     });
 
@@ -305,16 +282,6 @@ public class ListRestoFragment extends Fragment implements DisplayNearbyPlaces{
                 }
             });
         }
-
-        // Launch WebViewActiviy when user clicks on an articles item
-/*        adapter.setOnItemClickedListener(new ListOfRestaurantsAdapter.OnItemClickedListener() {
-            @Override
-            public void OnItemClicked(int position) {
-                Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
-                WVIntent.putExtra(IDRESTO, listResto.get(position).getId());
-                startActivity(WVIntent);
-            }
-        });*/
     }
 
     public void setUserLocation(LatLng userLatLng){

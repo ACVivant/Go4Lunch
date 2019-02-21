@@ -86,6 +86,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     private String RATE = "resto_rate";
     private String PHOTO = "resto_photo";
     private String IDRESTO = "resto_id";
+    private String PLACEIDRESTO = "resto_place_id";
     private String DISTANCE = "resto_distance";
 
     //widgets
@@ -250,7 +251,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
                     Log.d(TAG, "onSuccess: restoId " + restoId);
                     // On affiche les pins
                     LatLng restoLatLng = new LatLng(restoLat, restoLng);
-                    updateLikeColorPin(restoId, restoName, restoLatLng);
+                    updateLikeColorPin( restoPlaceId, restoId, restoName, restoLatLng);
 
                     mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                         @Override
@@ -261,7 +262,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         }
     }
 
-    private void displayNearbyPlaces(ArrayList<String> tabIdResto) {
+   /* private void displayNearbyPlaces(ArrayList<String> tabIdResto) {
 
         for (int i = 0; i < tabIdResto.size(); i++) {
 
@@ -279,7 +280,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
                     Log.d(TAG, "onSuccess: restoId " + restoId);
                     // On affiche les pins
                     LatLng restoLatLng = new LatLng(restoLat, restoLng);
-                    updateLikeColorPin(restoId, restoName, restoLatLng);
+                    updateLikeColorPin( restoPlaceId, restoId, restoName, restoLatLng);
 
                     mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                         @Override
@@ -290,11 +291,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
                 }
             });
 
-            /*float results[] = new float[10];
+            *//*float results[] = new float[10];
             Location.distanceBetween(myLatitude, myLongitude, lat, lng,results);
-            distance = results[0];*/
+            distance = results[0];*//*
         }
-    }
+    }*/
 
   /*  private void displayNearbyPlaces(List<GooglePlacesResult> nearbyPlacesList) {
 
@@ -328,7 +329,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     // Update Pin color from Firebase
     //---------------------------------------------------------------------------------------------------
 
-    private void updateLikeColorPin(final String id, final String name, final LatLng latLng) {
+    private void updateLikeColorPin(final String restoPlaceId, final String id, final String name, final LatLng latLng) {
 
         Log.d(TAG, "updateLikeColorPin: passage");
         Log.d(TAG, "updateLikeColorPin: name " + name);
@@ -351,14 +352,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                         //mMap.addMarker(markerOptions);
                         myMarker = mMap.addMarker(markerOptions);
-                        myMarker.setTag(id);
+                        myMarker.setTag(restoPlaceId);
                     } else {
                         markerOptions.position(latLng)
                                 .title(name)
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                         //mMap.addMarker(markerOptions);
                         myMarker = mMap.addMarker(markerOptions);
-                        myMarker.setTag(id);
+                        myMarker.setTag(restoPlaceId);
                     }
                 }
 
@@ -369,7 +370,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                     //mMap.addMarker(markerOptions);
                     myMarker = mMap.addMarker(markerOptions);
-                    myMarker.setTag(id);
+                    myMarker.setTag(restoPlaceId);
                 }
             }
         });
@@ -434,11 +435,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     //--------------------------------------------------------------------------------------------------------------------
     // gère le clic sur la bulle d'info
     //--------------------------------------------------------------------------------------------------------------------
-    private void launchRestaurantDetail(Marker marker, String id) {
+    private void launchRestaurantDetail(Marker marker, String id ) {
         String ref = (String) marker.getTag();
         Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
         //Id
-        WVIntent.putExtra(IDRESTO, ref);
+        WVIntent.putExtra(PLACEIDRESTO, ref);
+        WVIntent.putExtra(IDRESTO, id);
         Log.d(TAG, "onResponse: id " + ref);
         startActivity(WVIntent);
     }

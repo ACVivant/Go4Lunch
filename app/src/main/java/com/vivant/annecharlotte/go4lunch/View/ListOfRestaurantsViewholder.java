@@ -162,6 +162,17 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
             this.openTextView.setText("Fermé en ce moment");
         }*/
 
+        //Distance
+        float results[] = new float[10];
+        double restoLat = restaurantDetail.getGeometry().getLocation().getLat();
+        double restoLng = restaurantDetail.getGeometry().getLocation().getLng();
+        double myLatitude = myLatLng.latitude;
+        double myLongitude = myLatLng.longitude;
+        Location.distanceBetween(myLatitude, myLongitude, restoLat, restoLng,results);
+        distance = results[0];
+        String dist =  Math.round(distance)+"m";
+        proximityTextView.setText(dist);
+
        // Aucune étoile en dessous de 2.5, 1 étoile entre 2.6 et 3.5, 2 étoiles entre 3.6 et 4.5, 3 étoiles au-dessus
         Double rate = restaurantDetail.getRating();
         Rate myRate = new Rate(rate, star1, star2, star3);
@@ -174,5 +185,16 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
             this.photo.setImageResource(R.drawable.ic_menu_camera);
         }
 
+        RestaurantHelper.getRestaurant(restaurantDetail.getId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Restaurant resto = documentSnapshot.toObject(Restaurant.class);
+
+                // Nombre de collègues intéressés
+                List<String> listUsers = resto.getUsersToday();
+                String textnb = String.valueOf(listUsers.size());
+                loversTextView.setText(textnb);
+            }
+        });
     }
 }

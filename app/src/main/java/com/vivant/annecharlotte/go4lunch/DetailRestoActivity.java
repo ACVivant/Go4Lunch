@@ -6,6 +6,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.Manifest;
 import android.content.Context;
@@ -25,9 +28,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
+import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
+import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
 import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantHelper;
 import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.ListResto.Rate;
+import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
+import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.NeSertPlusARienJeCrois.ClientsToday;
 import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
 import com.vivant.annecharlotte.go4lunch.Models.User;
@@ -47,6 +54,7 @@ public class DetailRestoActivity extends AppCompatActivity {
     private String RATE = "resto_rate";
     private String PHOTO = "resto_photo";
     private String IDRESTO = "resto_id";
+    private String PLACEIDRESTO = "resto_place_id";
     private boolean restoLike;
     private String restoToday;
     private List<String> listRestoLike= new ArrayList<String>();
@@ -66,12 +74,15 @@ public class DetailRestoActivity extends AppCompatActivity {
 
     private String restoTel;
     private String idResto;
+    private String placeidResto;
 
     private User currentUser;
     private static final String USER_ID = "userId";
     private String userId;
     private String restoName;
     private String lastResto;
+
+    private Call<ListDetailResult> call;
 
     //private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
     private final static String TAG = "DETAILRESTOACTIVITY";
@@ -96,23 +107,113 @@ public class DetailRestoActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate");
 
         idResto = getIntent().getStringExtra(IDRESTO);
+        placeidResto = getIntent().getStringExtra(PLACEIDRESTO);
         Log.d(TAG, "onCreate: idresto " +idResto);
+        Log.d(TAG, "onCreate: placeidresto " +placeidResto);
 
+        //-----------------------------------------------------------------------------------------------
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        Log.d(TAG, "updateNearbyPlaces: placeId " + placeidResto);
+        Log.d(TAG, "updateNearbyPlaces: key " + BuildConfig.apikey);
+
+        call = apiService.getRestaurantDetail(BuildConfig.apikey, placeidResto, "name,rating,photo,url,formatted_phone_number,website,address_component,id,geometry");
+
+        // Toujours ce bug avec opening_hours qu'il faudra rajouter
+        call.enqueue(new Callback<ListDetailResult>() {
+                         @Override
+                         public void onResponse(Call<ListDetailResult> call, Response<ListDetailResult> response) {
+                             if (!response.isSuccessful()) {
+                                 Toast.makeText(context, "Code: " + response.code(), Toast.LENGTH_LONG).show();
+                                 Log.d(TAG, "onResponse: erreur");
+                                 return;
+                             }
+
+                             ListDetailResult posts = response.body();
+                             RestaurantDetailResult mResto = posts.getResult();
+                             Log.d(TAG, "onResponse: name " + mResto.getName());
+
+                             //----------------------------------------------------------------------------------------
+                             // Display infos on restaurant
+                             //---------------------------------------------------------------------------------------
+                             restoName = mResto.getName();
+                             String restoAddress = mResto.getFormattedAddress();
+                             nameTV = (TextView) findViewById(R.id.name_detail);
+                             nameTV.setText(restoName);
+                             addressTV = (TextView) findViewById(R.id.address_detail);
+                             addressTV.setText(restoAddress);
+
+                             //------------------------------------------------------------------------------------------
+                             // Rating
+                             //-------------------------------------------------------------------------------------------
+                             double restoRate = mResto.getRating();
+                             star1 = (ImageView) findViewById(R.id.star1_detail);
+                             star2 = (ImageView) findViewById(R.id.star2_detail);
+                             star3 = (ImageView) findViewById(R.id.star3_detail);
+                             Rate myRate = new Rate(restoRate, star1, star2, star3);
+
+                             //-------------------------------------------------------------------------------------------
+                             // Photo
+                             //---------------------------------------------------------------------------------------------
+
+                             photoIV = (ImageView) findViewById(R.id.photo_detail);
+                             if (mResto.getPhotos() != null && !mResto.getPhotos().isEmpty()){
+                                 String restoPhoto = mResto.getPhotos().get(0).getPhotoReference();
+                                 String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + restoPhoto + "&key=" + BuildConfig.apikey;
+                                 Glide.with(context).load(photoUrl).into(photoIV);
+                             } else {
+                                 photoIV.setImageResource(R.drawable.ic_camera);
+                             }
+
+                             //-----------------------------------------------------------------------------------------------
+                             // Call
+                             //-----------------------------------------------------------------------------------------------
+                             //restoTel = resto.getPhone();
+                             restoTel = "06 28 08 57 50";
+                             toPhone = (ImageView) findViewById(R.id.phone_detail_button);
+                             toPhone.setOnClickListener(new View.OnClickListener() {
+                                 @Override
+                                 public void onClick(View v) {
+                                     makePhoneCall();
+                                     Log.d(TAG, "onCreate: restoTel " + restoTel);
+                                 }
+                             });
+
+                             //--------------------------------------------------------------------------------------------------
+                             // Website
+                             //-------------------------------------------------------------------------------------------------
+                             final String restoWebsite = mResto.getWebsite();
+                             toWebsite = (ImageView) findViewById(R.id.website_detail_button);
+                             toWebsite.setOnClickListener(new View.OnClickListener() {
+                                 @Override
+                                 public void onClick(View v) {
+                                     if (restoWebsite.equals("no-website")) {
+                                         Toast.makeText(DetailRestoActivity.this, R.string.no_website, Toast.LENGTH_LONG).show();
+                                     } else {
+                                         Intent WVIntent = new Intent(DetailRestoActivity.this, WebViewActivity.class);
+                                         WVIntent.putExtra(WEB, restoWebsite);
+                                         startActivity(WVIntent);
+                                     }
+                                 }
+                             });
+                         }
+
+                         @Override
+                         public void onFailure(Call<ListDetailResult> call, Throwable t) {
+                             Toast.makeText(context, t.getMessage(), Toast.LENGTH_LONG).show();
+                             Log.e(TAG, t.toString());
+                         }
+                     });
+
+        //------------------------------------------------------------------------------------------------
+
+        Log.d(TAG, "befoire Firestore: idresto " +idResto);
         RestaurantHelper.getRestaurant(idResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 Log.d(TAG, "onSuccess: pin snapshot");
                 Restaurant resto = documentSnapshot.toObject(Restaurant.class);
-
-                //----------------------------------------------------------------------------------------
-                // Display infos on restaurant
-                //---------------------------------------------------------------------------------------
-                restoName = resto.getRestoName();
-                String restoAddress = resto.getAddress();
-                nameTV = (TextView) findViewById(R.id.name_detail);
-                nameTV.setText(restoName);
-                addressTV = (TextView) findViewById(R.id.address_detail);
-                addressTV.setText(restoAddress);
 
                 //-----------------------------------------------------------------------------------------
                 // Like or not
@@ -139,57 +240,6 @@ public class DetailRestoActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         //mise à jour de Firestore
                         updateRestoTodayInFirebase(idResto);
-                    }
-                });
-                //------------------------------------------------------------------------------------------
-                // Rating
-                //-------------------------------------------------------------------------------------------
-                double restoRate = resto.getRate();
-                star1 = (ImageView) findViewById(R.id.star1_detail);
-                star2 = (ImageView) findViewById(R.id.star2_detail);
-                star3 = (ImageView) findViewById(R.id.star3_detail);
-                Rate myRate = new Rate(restoRate, star1, star2, star3);
-
-                //-------------------------------------------------------------------------------------------
-                // Photo
-                //---------------------------------------------------------------------------------------------
-                String restoPhoto = resto.getUrlPhoto();
-                photoIV = (ImageView) findViewById(R.id.photo_detail);
-                if (restoPhoto.equals("no-photo")) {
-                    photoIV.setImageResource(R.drawable.ic_camera);
-                } else {
-                    String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + restoPhoto + "&key=" + BuildConfig.apikey;
-                    Glide.with(context).load(photoUrl).into(photoIV);
-                }
-
-                //-----------------------------------------------------------------------------------------------
-                // Call
-                //-----------------------------------------------------------------------------------------------
-                //restoTel = resto.getPhone();
-                restoTel = "06 28 08 57 50";
-                toPhone = (ImageView) findViewById(R.id.phone_detail_button);
-                toPhone.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        makePhoneCall();
-                        Log.d(TAG, "onCreate: restoTel " + restoTel);
-                    }
-                });
-                //--------------------------------------------------------------------------------------------------
-                // Website
-                //-------------------------------------------------------------------------------------------------
-                final String restoWebsite = resto.getWebsite();
-                toWebsite = (ImageView) findViewById(R.id.website_detail_button);
-                toWebsite.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (restoWebsite.equals("no-website")) {
-                            Toast.makeText(DetailRestoActivity.this, R.string.no_website, Toast.LENGTH_LONG).show();
-                        } else {
-                            Intent WVIntent = new Intent(DetailRestoActivity.this, WebViewActivity.class);
-                            WVIntent.putExtra(WEB, restoWebsite);
-                            startActivity(WVIntent);
-                        }
                     }
                 });
 

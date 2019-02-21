@@ -342,7 +342,7 @@ public class LunchActivity extends BaseActivity
                     fragment1.updateNearbyPlaces(results);
                     fragment2.updateNearbyPlaces(results);
 
-                    tabId = new ArrayList<>();
+                  /*  tabId = new ArrayList<>();
                     // j'enchaine sur un appel à place details pour enregistrer les infos des restos sur Firestore et pouvoir les récupérer depuis toute l'appli sans pb
                     for (int i=0; i<results.size(); i++) {
                         // On regarde si ce resto a déjà une fiche sur Firestore et on ne fait la requête et ne crée la fiche que le cas échéant
@@ -359,7 +359,7 @@ public class LunchActivity extends BaseActivity
                     Bundle bundle = new Bundle();
                     bundle.putStringArrayList(LISTNEARBY,tabId);
                     fragment1.setArguments(bundle);
-                    fragment2.setArguments(bundle);
+                    fragment2.setArguments(bundle);*/
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
