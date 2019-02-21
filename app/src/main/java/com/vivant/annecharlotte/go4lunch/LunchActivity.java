@@ -340,6 +340,7 @@ public class LunchActivity extends BaseActivity
                     Log.d(TAG, "searchNearbyRestaurants onResponse: " + results.get(1).getGeometry().getLocation().getLat());
 
                     fragment1.updateNearbyPlaces(results);
+                    fragment2.updateNearbyPlaces(results);
 
                     tabId = new ArrayList<>();
                     // j'enchaine sur un appel à place details pour enregistrer les infos des restos sur Firestore et pouvoir les récupérer depuis toute l'appli sans pb
@@ -493,6 +494,7 @@ public class LunchActivity extends BaseActivity
 
                             // On transmet la position de l'utilisateur au map fragment
                             fragment1.setUserLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
+                            fragment2.setUserLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
                             searchNearbyRestaurants();
                         }
                     }

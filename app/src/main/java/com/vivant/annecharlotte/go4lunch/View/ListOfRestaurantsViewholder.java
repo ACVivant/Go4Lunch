@@ -72,7 +72,7 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
         });
     }
 
-    public void updateWithDetailsRestaurants(final String restoId, final RequestManager glide) {
+ /*   public void updateWithDetailsRestaurants(final String restoId, final RequestManager glide) {
 
         RestaurantHelper.getRestaurant(restoId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -146,9 +146,9 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
             }
         });
 
-    }
+    }*/
 
- /*   public void updateWithDetailsRestaurants(RestaurantDetailResult restaurantDetail, RequestManager glide) {
+    public void updateWithDetailsRestaurants(RestaurantDetailResult restaurantDetail, RequestManager glide) {
 
         Log.d(TAG, "updateWithDetailsRestaurants");
         this.nameTextView.setText(restaurantDetail.getName());
@@ -156,11 +156,11 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
         String address_short = restaurantDetail.getAddressComponents().get(0).getShortName() + ", " + restaurantDetail.getAddressComponents().get(1).getShortName();
         this.addressTextView.setText(address_short);
 
-       *//* if(restaurantDetail.getOpeninghours().get(0).getOpenNow()) {
+       /* if(restaurantDetail.getOpeninghours().get(0).getOpenNow()) {
         this.openTextView.setText("Ouvert en ce moment");
         } else {
             this.openTextView.setText("Fermé en ce moment");
-        }*//*
+        }*/
 
        // Aucune étoile en dessous de 2.5, 1 étoile entre 2.6 et 3.5, 2 étoiles entre 3.6 et 4.5, 3 étoiles au-dessus
         Double rate = restaurantDetail.getRating();
@@ -174,5 +174,5 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
             this.photo.setImageResource(R.drawable.ic_menu_camera);
         }
 
-    }*/
+    }
 }

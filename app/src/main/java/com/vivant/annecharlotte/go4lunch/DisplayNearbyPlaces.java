@@ -1,5 +1,6 @@
 package com.vivant.annecharlotte.go4lunch;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
 
 import java.util.ArrayList;
@@ -10,5 +11,7 @@ import java.util.List;
  */
 public interface DisplayNearbyPlaces {
 
-    public void updateNearbyPlaces(List<GooglePlacesResult> googlePlacesResults);
+    void updateNearbyPlaces(List<GooglePlacesResult> googlePlacesResults);
+
+    void setUserLocation(LatLng userLatLng);
 }

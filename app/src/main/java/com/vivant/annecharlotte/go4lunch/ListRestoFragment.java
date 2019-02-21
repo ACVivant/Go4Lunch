@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
@@ -25,12 +26,14 @@ import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
 import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
+import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
 import com.vivant.annecharlotte.go4lunch.View.ListOfRestaurantsAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class ListRestoFragment extends Fragment {
+public class ListRestoFragment extends Fragment implements DisplayNearbyPlaces{
 
     private RecyclerView mRecyclerView;
 
@@ -52,6 +55,7 @@ public class ListRestoFragment extends Fragment {
 
     private boolean myLike;
 
+    private List<GooglePlacesResult> listResto;
     private ListOfRestaurantsAdapter adapter;
     private RestaurantDetailResult mResto;
     public ArrayList<RestaurantDetailResult> listRestos = new ArrayList<>();
@@ -101,47 +105,12 @@ public class ListRestoFragment extends Fragment {
         // On récupère l'identifiant de l'utilisateur
         userId= UserHelper.getCurrentUserId();
 
-        tabIdResto = new ArrayList<>();
-        if (getArguments() != null) {
-            myLat = getArguments().getDouble(MYLAT);
-            myLng = getArguments().getDouble(MYLNG);
-            myLatLng = new LatLng(myLat, myLng);
-            Log.d(TAG, "onActivityCreated: Bundle non null");
-            tabIdResto = getArguments().getStringArrayList(LISTNEARBY);
-        } else {
-            // En attendant de les récupérer proprement
-            Log.d(TAG, "onCreateView: Bungle tout null");
-            myLat = 49.2335883;
-            myLng = 2.8880683;
-            myLatLng = new LatLng(myLat, myLng);
-            tabIdResto.add("4887b38c3213a5d2b791250af13e609ce791ce35");
-            tabIdResto.add("624033b63c297776be6916e99eb5eab409343ab7");
-            tabIdResto.add("ffafd36003fb667f48603a5fee35e55739c54845");
-            tabIdResto.add("56d8f4f3544f4ec987599c6a8cabc573a47757e4");
-            tabIdResto.add("307aab42f541a5f1d3b326412325096b9ab73cbc");
-            tabIdResto.add("0cbdeb379a8ea6e178eb33883430839548d972e0");
-            tabIdResto.add("0b31f31f9c87dd4df32ccbc169d78f93f8d67ed2");
-        }
-
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_list_resto, container, false);
         mRecyclerView = view.findViewById(R.id.fragment_restaurants_recyclerview);
         ((LunchActivity)getActivity()).setActionBarTitle(getResources().getString(R.string.TB_title));
+
         Log.d(TAG, "onCreateView: view");
-
-                    adapter = new ListOfRestaurantsAdapter(tabIdResto, Glide.with(mRecyclerView), tabIdResto.size(), myLatLng );
-                    mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    mRecyclerView.setAdapter(adapter);
-
-                    // Launch WebViewActiviy when user clicks on an articles item
-                    adapter.setOnItemClickedListener(new ListOfRestaurantsAdapter.OnItemClickedListener() {
-                        @Override
-                        public void OnItemClicked(int position) {
-                            Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
-                            WVIntent.putExtra(IDRESTO, tabIdResto.get(position));
-                            startActivity(WVIntent);
-                        }
-                    });
 
         return view;
     }
@@ -249,5 +218,107 @@ public class ListRestoFragment extends Fragment {
     }
 
 
+    @Override
+    public void updateNearbyPlaces(final List<GooglePlacesResult> googlePlacesResults) {
+        listResto = googlePlacesResults;
+        Log.d(TAG, "updateNearbyPlaces: nom du deuxième resto " + listResto.get(1).getName());
+        Log.d(TAG, "updateNearbyPlaces: mylatlng "+ myLatLng.latitude +" lon " + myLatLng.longitude);
 
+        // On récupère l'identifiant de l'utilisateur
+        userId= UserHelper.getCurrentUserId();
+
+        // Call to the Google Places API
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        // Il faudra adapter tout quand on arrivera à récupérer les données depuis LunchActivity
+
+        for (int i = 0; i < googlePlacesResults.size(); i++) {
+            Log.d(TAG, "onCreate: boucle sur les différents id: i: "+ i);
+
+            Log.d(TAG, "updateNearbyPlaces: id " + googlePlacesResults.get(i).getId());
+            Log.d(TAG, "updateNearbyPlaces: placeId " + googlePlacesResults.get(i).getPlaceId());
+            Log.d(TAG, "updateNearbyPlaces: key " + BuildConfig.apikey);
+
+          call = apiService.getRestaurantDetail(BuildConfig.apikey, googlePlacesResults.get(i).getPlaceId(), "name,rating,photo,url,formatted_phone_number,website,address_component,id,geometry");
+          //2019-02-21 17:32:47.984 21935-21935/com.vivant.annecharlotte.go4lunch E/ListRestoFragment: com.google.gson.JsonSyntaxException: java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 60 column 26 path $.result.opening_hours
+
+            call.enqueue(new Callback<ListDetailResult>() {
+                @Override
+                public void onResponse(Call<ListDetailResult> call, Response<ListDetailResult> response) {
+                    if (!response.isSuccessful()) {
+                        Toast.makeText(getContext(), "Code: " + response.code(), Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "onResponse: erreur");
+                        return;
+                    }
+
+                    ListDetailResult posts = response.body();
+                    mResto = posts.getResult();
+                    Log.d(TAG, "onResponse: name " + mResto.getName());
+                    // fill the recyclerview
+                    listRestos.add(mResto);
+
+                    adapter = new ListOfRestaurantsAdapter(listRestos, Glide.with(mRecyclerView), googlePlacesResults.size(), myLatLng);
+                    mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    mRecyclerView.setAdapter(adapter);
+
+                    // Launch WebViewActiviy when user clicks on an articles item
+                    adapter.setOnItemClickedListener(new ListOfRestaurantsAdapter.OnItemClickedListener() {
+                        @Override
+                        public void OnItemClicked(int position) {
+                            /*Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
+                            WVIntent.putExtra(USER_ID,userId);
+                            WVIntent.putExtra(IDRESTO, listRestos.get(position).getId());
+                            Log.d(TAG, "OnItemClicked: IDRESTO "+ listRestos.get(position).getId());
+                            if(listRestos.get(position).getWebsite()!=null) {
+                                WVIntent.putExtra(WEB, listRestos.get(position).getWebsite());
+                            } else {
+                                WVIntent.putExtra(WEB, "no-website");
+                            }
+                            WVIntent.putExtra(NAME, listRestos.get(position).getName());
+                            WVIntent.putExtra(TEL, listRestos.get(position).getFormattedPhoneNumber());
+                            WVIntent.putExtra(ADDRESS, listRestos.get(position).getAddressComponents().get(0).getShortName() + ", " + listRestos.get(position).getAddressComponents().get(1).getShortName());
+                            WVIntent.putExtra(LIKE, myLike);
+                            if(mResto.getRating()!=null){
+                                WVIntent.putExtra(RATE, listRestos.get(position).getRating() );
+                            }
+                            else {
+                                WVIntent.putExtra(RATE, 0 );
+                            }
+
+
+                            if(mResto.getPhotos() != null && !mResto.getPhotos().isEmpty()){
+                                WVIntent.putExtra(PHOTO, listRestos.get(position).getPhotos().get(0).getPhotoReference());
+                            } else {
+                                WVIntent.putExtra(PHOTO, "no-photo");
+                            }
+
+
+                            startActivity(WVIntent);*/
+                        }
+                    });
+
+                }
+                @Override
+                public void onFailure(Call<ListDetailResult> call, Throwable t) {
+                    Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                    Log.e(TAG, t.toString());
+                }
+            });
+        }
+
+        // Launch WebViewActiviy when user clicks on an articles item
+/*        adapter.setOnItemClickedListener(new ListOfRestaurantsAdapter.OnItemClickedListener() {
+            @Override
+            public void OnItemClicked(int position) {
+                Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
+                WVIntent.putExtra(IDRESTO, listResto.get(position).getId());
+                startActivity(WVIntent);
+            }
+        });*/
+    }
+
+    public void setUserLocation(LatLng userLatLng){
+        myLatLng = userLatLng;
+        Log.d(TAG, "setUserLocation: lat " + myLatLng.latitude +" lon " + myLatLng.longitude);
+    }
 }

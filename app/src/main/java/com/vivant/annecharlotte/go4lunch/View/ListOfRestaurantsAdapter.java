@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantHelper;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
+import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
 import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
 import com.vivant.annecharlotte.go4lunch.R;
 
@@ -28,6 +29,7 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
 
     private List<RestaurantDetailResult> restoList;
     private ArrayList<String> restoIdList;
+    private List<GooglePlacesResult> restoGoogleList;
     private RequestManager glide;
     private OnItemClickedListener mListener;
     private int length;
@@ -45,22 +47,31 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
     }
 
     // Constructor
-    public ListOfRestaurantsAdapter(List<RestaurantDetailResult> restoList, RequestManager glide, int length) {
+    public ListOfRestaurantsAdapter(List<RestaurantDetailResult> restoList, RequestManager glide, int length, LatLng latLng) {
         this.restoList = restoList;
-        this.glide = glide;
-        this.length =  length;
-        Log.d(TAG, "ListOfRestaurantsAdapter: constructor");
-    }
-
-    // Constructor
-    public ListOfRestaurantsAdapter(ArrayList<String> restoIdList, RequestManager glide, int length, LatLng latLng) {
-        this.restoIdList = restoIdList;
         this.glide = glide;
         this.length =  length;
         this.latlng = latLng;
         Log.d(TAG, "ListOfRestaurantsAdapter: constructor");
     }
 
+   /* // Constructor
+    public ListOfRestaurantsAdapter(List<GooglePlacesResult> restoList, RequestManager glide, int length, LatLng latLng) {
+        this.restoGoogleList = restoList;
+        this.glide = glide;
+        this.length =  length;
+        this.latlng = latLng;
+        Log.d(TAG, "ListOfRestaurantsAdapter: constructor");
+    }*/
+
+/*    // Constructor
+    public ListOfRestaurantsAdapter(ArrayList<String> restoIdList, RequestManager glide, int length, LatLng latLng) {
+        this.restoIdList = restoIdList;
+        this.glide = glide;
+        this.length =  length;
+        this.latlng = latLng;
+        Log.d(TAG, "ListOfRestaurantsAdapter: constructor");
+    }*/
 
     @Override
     public ListOfRestaurantsViewholder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -75,7 +86,7 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
     // update view holder
     @Override
     public void onBindViewHolder(ListOfRestaurantsViewholder viewHolder, int position) {
-        viewHolder.updateWithDetailsRestaurants(this.restoIdList.get(position), this.glide);
+        viewHolder.updateWithDetailsRestaurants(this.restoList.get(position), this.glide);
     }
 
 /*    // update view holder
