@@ -101,15 +101,16 @@ public class ListRestoFragment extends Fragment {
         // On récupère l'identifiant de l'utilisateur
         userId= UserHelper.getCurrentUserId();
 
-        tabIdResto = new ArrayList<String>();
-        if (savedInstanceState != null) {
+        tabIdResto = new ArrayList<>();
+        if (getArguments() != null) {
             myLat = getArguments().getDouble(MYLAT);
             myLng = getArguments().getDouble(MYLNG);
             myLatLng = new LatLng(myLat, myLng);
             Log.d(TAG, "onActivityCreated: Bundle non null");
             tabIdResto = getArguments().getStringArrayList(LISTNEARBY);
         } else {
-            // En attendant de les réucpérer proprement
+            // En attendant de les récupérer proprement
+            Log.d(TAG, "onCreateView: Bungle tout null");
             myLat = 49.2335883;
             myLng = 2.8880683;
             myLatLng = new LatLng(myLat, myLng);

@@ -31,7 +31,7 @@ import com.google.android.gms.location.LocationRequest;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+//import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -61,7 +61,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, DisplayNearbyPlaces {
 
     GoogleMap mGoogleMap;
     MapView mMapView;
@@ -111,12 +111,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private Call<ListDetailResult> call;
     private List<HashMap<String, String>> nearbyPlacesList;
-    PlaceAutocompleteFragment mPlaceAutocompleteFragment;
+    //PlaceAutocompleteFragment mPlaceAutocompleteFragment;
     private ArrayList<String> tabIdResto;
     private String restoName;
     private double restoLat;
     private double restoLng;
     private String restoId;
+    private List<String> tabId = new ArrayList<>();
 
     public MapFragment() {
         // Required empty public constructor
@@ -134,20 +135,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mView = inflater.inflate(R.layout.fragment_map, container, false);
         mGps = (ImageView) mView.findViewById(R.id.ic_gps);
 
-        //getLocationPermission();
-        //if (mLocationPermissionGranted) initMap();
 
-        return mView;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.d(TAG, "onActivityCreated");
-        tabIdResto = new ArrayList<String>();
-
-        // AAAARGH c'est toujours nul!!!!
-        if (savedInstanceState != null) {
+        tabIdResto = new ArrayList<>();
+        if (getArguments()!=null) {
             Log.d(TAG, "onActivityCreated: Bundle non null");
             lat = getArguments().getDouble(MYLAT);
             lng = getArguments().getDouble(MYLNG);
@@ -167,6 +157,44 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             tabIdResto.add("0b31f31f9c87dd4df32ccbc169d78f93f8d67ed2");
             tabIdResto.add("624033b63c297776be6916e99eb5eab409343ab7");
         }
+
+        //getLocationPermission();
+        //if (mLocationPermissionGranted) initMap();
+
+        return mView;
+    }
+
+    @Override
+    public void updateNearbyPlaces(ArrayList<GooglePlacesResult> googlePlacesResults){
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated");
+/*        tabIdResto = new ArrayList<String>();
+
+        if (getArguments()!=null) {
+            Log.d(TAG, "onActivityCreated: Bundle non null");
+            lat = getArguments().getDouble(MYLAT);
+            lng = getArguments().getDouble(MYLNG);
+            Log.d(TAG, "onActivityCreated: latitude " + lat);
+            Log.d(TAG, "onActivityCreated: latitude " + lng);
+            tabIdResto = getArguments().getStringArrayList(LISTNEARBY);
+        } else {
+            myLatitude = 49.2335883;
+            myLongitude = 2.8880683;
+            Log.d(TAG, "onActivityCreated: else... valeurs lat lng par défaut");
+            Toast.makeText(this.getContext(), "Carte localisée par défaut, car nous n'avons pas pu récupérer votre géolocalisation", Toast.LENGTH_LONG).show();
+            tabIdResto.add("4887b38c3213a5d2b791250af13e609ce791ce35");
+            tabIdResto.add("ffafd36003fb667f48603a5fee35e55739c54845");
+            tabIdResto.add("56d8f4f3544f4ec987599c6a8cabc573a47757e4");
+            tabIdResto.add("307aab42f541a5f1d3b326412325096b9ab73cbc");
+            tabIdResto.add("0cbdeb379a8ea6e178eb33883430839548d972e0");
+            tabIdResto.add("0b31f31f9c87dd4df32ccbc169d78f93f8d67ed2");
+            tabIdResto.add("624033b63c297776be6916e99eb5eab409343ab7");
+        }*/
 
         initMap();
 

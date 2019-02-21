@@ -21,6 +21,7 @@ import com.vivant.annecharlotte.go4lunch.View.ListOfRestaurantsAdapter;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -83,6 +84,11 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
                 // Aucune étoile en dessous de 2.5, 1 étoile entre 2.6 et 3.5, 2 étoiles entre 3.6 et 4.5, 3 étoiles au-dessus
                 Double rate = resto.getRate();
                 Rate myRate = new Rate(rate, star1, star2, star3);
+
+                // Nombre de collègues intéressés
+                List<String> listUsers = resto.getUsersToday();
+                String textnb =  String.valueOf(listUsers.size());
+                loversTextView.setText(textnb);
 
                 // Images
                 if (!resto.getUrlPhoto().equals("no-photo")){

@@ -16,10 +16,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+//import com.google.android.gms.location.places.AutocompleteFilter;
+//import com.google.android.gms.location.places.Place;
+//import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+//import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -79,10 +79,9 @@ public class LunchActivity extends BaseActivity
     private TextView emailTextView;
     private ImageView photoImageView;
 
-    //final Fragment fragment1 = new ListWorkmatesFragment();
-    final Fragment fragment1 = new MapFragment();
-    final Fragment fragment2 = new ListRestoFragment();
-    final Fragment fragment3 = new ListWorkmatesFragment();
+    final MapFragment fragment1 = new MapFragment();
+    final ListRestoFragment fragment2 = new ListRestoFragment();
+    final ListWorkmatesFragment fragment3 = new ListWorkmatesFragment();
 
     final FragmentManager fm = getSupportFragmentManager();
     Fragment active = fragment1;
@@ -109,16 +108,17 @@ public class LunchActivity extends BaseActivity
     private Call<NearbyPlacesList> call;
     private List<GooglePlacesResult> results;
     private RestaurantDetailResult mResto;
-    Context mContext;
+    private Context mContext;
 
     private boolean mLocationPermissionGranted = false;
 
-    PlaceAutocompleteFragment mPlaceAutocompleteFragment;
+ //   private PlaceAutocompleteFragment mPlaceAutocompleteFragment;
 
-    String hoursMonday, hoursTuesday, hoursWednesday, hoursThursday, hoursFriday, hoursSaturday, hoursSunday;
+    private String hoursMonday, hoursTuesday, hoursWednesday, hoursThursday, hoursFriday, hoursSaturday, hoursSunday;
 
     private int radius;
-    String type;
+    private String type;
+    private ArrayList<String> tabId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +149,7 @@ public class LunchActivity extends BaseActivity
         layoutLinks();
         updateUIWhenCreating();
         getLocationPermission(); // Enchaine sur la recherche des restos à proximité
+
         Log.d(TAG, "onCreate");
 
     }
@@ -196,10 +197,11 @@ public class LunchActivity extends BaseActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_activity_main_search:
-                try{
-                    // Define the square zone where autocomplet must search
+             /*   try{
+                    // Define the square zone where autocomplete must search
                     LatLngBounds bounds = new LatLngBounds(new LatLng(currentLocation.getLatitude()-1,currentLocation.getLongitude()-1), new LatLng(currentLocation.getLatitude()+1,currentLocation.getLongitude()+1));
                     // Create and custom our placeAutocomplete
+
                     AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
                             .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ESTABLISHMENT)
                             .build();
@@ -218,26 +220,26 @@ public class LunchActivity extends BaseActivity
                 }
                 return true;
             default:
-                return super.onOptionsItemSelected(item);
+                return super.onOptionsItemSelected(item);*/
         }
+        return super.onOptionsItemSelected(item);
     }
 
     // Get back the result of the placeAutocomplete and open the DetailRestaurantActivity for the user's choice
-    @Override
+   /* @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE){
             if(resultCode == RESULT_OK){
                 Place place = PlaceAutocomplete.getPlace(this, data);
                 Intent intent = new Intent(this, DetailRestoActivity.class);
-                intent.putExtra("idRestaurant", place.getId());
-                //tout un tas d'autres trucs à passer en intent...
+                intent.putExtra(IDRESTO, place.getId());
                 startActivity(intent);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
             } else if (resultCode == RESULT_CANCELED) {
             }
         }
-    }
+    }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -336,7 +338,9 @@ public class LunchActivity extends BaseActivity
                     Log.d(TAG, "searchNearbyRestaurants onResponse: " + results.get(1).getPlaceId());
                     Log.d(TAG, "searchNearbyRestaurants onResponse: " + results.get(1).getGeometry().getLocation().getLat());
 
-                    ArrayList<String> tabId = new ArrayList<>();
+
+
+                    tabId = new ArrayList<>();
                     // j'enchaine sur un appel à place details pour enregistrer les infos des restos sur Firestore et pouvoir les récupérer depuis toute l'appli sans pb
                     for (int i=0; i<results.size(); i++) {
                         // On regarde si ce resto a déjà une fiche sur Firestore et on ne fait la requête et ne crée la fiche que le cas échéant

@@ -314,7 +314,7 @@ public class DetailRestoActivity extends AppCompatActivity {
                                                                             }
                                                                         });
 
-                                                                        // et on ajoute l'utilisateur dans la liste des convives du resto resto
+                                                                        // et on ajoute l'utilisateur dans la liste des convives du resto
                                                                         RestaurantHelper.getRestaurant(idResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                                             @Override
                                                                             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -392,20 +392,6 @@ public class DetailRestoActivity extends AppCompatActivity {
     //------------------------------------------------------------------------------------------------
 
     private void setupRecyclerView() {
-/*        Log.d(TAG, "setupRecyclerView");
-        Query clients = RestaurantHelper.getRestaurantsCollection()
-                .document(idResto)
-                .collection("clientsToday");
-
-        //Query clients = RestaurantHelper.getAllClients(idResto);
-        FirestoreRecyclerOptions<ClientsToday> options = new FirestoreRecyclerOptions.Builder<ClientsToday>()
-                .setQuery(clients, ClientsToday.class)
-                .build();
-
-        adapter = new ListOfClientsAdapter(options, Glide.with(recyclerView));
-        recyclerView.setHasFixedSize(true); // for performances reasons
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);*/
 
 RestaurantHelper.getRestaurant(idResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
     @Override
