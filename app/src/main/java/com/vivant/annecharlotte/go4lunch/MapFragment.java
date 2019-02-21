@@ -104,6 +104,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     private LocationRequest mLocationRequest;
     private double myLatitude;
     private double myLongitude;
+    private LatLng myLatLng;
     private Marker currentUserLocationMarker;
     double lat, lng;
     private int proximityRadius = 1000;
@@ -136,33 +137,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_map, container, false);
         mGps = (ImageView) mView.findViewById(R.id.ic_gps);
-        myLatitude = 49.2335883;
-        myLongitude = 2.8880683;
-
-      /*  tabIdResto = new ArrayList<>();
-        if (getArguments()!=null) {
-            Log.d(TAG, "onActivityCreated: Bundle non null");
-            lat = getArguments().getDouble(MYLAT);
-            lng = getArguments().getDouble(MYLNG);
-            Log.d(TAG, "onActivityCreated: latitude " + lat);
-            Log.d(TAG, "onActivityCreated: latitude " + lng);
-            tabIdResto = getArguments().getStringArrayList(LISTNEARBY);
-        } else {
-            myLatitude = 49.2335883;
-            myLongitude = 2.8880683;
-            Log.d(TAG, "onActivityCreated: else... valeurs lat lng par défaut");
-            Toast.makeText(this.getContext(), "Carte localisée par défaut, car nous n'avons pas pu récupérer votre géolocalisation", Toast.LENGTH_LONG).show();
-            tabIdResto.add("4887b38c3213a5d2b791250af13e609ce791ce35");
-            tabIdResto.add("ffafd36003fb667f48603a5fee35e55739c54845");
-            tabIdResto.add("56d8f4f3544f4ec987599c6a8cabc573a47757e4");
-            tabIdResto.add("307aab42f541a5f1d3b326412325096b9ab73cbc");
-            tabIdResto.add("0cbdeb379a8ea6e178eb33883430839548d972e0");
-            tabIdResto.add("0b31f31f9c87dd4df32ccbc169d78f93f8d67ed2");
-            tabIdResto.add("624033b63c297776be6916e99eb5eab409343ab7");
-        }
-*/
-        //getLocationPermission();
-        //if (mLocationPermissionGranted) initMap();
+       /* myLatitude = 49.2335883;
+        myLongitude = 2.8880683;*/
 
         return mView;
     }
@@ -172,7 +148,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         placesToShowId = googlePlacesResults;
         Log.d(TAG, "updateNearbyPlaces: nombre de restos " + placesToShowId.size());
         Log.d(TAG, "updateNearbyPlaces: nom du premier resto " + placesToShowId.get(0).getName());
+        Log.d(TAG, "updateNearbyPlaces: position" + myLatitude + ", " + myLongitude);
         displayNearbyPlaces(placesToShowId);
+    }
+
+    public void setUserLocation(LatLng userLatLng){
+        myLatLng = userLatLng;
+        Log.d(TAG, "setUserLocation: lat " + myLatLng.latitude +" lon " + myLatLng.longitude);
+        myLatitude = myLatLng.latitude;
+        myLongitude = myLatLng.longitude;
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude, myLongitude), DEFAULT_ZOOM));
     }
 
     @Override

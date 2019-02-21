@@ -323,6 +323,7 @@ public class LunchActivity extends BaseActivity
         String location = lat+","+lng;
         Log.d(TAG, "searchNearbyRestaurants: lat, lng " + location);
 
+
         ApiInterface googleMapService = ApiClient.getClient().create(ApiInterface.class);
         Log.d(TAG, "searchNearbyRestaurants: radius "+ radius);
         Log.d(TAG, "searchNearbyRestaurants: type " +type);
@@ -337,7 +338,6 @@ public class LunchActivity extends BaseActivity
                     Log.d(TAG, "searchNearbyRestaurants onResponse: " + results.get(1).getId());
                     Log.d(TAG, "searchNearbyRestaurants onResponse: " + results.get(1).getPlaceId());
                     Log.d(TAG, "searchNearbyRestaurants onResponse: " + results.get(1).getGeometry().getLocation().getLat());
-
 
                     fragment1.updateNearbyPlaces(results);
 
@@ -491,6 +491,8 @@ public class LunchActivity extends BaseActivity
                             currentLocation = (Location) task.getResult();
                             //Log.d(TAG, "onComplete: lat " + currentLocation.getLatitude() + " lng " +currentLocation.getLongitude());
 
+                            // On transmet la position de l'utilisateur au map fragment
+                            fragment1.setUserLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
                             searchNearbyRestaurants();
                         }
                     }
