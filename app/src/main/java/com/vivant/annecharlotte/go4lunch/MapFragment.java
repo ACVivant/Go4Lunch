@@ -95,6 +95,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     //Vars
     private RestaurantDetailResult mResto;
     private List<String> listRestoLike = new ArrayList<String>();
+    private List<GooglePlacesResult> placesToShowId;
     private Marker myMarker;
     private boolean mLocationPermissionGranted = false;
     private GoogleMap mMap;
@@ -117,6 +118,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     private double restoLat;
     private double restoLng;
     private String restoId;
+    private String restoPlaceId;
     private List<String> tabId = new ArrayList<>();
 
     public MapFragment() {
@@ -134,9 +136,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_map, container, false);
         mGps = (ImageView) mView.findViewById(R.id.ic_gps);
+        myLatitude = 49.2335883;
+        myLongitude = 2.8880683;
 
-
-        tabIdResto = new ArrayList<>();
+      /*  tabIdResto = new ArrayList<>();
         if (getArguments()!=null) {
             Log.d(TAG, "onActivityCreated: Bundle non null");
             lat = getArguments().getDouble(MYLAT);
@@ -157,7 +160,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
             tabIdResto.add("0b31f31f9c87dd4df32ccbc169d78f93f8d67ed2");
             tabIdResto.add("624033b63c297776be6916e99eb5eab409343ab7");
         }
-
+*/
         //getLocationPermission();
         //if (mLocationPermissionGranted) initMap();
 
@@ -165,8 +168,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     }
 
     @Override
-    public void updateNearbyPlaces(ArrayList<GooglePlacesResult> googlePlacesResults){
-
+    public void updateNearbyPlaces(List<GooglePlacesResult> googlePlacesResults){
+        placesToShowId = googlePlacesResults;
+        Log.d(TAG, "updateNearbyPlaces: nombre de restos " + placesToShowId.size());
+        Log.d(TAG, "updateNearbyPlaces: nom du premier resto " + placesToShowId.get(0).getName());
+        displayNearbyPlaces(placesToShowId);
     }
 
     @Override
@@ -200,7 +206,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
 
         //puis
         //displayNearbyPlaces(de la liste qu'on a récupérée);
-        displayNearbyPlaces(tabIdResto);
+        //displayNearbyPlaces(tabIdResto);
 
     }
 
@@ -243,6 +249,31 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude, myLongitude), DEFAULT_ZOOM));
             }
         });
+    }
+    private void displayNearbyPlaces(List<GooglePlacesResult> tabIdResto) {
+
+        for (int i = 0; i < tabIdResto.size(); i++) {
+
+            GooglePlacesResult oneResto = tabIdResto.get(i);
+            restoName = oneResto.getName();
+            restoLat = oneResto.getGeometry().getLocation().getLat();
+            restoLng = oneResto.getGeometry().getLocation().getLng();
+            restoId = oneResto.getId();
+            restoPlaceId = oneResto.getPlaceId();
+
+                    Log.d(TAG, "onSuccess: restoName " + restoName);
+                    Log.d(TAG, "onSuccess: restoId " + restoId);
+                    // On affiche les pins
+                    LatLng restoLatLng = new LatLng(restoLat, restoLng);
+                    updateLikeColorPin(restoId, restoName, restoLatLng);
+
+                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                        @Override
+                        public void onInfoWindowClick(Marker marker) {
+                            launchRestaurantDetail(marker, restoId);
+                        }
+                    });
+        }
     }
 
     private void displayNearbyPlaces(ArrayList<String> tabIdResto) {
