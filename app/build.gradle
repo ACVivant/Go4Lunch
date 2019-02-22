@@ -82,6 +82,8 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:28.0.+'
     //MULTIDEX
     implementation 'com.android.support:multidex:1.0.3'
+    //EASY PERMISSIONS
+    implementation 'pub.devrel:easypermissions:1.1.1'
 
 }
 
