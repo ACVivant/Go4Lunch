@@ -29,8 +29,8 @@ public class User {
         this.uid = uid;
         this.username = username;
         this.userEmail = userEmail;
-        this.restoToday = restoToday;
-        this.restoTodayName = restoTodayName;
+        this.restoToday = "";
+        this.restoTodayName = "";
         this.urlPicture = urlPicture;
         this.restoLike = new ArrayList<>();
 

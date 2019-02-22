@@ -59,7 +59,7 @@ public class ListWorkmatesFragment extends Fragment {
 
     private void setupRecyclerView() {
         Query allUsers= UserHelper.getAllUsers()
-                .orderBy("restoToday", Query.Direction.DESCENDING);
+                .orderBy("restoTodayName", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setQuery(allUsers, User.class)

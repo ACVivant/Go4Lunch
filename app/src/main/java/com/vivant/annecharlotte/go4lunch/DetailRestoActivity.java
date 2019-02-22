@@ -71,6 +71,7 @@ public class DetailRestoActivity extends AppCompatActivity {
     private String restoTel;
     private String idResto;
     private String placeidResto;
+    private String placeNameResto;
 
     private User currentUser;
     private static final String USER_ID = "userId";
@@ -239,7 +240,7 @@ public class DetailRestoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //mise à jour de Firestore
-                updateRestoTodayInFirebase(placeidResto);
+                updateRestoTodayInFirebase(placeidResto, restoName);
             }
         });
 
@@ -300,7 +301,7 @@ public class DetailRestoActivity extends AppCompatActivity {
         });
     }
 
-    private void  updateRestoTodayInFirebase(final String restoChoiceId) {
+    private void  updateRestoTodayInFirebase(final String restoChoiceId, final String restoChoiceName) {
         //Mise à jour de User
         Log.d(TAG, "updateRestoTodayInFirebase: restoChoiceId " + restoChoiceId);
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -309,7 +310,7 @@ public class DetailRestoActivity extends AppCompatActivity {
                 if (documentSnapshot.exists()) {
                     User myRestoToday = documentSnapshot.toObject(User.class);
                     String restoChoice;
-                            lastResto = myRestoToday.getRestoToday();
+                    lastResto = myRestoToday.getRestoToday();
                     Log.d(TAG, "onSuccess: lastResto" + lastResto);
 
                     if (lastResto!=null&&lastResto.length()>0) {
@@ -321,6 +322,7 @@ public class DetailRestoActivity extends AppCompatActivity {
                             restoChoice = "";
                             myRestoTodayBtn.setImageResource(R.drawable.ic_validation_no);
                             UserHelper.updateTodayResto(restoChoice, userId);
+                            UserHelper.updateTodayRestoName(restoChoice, userId);
 
                             // On retire aussi de Restaurant cet utilisateur de la liste de convives
                             RestaurantSmallHelper.getRestaurant(restoChoiceId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -341,6 +343,7 @@ public class DetailRestoActivity extends AppCompatActivity {
                             Log.d(TAG, "onSuccess: restoToday n'est pas le même que celui choisi maintenant");
                             myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
                             UserHelper.updateTodayResto(restoChoiceId, userId);
+                            UserHelper.updateTodayRestoName(restoChoiceName, userId);
 
                             // On supprime l'utilisateur de la liste des convives de son ancien resto choisi
                             RestaurantSmallHelper.getRestaurant(lastResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -377,6 +380,7 @@ public class DetailRestoActivity extends AppCompatActivity {
                         // Aucun restaurant n'avait été enregistré, donc on enregistre celui là dans User
                         Log.d(TAG, "onSuccess: il n'y avait aucun resto enregistré");
                         UserHelper.updateTodayResto(restoChoiceId, userId);
+                        UserHelper.updateTodayRestoName(restoName,userId);
                         myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
                         // et on ajoute ce convive dans la fiche du restaurant
                         RestaurantSmallHelper.getRestaurant(placeidResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

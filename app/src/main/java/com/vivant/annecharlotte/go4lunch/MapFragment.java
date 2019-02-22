@@ -70,7 +70,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     View mView;
 
     private final static String TAG = "MapFragment";
-    private static final float DEFAULT_ZOOM = 15f;
+    private static final float DEFAULT_ZOOM = 16f;
 
     private String IDRESTO = "resto_id";
     private String PLACEIDRESTO = "resto_place_id";
@@ -234,6 +234,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
                             //mMap.addMarker(markerOptions);
                             myMarker = mMap.addMarker(markerOptions);
                             myMarker.setTag(placeId);
+                    }else {
+                        markerOptions.position(latLng)
+                                .title(name)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                        //mMap.addMarker(markerOptions);
+                        myMarker = mMap.addMarker(markerOptions);
+                        myMarker.setTag(placeId);
                     }
                 }else {
                     markerOptions.position(latLng)

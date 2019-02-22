@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class ListOfWorkmatesAdapter extends FirestoreRecyclerAdapter<User, ListOfWorkmatesAdapter.UserHolder> {
 
+    private static final String TAG = "ListOfWorkmatesAdapter";
     String text;
     private RequestManager glide;
     Context context;
@@ -39,11 +40,16 @@ public class ListOfWorkmatesAdapter extends FirestoreRecyclerAdapter<User, ListO
 
     @Override
     protected void onBindViewHolder(@NonNull UserHolder userHolder, int i, @NonNull User user) {
+        Log.d(TAG, "onBindViewHolder: username " + user.getUsername());
         if (user.getRestoTodayName()!= null && !user.getRestoTodayName().isEmpty()) {
+            Log.d(TAG, "onBindViewHolder: username " + user.getUsername());
+            Log.d(TAG, "onBindViewHolder: userResto " + user.getRestoTodayName());
             text = user.getUsername() + context.getString(R.string.decided) + user.getRestoTodayName();
             userHolder.textUser.setTypeface(null, Typeface.NORMAL);
             userHolder.textUser.setTextColor(context.getResources().getColor(R.color.colorMyBlack));
         } else {
+            Log.d(TAG, "onBindViewHolder: username " + user.getUsername());
+            Log.d(TAG, "onBindViewHolder: pas encore décidé");
             text = user.getUsername() + context.getString(R.string.not_decided);
             userHolder.textUser.setTypeface(null, Typeface.ITALIC);
             userHolder.textUser.setTextColor(context.getResources().getColor(R.color.colorMyGrey));
