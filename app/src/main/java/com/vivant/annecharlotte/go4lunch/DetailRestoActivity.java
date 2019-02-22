@@ -47,12 +47,6 @@ import java.util.List;
 public class DetailRestoActivity extends AppCompatActivity {
 
     private String WEB = "resto_web";
-    private String TEL = "resto_phone";
-    private String NAME = "resto_name";
-    private String ADDRESS = "resto_address";
-    private String LIKE = "resto_like";
-    private String RATE = "resto_rate";
-    private String PHOTO = "resto_photo";
     private String IDRESTO = "resto_id";
     private String PLACEIDRESTO = "resto_place_id";
     private boolean restoLike;

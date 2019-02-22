@@ -342,25 +342,6 @@ public class LunchActivity extends BaseActivity
                     fragment1.updateNearbyPlaces(results);
                     fragment2.updateNearbyPlaces(results);
 
-                  /*  tabId = new ArrayList<>();
-                    // j'enchaine sur un appel à place details pour enregistrer les infos des restos sur Firestore et pouvoir les récupérer depuis toute l'appli sans pb
-                    for (int i=0; i<results.size(); i++) {
-                        // On regarde si ce resto a déjà une fiche sur Firestore et on ne fait la requête et ne crée la fiche que le cas échéant
-                        // Mais ce test n'est pas bon, il est toujours true... donc comment faire???
-                        if(!RestaurantHelper.getRestaurant(results.get(i).getId()).isSuccessful()) {
-                            launchRestaurantDetail(results.get(i));
-                        }
-
-                        // On crée un tableau avec tous les id pour pouvoir le passer à listResto et à Map et avoir une liste correspondant exactement aux pins de la map
-                       tabId.add(results.get(i).getId());
-                    }
-
-                    //Comment est-ce que je peux passer mon objet à mon fragment???
-                    Bundle bundle = new Bundle();
-                    bundle.putStringArrayList(LISTNEARBY,tabId);
-                    fragment1.setArguments(bundle);
-                    fragment2.setArguments(bundle);*/
-
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
                     Log.d(TAG, "onResponse: request failed");
@@ -398,77 +379,6 @@ public class LunchActivity extends BaseActivity
     private void startSettingsActivity() {
         Intent intent = new Intent(mContext, SettingsActivity.class);
         startActivity(intent);
-    }
-
-    private void launchRestaurantDetail(GooglePlacesResult googlePlace) {
-        Log.d(TAG, "launchRestaurantDetail: place_id " + googlePlace.getPlaceId());
-        Call<ListDetailResult> call2;
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        call2 = apiService.getRestaurantDetail(BuildConfig.apikey, googlePlace.getPlaceId(), "name,rating,photo,url,formatted_phone_number,website,address_component,id,geometry,opening_hours");
-
-        call2.enqueue(new Callback<ListDetailResult>() {
-            @Override
-            public void onResponse(Call<ListDetailResult> call2, Response<ListDetailResult> response) {
-                if (!response.isSuccessful()) {
-                    Log.d(TAG, "onResponse: erreur");
-                    return;
-                }
-
-                // Enregistrement des infos sur Firestore
-                ListDetailResult posts = response.body();
-                mResto = posts.getResult();
-                    // préparation des données
-                String id = mResto.getId();
-                String name = mResto.getName();
-                String address = mResto.getAddressComponents().get(0).getShortName() + ", " + mResto.getAddressComponents().get(1).getShortName();
-                String phone = mResto.getFormattedPhoneNumber();
-                double lat = mResto.getGeometry().getLocation().getLat();
-                double lng = mResto.getGeometry().getLocation().getLng();
-
-                double rate;
-                if(mResto.getRating()!=null) {
-                    rate = mResto.getRating();
-                    Log.d(TAG, "onResponse: rate "+rate);
-                } else {
-                    rate =0.0;}
-
-                String website;
-                if(mResto.getWebsite()!=null) {
-                    website = mResto.getWebsite();
-                } else {
-                    website = "no-website";}
-
-                String photo;
-                if(mResto.getPhotos() != null && !mResto.getPhotos().isEmpty()){
-                    photo =  mResto.getPhotos().get(0).getPhotoReference();
-                } else {
-                   photo = "no-photo";
-                }
-
-                // C'est toujours vide... pourquoi????
-                if(mResto.getOpeninghours()!= null&& !mResto.getOpeninghours().isEmpty()) {
-                    hoursMonday = mResto.getOpeninghours().get(0).getWeekdayText().get(0).toString();
-                    hoursTuesday = mResto.getOpeninghours().get(0).getWeekdayText().get(1).toString();
-                    Log.d(TAG, "onResponse: horaires mardi " + hoursTuesday);
-                    hoursWednesday = mResto.getOpeninghours().get(0).getWeekdayText().get(2).toString();
-                    hoursThursday = mResto.getOpeninghours().get(0).getWeekdayText().get(3).toString();
-                    hoursFriday = mResto.getOpeninghours().get(0).getWeekdayText().get(4).toString();
-                    hoursSaturday = mResto.getOpeninghours().get(0).getWeekdayText().get(5).toString();
-                    hoursSunday = mResto.getOpeninghours().get(0).getWeekdayText().get(6).toString();
-                } else {
-                    hoursMonday = hoursTuesday = hoursWednesday = hoursThursday = hoursFriday = hoursSaturday = hoursSunday = getResources().getString(R.string.no_openinghours);
-                    Log.d(TAG, "onResponse: pas d'horaires");
-                }
-
-                    // Transfert des données
-                RestaurantHelper.createDetailRestaurant(id, name , photo, address, phone, website, rate, lat, lng, hoursMonday, hoursTuesday, hoursWednesday, hoursThursday, hoursFriday, hoursSaturday, hoursSunday );
-            }
-
-            @Override
-            public void onFailure(Call<ListDetailResult> call2, Throwable t) {
-                Log.e(TAG, t.toString());
-            }
-        });
     }
 
     //----------------------------------------------------------------------------------------------------------------------------
@@ -529,15 +439,4 @@ public class LunchActivity extends BaseActivity
             }
         }
     }
-
-
-    /*@Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        Bundle bundle = new Bundle();
-        bundle.putDouble(MYLAT, currentLocation.getLatitude());
-        bundle.putDouble(MYLNG, currentLocation.getLongitude());
-        fragment1.setArguments(bundle);
-    }*/
 }
