@@ -91,6 +91,7 @@ public class LunchActivity extends BaseActivity
     private static final String MYLAT = "UserCurrentLatitude";
     private static final String MYLNG = "UserCurrentLongitude";
     private String IDRESTO = "resto_id";
+    private String PLACEIDRESTO = "resto_place_id";
 
     public static final String SHARED_PREFS = "SharedPrefsPerso";
     public static final String RADIUS_PREFS = "radiusForSearch";
@@ -368,6 +369,7 @@ public class LunchActivity extends BaseActivity
                } else {
                    Intent WVIntent = new Intent(mContext, DetailRestoActivity.class);
                    WVIntent.putExtra(IDRESTO, lunch);
+                   //WVIntent.putExtra(PLACEIDRESTO, )
                    Log.d(TAG, "onResponse: id " + lunch);
                    startActivity(WVIntent);
 

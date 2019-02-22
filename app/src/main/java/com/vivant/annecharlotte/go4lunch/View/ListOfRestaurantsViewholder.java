@@ -13,9 +13,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.vivant.annecharlotte.go4lunch.BuildConfig;
 import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantHelper;
+import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantSmallHelper;
 import com.vivant.annecharlotte.go4lunch.ListResto.Rate;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
+import com.vivant.annecharlotte.go4lunch.Models.RestaurantSmall;
+import com.vivant.annecharlotte.go4lunch.Models.User;
 import com.vivant.annecharlotte.go4lunch.R;
 import com.vivant.annecharlotte.go4lunch.View.ListOfRestaurantsAdapter;
 
@@ -185,15 +188,18 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
             this.photo.setImageResource(R.drawable.ic_menu_camera);
         }
 
-        RestaurantHelper.getRestaurant(restaurantDetail.getId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        RestaurantSmallHelper.getRestaurant(restaurantDetail.getPlaceId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Restaurant resto = documentSnapshot.toObject(Restaurant.class);
-
-                // Nombre de collègues intéressés
-                List<String> listUsers = resto.getUsersToday();
-                String textnb = String.valueOf(listUsers.size());
-                loversTextView.setText(textnb);
+                if (documentSnapshot.exists()) {
+                    RestaurantSmall resto = documentSnapshot.toObject(RestaurantSmall.class);
+                    // Nombre de collègues intéressés
+                    List<String> listUsers = resto.getClientsTodayList();
+                    String textnb = String.valueOf(listUsers.size());
+                    loversTextView.setText(textnb);
+                } else {
+                    loversTextView.setText("0");
+                }
             }
         });
     }

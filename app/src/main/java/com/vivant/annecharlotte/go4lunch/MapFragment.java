@@ -218,7 +218,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         // On ajuste la couleur de l'épingle en fonction des likes de l'utilisateur
         final MarkerOptions markerOptions = new MarkerOptions();
 
-        UserHelper.getUser(UserHelper.getCurrentUserId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        markerOptions.position(latLng)
+                .title(name)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        //mMap.addMarker(markerOptions);
+        myMarker = mMap.addMarker(markerOptions);
+        myMarker.setTag(restoPlaceId);
+
+        //A corriger!!! Je n'affiche pas selon le sbons critères - coder pour que l'épingle ait une couleur différente quand un utilisateur a choisi ce resto pour aujourd'hui
+
+/*        UserHelper.getUser(UserHelper.getCurrentUserId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 Log.d(TAG, "onSuccess: pin snapshot");
@@ -252,7 +261,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
                     myMarker.setTag(restoPlaceId);
                 }
             }
-        });
+        });*/
     }
 
     //--------------------------------------------------------------------------------------------------------------------

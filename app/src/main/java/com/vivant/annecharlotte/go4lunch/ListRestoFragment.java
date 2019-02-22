@@ -91,12 +91,6 @@ public class ListRestoFragment extends Fragment implements DisplayNearbyPlaces{
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
         for (int i = 0; i < googlePlacesResults.size(); i++) {
-
-            Log.d(TAG, "onCreate: boucle sur les différents id: i: "+ i);
-            Log.d(TAG, "updateNearbyPlaces: id " + googlePlacesResults.get(i).getId());
-            Log.d(TAG, "updateNearbyPlaces: placeId " + googlePlacesResults.get(i).getPlaceId());
-            Log.d(TAG, "updateNearbyPlaces: nema " + googlePlacesResults.get(i).getName());
-
           call = apiService.getRestaurantDetail(BuildConfig.apikey, googlePlacesResults.get(i).getPlaceId(), "name,rating,photo,url,formatted_phone_number,website,address_component,id,geometry,place_id");
           //2019-02-21 17:32:47.984 21935-21935/com.vivant.annecharlotte.go4lunch E/ListRestoFragment: com.google.gson.JsonSyntaxException: java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 60 column 26 path $.result.opening_hours
 
@@ -111,8 +105,6 @@ public class ListRestoFragment extends Fragment implements DisplayNearbyPlaces{
 
                     ListDetailResult posts = response.body();
                     mResto = posts.getResult();
-                    Log.d(TAG, "onResponse: id " +mResto.getPlaceId());
-                    Log.d(TAG, "onResponse: name " + mResto.getName());
                     // fill the recyclerview
                     listRestos.add(mResto);
 
@@ -125,10 +117,6 @@ public class ListRestoFragment extends Fragment implements DisplayNearbyPlaces{
                         @Override
                         public void OnItemClicked(int position) {
                             Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
-                            Log.d(TAG, "OnItemClicked: position " +position);
-                            Log.d(TAG, "OnItemClicked: placeid " +listRestos.get(position).getPlaceId());
-                            Log.d(TAG, "OnItemClicked: name " +listRestos.get(position).getName());
-
                             WVIntent.putExtra(IDRESTO, listRestos.get(position).getId());
                             WVIntent.putExtra(PLACEIDRESTO, listRestos.get(position).getPlaceId());
                             startActivity(WVIntent);
