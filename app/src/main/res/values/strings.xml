@@ -11,6 +11,7 @@
     <string name="ND_username">"nom"</string>
     <string name="ND_email">"email"</string>
     <string name="ND_lunch_title">"Mon déjeuner"</string>
+    <string name="ND_chat_title">"Chat"</string>
     <string name="ND_settings_title">"Paramètres"</string>
     <string name="ND_logout_title">"Se déconnecter"</string>
 
@@ -108,4 +109,12 @@
     <string name="notif_title">"Mon resto du jour"</string>
     <string name="notif_message1">"Aujourd'hui votre pause repas se fera chez: "</string>
     <string name="notif_message2">"Vous y passerez un bon moment avec:  "</string>
+
+    <!-- CHAT ACTIVITY -->
+    <string name="toolbar_title_chat_activity">Chats de discussions</string>
+    <string name="text_input_title_user_chat_activity">Composer votre message</string>
+    <string name="button_title_user_chat_activity">ENVOYER</string>
+    <string name="text_view_user_chat_error">Ce fil de discussion ne contient pour le moment aucun message&#8230;</string>
+    <string name="popup_title_permission_files_access">Cette application a besoin de permission pour fonctionner.</string>
+    <string name="toast_title_no_image_chosen">Aucune image choisie&#8230;</string>
 </resources>

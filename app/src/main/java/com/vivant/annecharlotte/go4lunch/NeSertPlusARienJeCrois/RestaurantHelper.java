@@ -1,13 +1,10 @@
-package com.vivant.annecharlotte.go4lunch.Firestore;
+package com.vivant.annecharlotte.go4lunch.NeSertPlusARienJeCrois;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
-import com.vivant.annecharlotte.go4lunch.Models.User;
 
 import java.util.List;
 

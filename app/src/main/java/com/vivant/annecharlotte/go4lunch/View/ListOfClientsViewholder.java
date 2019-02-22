@@ -2,7 +2,6 @@ package com.vivant.annecharlotte.go4lunch.View;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.location.Location;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,19 +9,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.vivant.annecharlotte.go4lunch.BuildConfig;
-import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantHelper;
 import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
-import com.vivant.annecharlotte.go4lunch.ListResto.Rate;
-import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
 import com.vivant.annecharlotte.go4lunch.Models.User;
 import com.vivant.annecharlotte.go4lunch.R;
-
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import androidx.recyclerview.widget.RecyclerView;
 

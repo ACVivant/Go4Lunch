@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch.Models;
+package com.vivant.annecharlotte.go4lunch.NeSertPlusARienJeCrois;
 
 import java.util.ArrayList;
 import java.util.List;

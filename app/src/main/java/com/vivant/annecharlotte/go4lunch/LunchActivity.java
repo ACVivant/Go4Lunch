@@ -10,41 +10,30 @@ import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 //import com.google.android.gms.location.places.AutocompleteFilter;
 //import com.google.android.gms.location.places.Place;
 //import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 //import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import android.os.PersistableBundle;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
-import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantHelper;
+import com.vivant.annecharlotte.go4lunch.Chat.ChatActivity;
 import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
-import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
 import com.vivant.annecharlotte.go4lunch.Models.Nearby.NearbyPlacesList;
-import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
 import com.vivant.annecharlotte.go4lunch.Models.User;
 import com.vivant.annecharlotte.go4lunch.authentification.BaseActivity;
 import com.vivant.annecharlotte.go4lunch.authentification.ProfileActivity;
@@ -64,7 +53,6 @@ import retrofit2.Response;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -254,7 +242,10 @@ public class LunchActivity extends BaseActivity
         } else if (id == R.id.nav_settings) {
             startSettingsActivity();
 
-        } else if (id == R.id.nav_logout) {
+        } else if (id == R.id.nav_chat) {
+        startChatActivity();
+        }
+        else if (id == R.id.nav_logout) {
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
         }
@@ -368,11 +359,10 @@ public class LunchActivity extends BaseActivity
                    Toast.makeText(mContext, R.string.no_lunch, Toast.LENGTH_LONG).show();
                } else {
                    Intent WVIntent = new Intent(mContext, DetailRestoActivity.class);
-                   WVIntent.putExtra(IDRESTO, lunch);
-                   //WVIntent.putExtra(PLACEIDRESTO, )
+                   //WVIntent.putExtra(IDRESTO, lunch);
+                   WVIntent.putExtra(PLACEIDRESTO,lunch );
                    Log.d(TAG, "onResponse: id " + lunch);
                    startActivity(WVIntent);
-
                }
            }
        });
@@ -380,6 +370,11 @@ public class LunchActivity extends BaseActivity
 
     private void startSettingsActivity() {
         Intent intent = new Intent(mContext, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    private void startChatActivity() {
+        Intent intent = new Intent(this, ChatActivity.class);
         startActivity(intent);
     }
 
