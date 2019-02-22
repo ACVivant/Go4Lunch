@@ -229,7 +229,7 @@ public class DetailRestoActivity extends AppCompatActivity {
         //------------------------------------------------------------------------------------------
         myRestoTodayBtn = (FloatingActionButton) findViewById(R.id.restoToday_FloatingButton);
         // mise à jour de la vue
-        updateTodayView();
+        updateTodayView(placeidResto);
         myRestoTodayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -405,98 +405,6 @@ public class DetailRestoActivity extends AppCompatActivity {
         });
     }
 
-   /* private void updateRestoTodayInFirebase(final String idResto) {
-        Log.d(TAG, "updateRestoTodayInFirebase: idresto " +idResto);
-
-        //Mise à jour de User
-        UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                            @Override
-                                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                                User myRestoToday = documentSnapshot.toObject(User.class);
-                                                                String restoToday = lastResto= myRestoToday.getRestoToday();
-                                                                String restoTodayName = myRestoToday.getRestoTodayName();
-                                                                Log.d(TAG, "onSuccess: resto qui était enregistré " + restoTodayName);
-                                                                Log.d(TAG, "onSuccess: restoTodayName length " + restoToday.length());
-                                                                // Un restaurant avait déjà été choisi
-                                                                if (restoToday.length()>0) {
-                                                                    Log.d(TAG, "onSuccess: restoToday n'est pas nul");
-                                                                    // C'était celui_là donc on le déselectionne et on le retire de User
-                                                                    if (restoToday.equals(idResto)) {
-                                                                        Log.d(TAG, "onSuccess: restoToday est égal au resto choisi maintenant");
-                                                                        restoToday = "";
-                                                                        restoTodayName ="";
-                                                                        myRestoTodayBtn.setImageResource(R.drawable.ic_validation_no);
-                                                                        UserHelper.updateTodayResto(restoToday,userId);
-                                                                        UserHelper.updateTodayRestoName(restoTodayName,userId);
-
-                                                                        // On retire aussi de Restaurant cet utilisateur de la liste de convives
-                                                                        RestaurantHelper.getRestaurant(idResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                                            @Override
-                                                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                                                Restaurant usersToday = documentSnapshot.toObject(Restaurant.class);
-                                                                                List<String> listUsersToday = new ArrayList<>();
-                                                                                listUsersToday=usersToday.getUsersToday();
-                                                                                listUsersToday.remove(userId);
-                                                                                RestaurantHelper.updateUsersToday(listUsersToday, idResto);
-                                                                            }
-                                                                        });
-
-
-                                                                    } else {
-                                                                        // Ce n'était pas celui là donc on le remplace par le nouveau choix dans User
-                                                                        Log.d(TAG, "onSuccess: restoToday n'est pas le même que celui choisi maintenant");
-                                                                        restoToday = idResto;
-                                                                        restoTodayName = restoName;
-                                                                        myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
-                                                                        UserHelper.updateTodayResto(restoToday,userId);
-                                                                        UserHelper.updateTodayRestoName(restoTodayName,userId);
-
-                                                                        // On supprime l'utilisateur de la liste des convives de son ancien resto choisi
-                                                                        RestaurantHelper.getRestaurant(lastResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                                            @Override
-                                                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                                                Restaurant usersToday = documentSnapshot.toObject(Restaurant.class);
-                                                                                List<String> listUsersToday = new ArrayList<>();
-                                                                                listUsersToday=usersToday.getUsersToday();
-                                                                                listUsersToday.remove(userId);
-                                                                                RestaurantHelper.updateUsersToday(listUsersToday, lastResto);
-                                                                            }
-                                                                        });
-
-                                                                        // et on ajoute l'utilisateur dans la liste des convives du resto
-                                                                        RestaurantHelper.getRestaurant(idResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                                            @Override
-                                                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                                                Restaurant usersToday = documentSnapshot.toObject(Restaurant.class);
-                                                                                List<String> listUsersToday = new ArrayList<>();
-                                                                                listUsersToday=usersToday.getUsersToday();
-                                                                                listUsersToday.add(userId);
-                                                                                RestaurantHelper.updateUsersToday(listUsersToday, idResto);
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                } else {
-                                                                    // Aucun restaurant n'avait été enregistré, donc on enregistre celui là dans User
-                                                                    Log.d(TAG, "onSuccess: il n'y avait aucun resto enregistré");
-                                                                    UserHelper.updateTodayResto(idResto, userId);
-                                                                    UserHelper.updateTodayRestoName(restoTodayName, userId);
-                                                                    myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
-                                                                    // et on ajoute ce convive dans la fiche du restaurant
-                                                                    RestaurantHelper.getRestaurant(idResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                                        @Override
-                                                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                                            Restaurant usersToday = documentSnapshot.toObject(Restaurant.class);
-                                                                            List<String> listUsersToday = new ArrayList<>();
-                                                                            listUsersToday=usersToday.getUsersToday();
-                                                                            listUsersToday.add(userId);
-                                                                            RestaurantHelper.updateUsersToday(listUsersToday, idResto);
-                                                                        }
-                                                                    });
-                                                                }
-                                                            }
-                                                        });
-    }
-*/
     private void updateLikeView() {
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -516,15 +424,16 @@ public class DetailRestoActivity extends AppCompatActivity {
         });
     }
 
-    private void updateTodayView() {
+    private void updateTodayView(String id) {
+        final String idToday = id;
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 restoToday = documentSnapshot.toObject(User.class).getRestoToday();
                 Log.d(TAG, "onSuccess: restoToday " +restoToday);
                 Log.d(TAG, "onSuccess: idresto "+idResto);
-                if (restoToday != null) {
-                    if (restoToday.equals(idResto)) {
+                if (restoToday != null && restoToday.length()>0) {
+                    if (restoToday.equals(idToday)) {
                         myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
                     } else {
                         myRestoTodayBtn.setImageResource(R.drawable.ic_validation_no);
