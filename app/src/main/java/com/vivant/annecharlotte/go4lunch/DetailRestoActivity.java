@@ -112,6 +112,11 @@ public class DetailRestoActivity extends AppCompatActivity {
         placeidResto = getIntent().getStringExtra(PLACEIDRESTO);
         Log.d(TAG, "onCreate: idresto " +idResto);
         Log.d(TAG, "onCreate: placeidresto " +placeidResto);
+        //---------------------------------------------------------------------------------------------
+        // RecyclerView
+        //-----------------------------------------------------------------------------------------------
+        recyclerView = (RecyclerView) findViewById(R.id.fragment_workmates_detailresto_recyclerview);
+        setupRecyclerView();
 
         //-----------------------------------------------------------------------------------------------
 
@@ -238,11 +243,6 @@ public class DetailRestoActivity extends AppCompatActivity {
             }
         });
 
-        //---------------------------------------------------------------------------------------------
-        // RecyclerView
-        //-----------------------------------------------------------------------------------------------
-        recyclerView = (RecyclerView) findViewById(R.id.fragment_workmates_detailresto_recyclerview);
-        setupRecyclerView();
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -450,14 +450,15 @@ public class DetailRestoActivity extends AppCompatActivity {
     //------------------------------------------------------------------------------------------------
 
     private void setupRecyclerView() {
-
+        Log.d(TAG, "setupRecyclerView");
 RestaurantSmallHelper.getRestaurant(placeidResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
     @Override
     public void onSuccess(DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists()) {
-            List<String> listId = documentSnapshot.toObject(Restaurant.class).getUsersToday();
+            List<String> listId = documentSnapshot.toObject(RestaurantSmall.class).getClientsTodayList();
 
             if (listId!=null) {
+                Log.d(TAG, "onSuccess recyclerview: le doc existe");
                 adapter = new ListOfClientsAdapter(listId, Glide.with(recyclerView), listId.size());
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
                 recyclerView.setAdapter(adapter);
