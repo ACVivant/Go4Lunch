@@ -49,12 +49,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
 import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantHelper;
+import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantSmallHelper;
 import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
 import com.vivant.annecharlotte.go4lunch.Models.Nearby.NearbyPlacesList;
 import com.vivant.annecharlotte.go4lunch.Models.Restaurant;
+import com.vivant.annecharlotte.go4lunch.Models.RestaurantSmall;
 import com.vivant.annecharlotte.go4lunch.Models.User;
 
 import java.util.ArrayList;
@@ -192,12 +194,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
                     Log.d(TAG, "onSuccess: restoId " + restoId);
                     // On affiche les pins
                     LatLng restoLatLng = new LatLng(restoLat, restoLng);
-                    updateLikeColorPin( restoPlaceId, restoId, restoName, restoLatLng);
+                    updateLikeColorPin( restoPlaceId, restoName, restoLatLng);
 
                     mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                         @Override
                         public void onInfoWindowClick(Marker marker) {
-                            launchRestaurantDetail(marker, restoId);
+                            launchRestaurantDetail(marker);
                         }
                     });
         }
@@ -208,71 +210,51 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     // Update Pin color from Firebase
     //---------------------------------------------------------------------------------------------------
 
-    private void updateLikeColorPin(final String restoPlaceId, final String id, final String name, final LatLng latLng) {
+    private void updateLikeColorPin(final String placeId, final String name, final LatLng latLng) {
 
         Log.d(TAG, "updateLikeColorPin: passage");
         Log.d(TAG, "updateLikeColorPin: name " + name);
-        Log.d(TAG, "updateLikeColorPin: localisation " + latLng.latitude + " " + latLng.longitude);
-        Log.d(TAG, "updateLikeColorPin: id " + id);
 
         // On ajuste la couleur de l'épingle en fonction des likes de l'utilisateur
         final MarkerOptions markerOptions = new MarkerOptions();
 
-        markerOptions.position(latLng)
-                .title(name)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-        //mMap.addMarker(markerOptions);
-        myMarker = mMap.addMarker(markerOptions);
-        myMarker.setTag(restoPlaceId);
-
-        //A corriger!!! Je n'affiche pas selon le sbons critères - coder pour que l'épingle ait une couleur différente quand un utilisateur a choisi ce resto pour aujourd'hui
-
-/*        UserHelper.getUser(UserHelper.getCurrentUserId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        RestaurantSmallHelper.getRestaurant(placeId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Log.d(TAG, "onSuccess: pin snapshot");
-                listRestoLike = documentSnapshot.toObject(User.class).getRestoLike();
-                if (listRestoLike != null) {
-                    Log.d(TAG, "onSuccess: idresto " + id);
-                    if (listRestoLike.contains(id)) {
-                        markerOptions.position(latLng)
-                                .title(name)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                        //mMap.addMarker(markerOptions);
-                        myMarker = mMap.addMarker(markerOptions);
-                        myMarker.setTag(restoPlaceId);
-                    } else {
-                        markerOptions.position(latLng)
-                                .title(name)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                        //mMap.addMarker(markerOptions);
-                        myMarker = mMap.addMarker(markerOptions);
-                        myMarker.setTag(restoPlaceId);
-                    }
-                }
+                if (documentSnapshot.exists()){
+                    RestaurantSmall resto = documentSnapshot.toObject(RestaurantSmall.class);
+                    int nbreUsers = resto.getClientsTodayList().size();
+                    Log.d(TAG, "onSuccess: updatePin resto " +resto.getRestoName());
+                    Log.d(TAG, "onSuccess: updatePin nbre " +nbreUsers);
 
-                String restoToday = documentSnapshot.toObject(User.class).getRestoToday();
-                if (restoToday.equals(id)) {
+                    if (nbreUsers>0) {
+                            markerOptions.position(latLng)
+                                    .title(name)
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                            //mMap.addMarker(markerOptions);
+                            myMarker = mMap.addMarker(markerOptions);
+                            myMarker.setTag(placeId);
+                    }
+                }else {
                     markerOptions.position(latLng)
                             .title(name)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                     //mMap.addMarker(markerOptions);
                     myMarker = mMap.addMarker(markerOptions);
-                    myMarker.setTag(restoPlaceId);
+                    myMarker.setTag(placeId);
                 }
             }
-        });*/
+        });
     }
 
     //--------------------------------------------------------------------------------------------------------------------
     // gère le clic sur la bulle d'info
     //--------------------------------------------------------------------------------------------------------------------
-    private void launchRestaurantDetail(Marker marker, String id ) {
+    private void launchRestaurantDetail(Marker marker ) {
         String ref = (String) marker.getTag();
         Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
         //Id
         WVIntent.putExtra(PLACEIDRESTO, ref);
-        WVIntent.putExtra(IDRESTO, id);
         Log.d(TAG, "onResponse: id " + ref);
         startActivity(WVIntent);
     }
