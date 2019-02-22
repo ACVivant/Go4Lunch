@@ -220,7 +220,7 @@ public class DetailRestoActivity extends AppCompatActivity {
         //-------------------------------------------------------------------------------------------
         likeThisResto = (ImageView) findViewById(R.id.like_detail_button);
         // mise à jour de la vue
-        updateLikeView();
+        updateLikeView(placeidResto);
         likeThisResto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -405,13 +405,14 @@ public class DetailRestoActivity extends AppCompatActivity {
         });
     }
 
-    private void updateLikeView() {
+    private void updateLikeView(String id) {
+        final String idLike=id;
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 listRestoLike = documentSnapshot.toObject(User.class).getRestoLike();
                 if(listRestoLike!=null) {
-                    if (listRestoLike.contains(idResto)) {
+                    if (listRestoLike.contains(idLike)) {
                         likeThisResto.setImageResource(R.drawable.ic_action_star);
                     } else {
                         likeThisResto.setImageResource(R.drawable.ic_action_star_no);
@@ -419,7 +420,6 @@ public class DetailRestoActivity extends AppCompatActivity {
                 } else {
                     likeThisResto.setImageResource(R.drawable.ic_action_star_no);
                 }
-               // UserHelper.updateLikedResto(listRestoLike, userId);
             }
         });
     }

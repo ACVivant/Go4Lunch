@@ -77,7 +77,7 @@
     <string name="decided">" mange au restaurant: "</string>
 
     <!--DETAIL -->
-    <string name="isjoining">" vient."</string>
+    <string name="isjoining">" vient!"</string>
 
     <!--LISTRESTO -->
     <string name="no_openinghours">"Les horaires ne sont pas disponibles."</string>
