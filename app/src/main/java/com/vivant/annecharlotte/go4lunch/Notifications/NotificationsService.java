@@ -21,8 +21,11 @@ import com.vivant.annecharlotte.go4lunch.Models.User;
 import com.vivant.annecharlotte.go4lunch.R;
 import com.vivant.annecharlotte.go4lunch.authentification.MainActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.core.app.NotificationCompat;
 
@@ -57,17 +60,22 @@ public class NotificationsService extends FirebaseMessagingService {
 
     private void checkIfNotifToday() {
 
+        final String today = getTodayDate();
         // On vérifie que l'utilisateur a sélecitonné un resto pour aujourd'hui
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = documentSnapshot.toObject(User.class);
-                String today = user.getRestoToday();
-                if (!today.equals("")) {
-                    // On vérifie qu'il a souscrit à l'envoi de notifications
-                    if (notifOk) {
-                        Log.d(TAG, "onMessageReceived: switch " + notifOk);
-                        createPersonalizedMessage();
+                String myRestoToday = user.getRestoToday();
+                String registeredDate = user.getRestoDate();
+                if (!myRestoToday.equals("")) {
+                    // On vérifie que le resto a été enregistré pour aujourd'hui
+                    if (registeredDate.equals(today)) {
+                        // On vérifie qu'il a souscrit à l'envoi de notifications
+                        if (notifOk) {
+                            Log.d(TAG, "onMessageReceived: switch " + notifOk);
+                            createPersonalizedMessage();
+                        }
                     }
                 }
             }
@@ -165,5 +173,11 @@ public class NotificationsService extends FirebaseMessagingService {
 
         // 7 - Show notification
         notificationManager.notify(NOTIFICATION_TAG, NOTIFICATION_ID, notificationBuilder.build());
+    }
+
+    public String getTodayDate() {
+        Date day = new Date();
+        SimpleDateFormat f = new SimpleDateFormat("ddMMyyyy", Locale.FRENCH);
+        return f.format(day);
     }
 }
