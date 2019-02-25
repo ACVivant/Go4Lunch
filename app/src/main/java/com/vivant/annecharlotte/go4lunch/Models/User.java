@@ -3,7 +3,10 @@ package com.vivant.annecharlotte.go4lunch.Models;
 import com.google.firebase.firestore.ServerTimestamp;
 
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -18,6 +21,7 @@ public class User {
     private String userEmail;
     private String restoToday;
     private String restoTodayName;
+    private String restoDate;
     @Nullable
     private String urlPicture;
     private List<String> restoLike;
@@ -31,6 +35,7 @@ public class User {
         this.userEmail = userEmail;
         this.restoToday = "";
         this.restoTodayName = "";
+        this.restoDate = "";
         this.urlPicture = urlPicture;
         this.restoLike = new ArrayList<>();
 
@@ -42,6 +47,7 @@ public class User {
     public String getUserEmail() { return  userEmail;}
     public String getRestoToday() { return restoToday;}
     public String getRestoTodayName() {return restoTodayName;}
+    public String getRestoDate() {return restoDate;}
     public String getUrlPicture() { return urlPicture; }
     public List<String> getRestoLike() { return restoLike; }
 
@@ -51,6 +57,7 @@ public class User {
     public void setUserEmail(String userEmail) { this.userEmail = userEmail;}
     public void setRestoToday(String restoToday) {this.restoToday = restoToday;}
     public void setRestoTodayName(String restoTodayName) {this.restoTodayName = restoTodayName;}
+    public void setRestoDate(String restoDate) {this.restoDate = restoDate;}
     public void setUrlPicture(String urlPicture) { this.urlPicture = urlPicture; }
     public void setRestoLike(List<String> restoLike) {this.restoLike = restoLike;}
 }

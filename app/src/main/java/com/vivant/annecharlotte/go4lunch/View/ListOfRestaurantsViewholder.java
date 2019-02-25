@@ -18,7 +18,11 @@ import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.RestaurantSmall;
 import com.vivant.annecharlotte.go4lunch.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,17 +36,16 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
     private Context mContext;
     private float distance;
     private LatLng myLatLng;
+    private String today;
 
     private final static String TAG = "VIEWHOLDER";
-
-    //private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
-
 
     public ListOfRestaurantsViewholder(View itemView, final ListOfRestaurantsAdapter.OnItemClickedListener listener, Context context, LatLng latLng) {
         super(itemView);
 
         mContext = context;
         myLatLng = latLng;
+        today = getTodayDate();
 
         Log.d(TAG, "ListOfRestaurantsViewholder: constructeur");
         nameTextView = (TextView) itemView.findViewById(R.id.restaurant_name);
@@ -107,19 +110,38 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
             this.photo.setImageResource(R.drawable.ic_menu_camera);
         }
 
+        // Nombre de collègues intéressés
         RestaurantSmallHelper.getRestaurant(restaurantDetail.getPlaceId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     RestaurantSmall resto = documentSnapshot.toObject(RestaurantSmall.class);
-                    // Nombre de collègues intéressés
-                    List<String> listUsers = resto.getClientsTodayList();
-                    String textnb = String.valueOf(listUsers.size());
-                    loversTextView.setText(textnb);
+                    Date dateRestoSheet = resto.getDateCreated();
+
+                    SimpleDateFormat f = new SimpleDateFormat("ddMMyyyy", Locale.FRENCH);
+                    String dateRegistered = f.format(dateRestoSheet);
+                    Log.d(TAG, "onSuccess: name " + resto.getRestoName());
+                    Log.d(TAG, "onSuccess: today " + today);
+                    Log.d(TAG, "onSuccess: dateregistered " + dateRegistered);
+
+                    if (dateRegistered.equals(today)) {
+                        // Nombre de collègues intéressés
+                        List<String> listUsers = resto.getClientsTodayList();
+                        String textnb = String.valueOf(listUsers.size());
+                        loversTextView.setText(textnb);
+                    }else {
+                        loversTextView.setText("0");
+                    }
                 } else {
                     loversTextView.setText("0");
                 }
             }
         });
+    }
+
+    public String getTodayDate() {
+        Date day = new Date();
+        SimpleDateFormat f = new SimpleDateFormat("ddMMyyyy", Locale.FRENCH);
+        return f.format(day);
     }
 }

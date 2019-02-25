@@ -37,8 +37,13 @@ import com.vivant.annecharlotte.go4lunch.Models.RestaurantSmall;
 import com.vivant.annecharlotte.go4lunch.Models.User;
 import com.vivant.annecharlotte.go4lunch.View.ListOfClientsAdapter;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class DetailRestoActivity extends AppCompatActivity {
 
@@ -71,7 +76,11 @@ public class DetailRestoActivity extends AppCompatActivity {
     private static final String USER_ID = "userId";
     private String userId;
     private String restoName;
-    private String lastResto;
+    private String lastRestoId;
+    private String dateResto;
+    private String lastRestoDate;
+    private String lastRestoName;
+    private String today;
 
     private Call<ListDetailResult> call;
 
@@ -89,7 +98,7 @@ public class DetailRestoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail_resto);
 
         context = this;
-
+        today = getTodayDate();
 
         userId = UserHelper.getCurrentUserId();
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -234,7 +243,7 @@ public class DetailRestoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //mise à jour de Firestore
-                updateRestoTodayInFirebase(placeidResto, restoName);
+                updateRestoTodayInFirebase(placeidResto, restoName, today);
             }
         });
 
@@ -269,6 +278,11 @@ public class DetailRestoActivity extends AppCompatActivity {
         }
     }
 
+    public String getTodayDate() {
+        Date day = new Date();
+        SimpleDateFormat f = new SimpleDateFormat("ddMMyyyy", Locale.FRENCH);
+        return f.format(day);
+    }
     //---------------------------------------------------------------------------------------------------
     // Update Firebase
     //---------------------------------------------------------------------------------------------------
@@ -295,7 +309,69 @@ public class DetailRestoActivity extends AppCompatActivity {
         });
     }
 
-    private void  updateRestoTodayInFirebase(final String restoChoiceId, final String restoChoiceName) {
+    private void updateRestoInUser(String id, String name, String date, String user ) {
+        UserHelper.updateTodayResto(id, userId);
+        UserHelper.updateTodayRestoName(name, userId);
+        UserHelper.updateRestoDate(date, userId);
+    }
+
+    private void removeUserInRestaurant(final String id, final String name){
+        RestaurantSmallHelper.getRestaurant(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
+                    // 1- On regarde si la fiche du restaurant correspond à la date du jour sinon il faudra la mettre à jour
+                    Date dateRestoSheet = usersToday.getDateCreated();
+                    SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
+                    String dateRegistered = f.format(dateRestoSheet);
+
+                    if (dateRegistered.equals(today)) {
+                        //2- la fiche resto du jour existe déjà donc on lui retire l'utilisateur
+                        List<String> listUsersToday = new ArrayList<>();
+                        listUsersToday = usersToday.getClientsTodayList();
+                        listUsersToday.remove(userId);
+                        RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);
+                    } else {
+                        //2- La fiche resto du jour n'existait pas donc on la met à jour à vide
+                        RestaurantSmallHelper.createRestaurant(id, name);
+                    }
+                }
+            }
+        });
+    }
+
+    private void addUserInRestaurant(final String id, final String name) {
+        RestaurantSmallHelper.getRestaurant(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
+                    Date dateRestoSheet = usersToday.getDateCreated();
+                    SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
+                    String dateRegistered = f.format(dateRestoSheet);
+                    if (dateRegistered.equals(today)) {
+                        List<String> listUsersToday = new ArrayList<>();
+                        listUsersToday = usersToday.getClientsTodayList();
+                        listUsersToday.add(userId);
+                        RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);
+                    }else {
+                        RestaurantSmallHelper.createRestaurant(id, name);
+                        List<String> listUsersToday = new ArrayList<>();
+                        listUsersToday.add(userId);
+                        RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);
+                    }
+                } else {
+                    List<String> listUsersToday = new ArrayList<>();
+                    listUsersToday.add(userId);
+                    RestaurantSmallHelper.createRestaurant(id, name);
+                    RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);
+                }
+            }
+        });
+    }
+
+    private void  updateRestoTodayInFirebase(final String restoChoiceId, final String restoChoiceName, final String restoChoiceDate) {
         //Mise à jour de User
         Log.d(TAG, "updateRestoTodayInFirebase: restoChoiceId " + restoChoiceId);
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -303,100 +379,41 @@ public class DetailRestoActivity extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     User myRestoToday = documentSnapshot.toObject(User.class);
-                    String restoChoice;
-                    lastResto = myRestoToday.getRestoToday();
-                    Log.d(TAG, "onSuccess: lastResto" + lastResto);
+                    lastRestoId = myRestoToday.getRestoToday();
+                    lastRestoDate = myRestoToday.getRestoDate();
+                    lastRestoName = myRestoToday.getRestoTodayName();
+                    Log.d(TAG, "onSuccess: lastResto" + lastRestoId);
 
-                    if (lastResto!=null&&lastResto.length()>0) {
-                        // Un restaurant avait déjà été choisi
+                    if (lastRestoId!=null&&lastRestoId.length()>0&&lastRestoDate.equals(today)) {
+                        // Un restaurant avait déjà été choisi aujourd'hui
                         Log.d(TAG, "onSuccess: lastResto n'est pas nul");
                         // C'était celui_là donc on le déselectionne et on le retire de User
-                        if (lastResto.equals(restoChoiceId)) {
+                        if (lastRestoId.equals(restoChoiceId)) {
                             Log.d(TAG, "onSuccess: lastResto est égal au resto choisi maintenant");
-                            restoChoice = "";
                             myRestoTodayBtn.setImageResource(R.drawable.ic_validation_no);
-                            UserHelper.updateTodayResto(restoChoice, userId);
-                            UserHelper.updateTodayRestoName(restoChoice, userId);
+                            updateRestoInUser("", "", today, userId);
 
                             // On retire aussi de Restaurant cet utilisateur de la liste de convives
-                            RestaurantSmallHelper.getRestaurant(restoChoiceId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                @Override
-                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    if (documentSnapshot.exists()) {
-                                        RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
-                                        List<String> listUsersToday = new ArrayList<>();
-                                        listUsersToday = usersToday.getClientsTodayList();
-                                        listUsersToday.remove(userId);
-                                        RestaurantSmallHelper.updateClientsTodayList(listUsersToday, restoChoiceId);
-                                    }
-                                }
-                            });
+                            removeUserInRestaurant(restoChoiceId, restoChoiceName);
 
                         } else {
                             // Ce n'était pas celui là donc on le remplace par le nouveau choix dans User
                             Log.d(TAG, "onSuccess: restoToday n'est pas le même que celui choisi maintenant");
                             myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
-                            UserHelper.updateTodayResto(restoChoiceId, userId);
-                            UserHelper.updateTodayRestoName(restoChoiceName, userId);
-
+                            updateRestoInUser(restoChoiceId, restoChoiceName, today, userId);
                             // On supprime l'utilisateur de la liste des convives de son ancien resto choisi
-                            RestaurantSmallHelper.getRestaurant(lastResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                @Override
-                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
-                                    List<String> listUsersToday = new ArrayList<>();
-                                    listUsersToday = usersToday.getClientsTodayList();
-                                    listUsersToday.remove(userId);
-                                    RestaurantSmallHelper.updateClientsTodayList(listUsersToday, lastResto);
-                                }
-                            });
+                            removeUserInRestaurant(lastRestoId, lastRestoName);
 
                             // et on ajoute l'utilisateur dans la liste des convives du nouveau resto
-                            RestaurantSmallHelper.getRestaurant(restoChoiceId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                @Override
-                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    if (documentSnapshot.exists()) {
-                                        RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
-                                        List<String> listUsersToday = new ArrayList<>();
-                                        listUsersToday = usersToday.getClientsTodayList();
-                                        listUsersToday.add(userId);
-                                        RestaurantSmallHelper.updateClientsTodayList(listUsersToday, restoChoiceId);
-                                    } else {
-                                        List<String> listUsersToday = new ArrayList<>();
-                                        listUsersToday.add(userId);
-                                        RestaurantSmallHelper.createRestaurant(restoChoiceId, restoName);
-                                        RestaurantSmallHelper.updateClientsTodayList(listUsersToday, restoChoiceId);
-                                    }
-                                }
-                            });
+                            addUserInRestaurant(restoChoiceId, restoChoiceName);
                         }
                     } else {
                         // Aucun restaurant n'avait été enregistré, donc on enregistre celui là dans User
                         Log.d(TAG, "onSuccess: il n'y avait aucun resto enregistré");
-                        UserHelper.updateTodayResto(restoChoiceId, userId);
-                        UserHelper.updateTodayRestoName(restoName,userId);
+                        updateRestoInUser(restoChoiceId, restoChoiceName, today, userId);
                         myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
                         // et on ajoute ce convive dans la fiche du restaurant
-                        RestaurantSmallHelper.getRestaurant(placeidResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                Log.d(TAG, "onSuccess: getRestaurant");
-                                if (documentSnapshot.exists()) {
-                                    Log.d(TAG, "onSuccess: le doc existe");
-                                    RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
-                                    List<String> listUsersToday = new ArrayList<>();
-                                    listUsersToday = usersToday.getClientsTodayList();
-                                    listUsersToday.add(userId);
-                                    RestaurantSmallHelper.updateClientsTodayList(listUsersToday, restoChoiceId);
-                                } else {
-                                    Log.d(TAG, "onSuccess: le doc n'existe pas");
-                                    List<String> listUsersToday = new ArrayList<>();
-                                    listUsersToday.add(userId);
-                                    RestaurantSmallHelper.createRestaurant(restoChoiceId, restoName);
-                                    RestaurantSmallHelper.updateClientsTodayList(listUsersToday, restoChoiceId);
-                                }
-                            }
-                        });
+                        addUserInRestaurant(restoChoiceId, restoChoiceName);
                     }
                 }
             }
@@ -428,9 +445,12 @@ public class DetailRestoActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 restoToday = documentSnapshot.toObject(User.class).getRestoToday();
+                lastRestoDate = documentSnapshot.toObject(User.class).getRestoDate();
                 Log.d(TAG, "onSuccess: restoToday " +restoToday);
                 Log.d(TAG, "onSuccess: idresto "+idResto);
-                if (restoToday != null && restoToday.length()>0) {
+                Log.d(TAG, "onSuccess: lastRestoDate "+ lastRestoDate);
+
+                if (restoToday != null && restoToday.length()>0&&lastRestoDate.equals(today)) { // On vérifie qu'il y a un resturant enregistré et qu'il a été enregistré aujourd'hui
                     if (restoToday.equals(idToday)) {
                         myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
                     } else {
@@ -443,6 +463,7 @@ public class DetailRestoActivity extends AppCompatActivity {
         });
     }
 
+
     //-------------------------------------------------------------------------------------------------
     //Recyclerview
     //------------------------------------------------------------------------------------------------
@@ -453,13 +474,20 @@ RestaurantSmallHelper.getRestaurant(placeidResto).addOnSuccessListener(new OnSuc
     @Override
     public void onSuccess(DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists()) {
-            List<String> listId = documentSnapshot.toObject(RestaurantSmall.class).getClientsTodayList();
+            RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
+            Date dateRestoSheet = usersToday.getDateCreated();
+            SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
+            String dateRegistered = f.format(dateRestoSheet);
 
-            if (listId!=null) {
-                Log.d(TAG, "onSuccess recyclerview: le doc existe");
-                adapter = new ListOfClientsAdapter(listId, Glide.with(recyclerView), listId.size());
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                recyclerView.setAdapter(adapter);
+            if (dateRegistered.equals(today)) {
+                List<String> listId = usersToday.getClientsTodayList();
+
+                if (listId != null) {
+                    Log.d(TAG, "onSuccess recyclerview: le doc existe");
+                    adapter = new ListOfClientsAdapter(listId, Glide.with(recyclerView), listId.size());
+                    recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                    recyclerView.setAdapter(adapter);
+                }
             }
         }
     }
@@ -467,3 +495,4 @@ RestaurantSmallHelper.getRestaurant(placeidResto).addOnSuccessListener(new OnSuc
 
     }
 }
+

@@ -57,8 +57,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class LunchActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -112,6 +116,7 @@ public class LunchActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_lunch);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -140,7 +145,6 @@ public class LunchActivity extends BaseActivity
         getLocationPermission(); // Enchaine sur la recherche des restos à proximité
 
         Log.d(TAG, "onCreate");
-
     }
 
     public void setActionBarTitle(String bibi) {

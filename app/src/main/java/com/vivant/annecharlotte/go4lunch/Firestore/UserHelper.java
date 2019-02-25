@@ -11,6 +11,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.vivant.annecharlotte.go4lunch.Models.User;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -68,6 +71,11 @@ public class UserHelper {
     // --- UPDATE TODAY'S RESTO---
     public static Task<Void> updateTodayRestoName(String restoTodayName, String uid) {
         return UserHelper.getUsersCollection().document(uid).update("restoTodayName", restoTodayName);
+    }
+
+    // --- UPDATE DATE'S RESTO---
+    public static Task<Void> updateRestoDate(String restoDate, String uid) {
+        return UserHelper.getUsersCollection().document(uid).update("restoDate", restoDate);
     }
 
     // --- UPDATE LIKED RESTO---
