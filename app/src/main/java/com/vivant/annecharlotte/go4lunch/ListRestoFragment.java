@@ -112,12 +112,12 @@ public class ListRestoFragment extends Fragment implements DisplayNearbyPlaces{
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     mRecyclerView.setAdapter(adapter);
 
-                    // Launch WebViewActiviy when user clicks on an articles item
+                    // Launch DetailRestoActiviy when user clicks on an articles item
                     adapter.setOnItemClickedListener(new ListOfRestaurantsAdapter.OnItemClickedListener() {
                         @Override
                         public void OnItemClicked(int position) {
                             Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
-                            WVIntent.putExtra(IDRESTO, listRestos.get(position).getId());
+                            //WVIntent.putExtra(IDRESTO, listRestos.get(position).getId());
                             WVIntent.putExtra(PLACEIDRESTO, listRestos.get(position).getPlaceId());
                             startActivity(WVIntent);
                         }

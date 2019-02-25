@@ -13,6 +13,7 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.vivant.annecharlotte.go4lunch.BuildConfig;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.User;
@@ -32,6 +33,7 @@ public class ListOfWorkmatesAdapter extends FirestoreRecyclerAdapter<User, ListO
     String text;
     private RequestManager glide;
     Context context;
+    private OnItemClickListener mListener;
 
     public ListOfWorkmatesAdapter(@NonNull FirestoreRecyclerOptions<User> options, RequestManager glide) {
         super(options);
@@ -85,6 +87,26 @@ public class ListOfWorkmatesAdapter extends FirestoreRecyclerAdapter<User, ListO
 
             textUser = itemView.findViewById(R.id.workmates_TextView);
             imageUser = itemView.findViewById(R.id.workmates_ImageView);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                   if (mListener!=null){
+                       mListener.onItemClick(getSnapshots().getSnapshot(position), position);
+                   }
+                }
+            });
         }
     }
+
+    public interface OnItemClickListener {
+        void onItemClick(DocumentSnapshot documentSnapshot, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.mListener = listener;
+
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.vivant.annecharlotte.go4lunch;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,10 +18,12 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.Models.User;
 import com.vivant.annecharlotte.go4lunch.Utils.MyDividerItemDecoration;
+import com.vivant.annecharlotte.go4lunch.View.ListOfRestaurantsAdapter;
 import com.vivant.annecharlotte.go4lunch.View.ListOfWorkmatesAdapter;
 
 import static com.vivant.annecharlotte.go4lunch.Firestore.UserHelper.getAllUsers;
@@ -31,6 +34,7 @@ public class ListWorkmatesFragment extends Fragment {
     private View view;
     private View parentView;
     private Toolbar toolbar;
+    private String PLACEIDRESTO = "resto_place_id";
 
     public ListWorkmatesFragment() {
         // Required empty public constructor
@@ -73,6 +77,19 @@ public class ListWorkmatesFragment extends Fragment {
         // Add horizontal separators
         MyDividerItemDecoration mDividerItemDecoration = new MyDividerItemDecoration(recyclerView.getContext());
         recyclerView.addItemDecoration(mDividerItemDecoration);
+
+        // on gère le clic sur les items workmates
+        adapter.setOnItemClickListener(new ListOfWorkmatesAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
+                User user = documentSnapshot.toObject(User.class);
+                String restoId = user.getRestoToday();
+
+                Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
+                WVIntent.putExtra(PLACEIDRESTO, restoId);
+                startActivity(WVIntent);
+            }
+        });
     }
 
     private void setupToolbar() {
