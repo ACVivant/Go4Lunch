@@ -65,16 +65,16 @@ public class RestaurantDetailResult {
     private String website;
     @SerializedName("opening_hours")
     @Expose
-    private List<OpeningHour> openingHours=null;
+    private OpeningHours openingHours=null;
     @SerializedName("photos")
     @Expose
     private List<Photo> photos=null;
 
     public List<Photo> getPhotos() {return photos;}
 
-    public  List<OpeningHour> getOpeninghours() {return  openingHours;}
+    public  OpeningHours getOpeninghours() {return  openingHours;}
 
-    public void setOpeningHours(List<OpeningHour> openingHours) {
+    public void setOpeningHours(OpeningHours openingHours) {
         this.openingHours = openingHours;
     }
 

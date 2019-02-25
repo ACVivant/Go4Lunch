@@ -17,6 +17,7 @@ import android.widget.ImageView;
 //import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -64,6 +65,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     private double restoLng;
     private String restoId;
     private String restoPlaceId;
+
+    private Marker positionMarker;
 
     public MapFragment() {
         // Required empty public constructor
@@ -118,6 +121,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         Log.d(TAG, "initMap: initializing map");
 
         mMapView = (MapView) mView.findViewById(R.id.map);
+
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();

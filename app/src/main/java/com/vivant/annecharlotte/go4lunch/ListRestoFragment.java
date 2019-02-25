@@ -91,8 +91,7 @@ public class ListRestoFragment extends Fragment implements DisplayNearbyPlaces{
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
         for (int i = 0; i < googlePlacesResults.size(); i++) {
-          call = apiService.getRestaurantDetail(BuildConfig.apikey, googlePlacesResults.get(i).getPlaceId(), "name,rating,photo,url,formatted_phone_number,website,address_component,id,geometry,place_id");
-          //2019-02-21 17:32:47.984 21935-21935/com.vivant.annecharlotte.go4lunch E/ListRestoFragment: com.google.gson.JsonSyntaxException: java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 60 column 26 path $.result.opening_hours
+          call = apiService.getRestaurantDetail(BuildConfig.apikey, googlePlacesResults.get(i).getPlaceId(), "name,rating,photo,url,formatted_phone_number,website,address_component,id,geometry,place_id,opening_hours");
 
             call.enqueue(new Callback<ListDetailResult>() {
                 @Override
