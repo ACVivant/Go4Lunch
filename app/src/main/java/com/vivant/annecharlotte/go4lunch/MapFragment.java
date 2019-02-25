@@ -204,9 +204,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
 
                     RestaurantSmall resto = documentSnapshot.toObject(RestaurantSmall.class);
                     Date dateRestoSheet = resto.getDateCreated();
+                    DateFormat myDate = new DateFormat();
+                    String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
 
-                    SimpleDateFormat f = new SimpleDateFormat("ddMMyyyy", Locale.FRENCH);
-                    String dateRegistered = f.format(dateRestoSheet);
                     Log.d(TAG, "onSuccess: name " + resto.getRestoName());
                     Log.d(TAG, "onSuccess: today " + today);
                     Log.d(TAG, "onSuccess: dateregistered " + dateRegistered);

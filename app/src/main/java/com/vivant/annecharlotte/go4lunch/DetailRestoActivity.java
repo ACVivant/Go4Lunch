@@ -320,8 +320,8 @@ public class DetailRestoActivity extends AppCompatActivity {
                     RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
                     // 1- On regarde si la fiche du restaurant correspond à la date du jour sinon il faudra la mettre à jour
                     Date dateRestoSheet = usersToday.getDateCreated();
-                    SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
-                    String dateRegistered = f.format(dateRestoSheet);
+                    DateFormat myDate = new DateFormat();
+                    String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
 
                     if (dateRegistered.equals(today)) {
                         //2- la fiche resto du jour existe déjà donc on lui retire l'utilisateur
@@ -344,9 +344,10 @@ public class DetailRestoActivity extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
+
                     Date dateRestoSheet = usersToday.getDateCreated();
-                    SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
-                    String dateRegistered = f.format(dateRestoSheet);
+                    DateFormat myDate = new DateFormat();
+                    String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
                     if (dateRegistered.equals(today)) {
                         List<String> listUsersToday = new ArrayList<>();
                         listUsersToday = usersToday.getClientsTodayList();
@@ -472,9 +473,10 @@ RestaurantSmallHelper.getRestaurant(placeidResto).addOnSuccessListener(new OnSuc
     public void onSuccess(DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists()) {
             RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
+
             Date dateRestoSheet = usersToday.getDateCreated();
-            SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
-            String dateRegistered = f.format(dateRestoSheet);
+            DateFormat myDate = new DateFormat();
+            String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
 
             if (dateRegistered.equals(today)) {
                 List<String> listId = usersToday.getClientsTodayList();

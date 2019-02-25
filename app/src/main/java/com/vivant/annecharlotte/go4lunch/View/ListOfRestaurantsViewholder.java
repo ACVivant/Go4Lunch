@@ -119,10 +119,11 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     RestaurantSmall resto = documentSnapshot.toObject(RestaurantSmall.class);
-                    Date dateRestoSheet = resto.getDateCreated();
 
-                    SimpleDateFormat f = new SimpleDateFormat("ddMMyyyy", Locale.FRENCH);
-                    String dateRegistered = f.format(dateRestoSheet);
+                    Date dateRestoSheet = resto.getDateCreated();
+                    DateFormat myDate = new DateFormat();
+                    String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
+
                     Log.d(TAG, "onSuccess: name " + resto.getRestoName());
                     Log.d(TAG, "onSuccess: today " + today);
                     Log.d(TAG, "onSuccess: dateregistered " + dateRegistered);
