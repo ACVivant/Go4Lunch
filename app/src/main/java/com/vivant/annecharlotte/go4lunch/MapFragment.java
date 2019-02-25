@@ -29,6 +29,7 @@ import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantSmallHelper;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
 import com.vivant.annecharlotte.go4lunch.Models.RestaurantSmall;
+import com.vivant.annecharlotte.go4lunch.Utils.DateFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -84,7 +85,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_map, container, false);
         mGps = (ImageView) mView.findViewById(R.id.ic_gps);
-        today = getTodayDate();
+
+        DateFormat forToday = new DateFormat();
+        today = forToday.getTodayDate();
+
        /* myLatitude = 49.2335883;
         myLongitude = 2.8880683;*/
 
@@ -251,12 +255,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         Log.d(TAG, "onResponse: id " + ref);
         startActivity(WVIntent);
     }
-
-        public String getTodayDate() {
-            Date day = new Date();
-            SimpleDateFormat f = new SimpleDateFormat("ddMMyyyy", Locale.FRENCH);
-            return f.format(day);
-        }
 }
 
 

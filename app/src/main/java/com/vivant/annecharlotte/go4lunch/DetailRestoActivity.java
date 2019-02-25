@@ -35,6 +35,7 @@ import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.RestaurantSmall;
 import com.vivant.annecharlotte.go4lunch.Models.User;
+import com.vivant.annecharlotte.go4lunch.Utils.DateFormat;
 import com.vivant.annecharlotte.go4lunch.View.ListOfClientsAdapter;
 
 import java.sql.Timestamp;
@@ -98,7 +99,8 @@ public class DetailRestoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail_resto);
 
         context = this;
-        today = getTodayDate();
+        DateFormat forToday = new DateFormat();
+        today = forToday.getTodayDate();
 
         userId = UserHelper.getCurrentUserId();
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -278,11 +280,6 @@ public class DetailRestoActivity extends AppCompatActivity {
         }
     }
 
-    public String getTodayDate() {
-        Date day = new Date();
-        SimpleDateFormat f = new SimpleDateFormat("ddMMyyyy", Locale.FRENCH);
-        return f.format(day);
-    }
     //---------------------------------------------------------------------------------------------------
     // Update Firebase
     //---------------------------------------------------------------------------------------------------

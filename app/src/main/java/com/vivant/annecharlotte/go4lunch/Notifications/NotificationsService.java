@@ -19,6 +19,7 @@ import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.NeSertPlusARienJeCrois.Restaurant;
 import com.vivant.annecharlotte.go4lunch.Models.User;
 import com.vivant.annecharlotte.go4lunch.R;
+import com.vivant.annecharlotte.go4lunch.Utils.DateFormat;
 import com.vivant.annecharlotte.go4lunch.authentification.MainActivity;
 
 import java.text.SimpleDateFormat;
@@ -59,8 +60,9 @@ public class NotificationsService extends FirebaseMessagingService {
 
 
     private void checkIfNotifToday() {
+        DateFormat forToday = new DateFormat();
+        final String today = forToday.getTodayDate();
 
-        final String today = getTodayDate();
         // On vérifie que l'utilisateur a sélecitonné un resto pour aujourd'hui
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -175,9 +177,4 @@ public class NotificationsService extends FirebaseMessagingService {
         notificationManager.notify(NOTIFICATION_TAG, NOTIFICATION_ID, notificationBuilder.build());
     }
 
-    public String getTodayDate() {
-        Date day = new Date();
-        SimpleDateFormat f = new SimpleDateFormat("ddMMyyyy", Locale.FRENCH);
-        return f.format(day);
-    }
 }

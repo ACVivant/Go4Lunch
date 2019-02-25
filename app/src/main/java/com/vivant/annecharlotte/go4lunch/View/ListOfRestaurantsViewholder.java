@@ -17,6 +17,7 @@ import com.vivant.annecharlotte.go4lunch.ListResto.Rate;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.RestaurantSmall;
 import com.vivant.annecharlotte.go4lunch.R;
+import com.vivant.annecharlotte.go4lunch.Utils.DateFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -45,7 +46,9 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
 
         mContext = context;
         myLatLng = latLng;
-        today = getTodayDate();
+
+        DateFormat forToday = new DateFormat();
+        today = forToday.getTodayDate();
 
         Log.d(TAG, "ListOfRestaurantsViewholder: constructeur");
         nameTextView = (TextView) itemView.findViewById(R.id.restaurant_name);
@@ -137,11 +140,5 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
                 }
             }
         });
-    }
-
-    public String getTodayDate() {
-        Date day = new Date();
-        SimpleDateFormat f = new SimpleDateFormat("ddMMyyyy", Locale.FRENCH);
-        return f.format(day);
     }
 }
