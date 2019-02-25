@@ -177,8 +177,8 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
     // Method that get opening hours from GooglePlaces
     private int getOpeningHour(Period period){
         Calendar calendar = Calendar.getInstance();
-        //int currentHour = Integer.parseInt("" + calendar.get(Calendar.HOUR_OF_DAY) + calendar.get(Calendar.MINUTE));
-        int currentHour = 1000;
+        int currentHour = Integer.parseInt("" + calendar.get(Calendar.HOUR_OF_DAY) + calendar.get(Calendar.MINUTE));
+        //int currentHour = 1000; // pour les tests
         Log.d(TAG, "getOpeningHour: currentHour "+currentHour);
         int closureHour = Integer.parseInt(period.getClose().getTime());
         Log.d(TAG, "getOpeningHour: closureHour " +closureHour);
