@@ -448,7 +448,7 @@ public class DetailRestoActivity extends AppCompatActivity {
                 Log.d(TAG, "onSuccess: idresto "+idResto);
                 Log.d(TAG, "onSuccess: lastRestoDate "+ lastRestoDate);
 
-                if (restoToday != null && restoToday.length()>0&&lastRestoDate.equals(today)) { // On vérifie qu'il y a un resturant enregistré et qu'il a été enregistré aujourd'hui
+                if (restoToday != null && restoToday.length()>0&&lastRestoDate.equals(today)) { // On vérifie qu'il y a un restaurant enregistré et qu'il a été enregistré aujourd'hui
                     if (restoToday.equals(idToday)) {
                         myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
                     } else {
