@@ -62,6 +62,7 @@ public class ListWorkmatesFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
+        // Stocké dans le cache quelque part... voir comment gérer une mise à jour dynamique
         Query allUsers= UserHelper.getAllUsers()
                 .orderBy("restoTodayName", Query.Direction.DESCENDING);
 
