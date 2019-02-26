@@ -30,9 +30,13 @@ import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantSmallHelper;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
 import com.vivant.annecharlotte.go4lunch.Models.RestaurantSmall;
+import com.vivant.annecharlotte.go4lunch.Utils.DateFormat;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, DisplayNearbyPlaces {
 
@@ -65,6 +69,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     private double restoLng;
     private String restoId;
     private String restoPlaceId;
+    private String today;
 
     private Marker positionMarker;
 
@@ -83,6 +88,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_map, container, false);
         mGps = (ImageView) mView.findViewById(R.id.ic_gps);
+
+        DateFormat forToday = new DateFormat();
+        today = forToday.getTodayDate();
+
        /* myLatitude = 49.2335883;
         myLongitude = 2.8880683;*/
 
@@ -196,25 +205,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()){
-                    RestaurantSmall resto = documentSnapshot.toObject(RestaurantSmall.class);
-                    int nbreUsers = resto.getClientsTodayList().size();
-                    Log.d(TAG, "onSuccess: updatePin resto " +resto.getRestoName());
-                    Log.d(TAG, "onSuccess: updatePin nbre " +nbreUsers);
 
-                    if (nbreUsers>0) {
+                    RestaurantSmall resto = documentSnapshot.toObject(RestaurantSmall.class);
+                    Date dateRestoSheet = resto.getDateCreated();
+                    DateFormat myDate = new DateFormat();
+                    String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
+
+                    Log.d(TAG, "onSuccess: name " + resto.getRestoName());
+                    Log.d(TAG, "onSuccess: today " + today);
+                    Log.d(TAG, "onSuccess: dateregistered " + dateRegistered);
+
+                    if (dateRegistered.equals(today)) {
+                        int nbreUsers = resto.getClientsTodayList().size();
+                        Log.d(TAG, "onSuccess: updatePin resto " + resto.getRestoName());
+                        Log.d(TAG, "onSuccess: updatePin nbre " + nbreUsers);
+
+                        if (nbreUsers > 0) {
                             markerOptions.position(latLng)
                                     .title(name)
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                             //mMap.addMarker(markerOptions);
                             myMarker = mMap.addMarker(markerOptions);
                             myMarker.setTag(placeId);
-                    }else {
-                        markerOptions.position(latLng)
-                                .title(name)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                        //mMap.addMarker(markerOptions);
-                        myMarker = mMap.addMarker(markerOptions);
-                        myMarker.setTag(placeId);
+                        } else {
+                            markerOptions.position(latLng)
+                                    .title(name)
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                            //mMap.addMarker(markerOptions);
+                            myMarker = mMap.addMarker(markerOptions);
+                            myMarker.setTag(placeId);
+                        }
                     }
                 }else {
                     markerOptions.position(latLng)

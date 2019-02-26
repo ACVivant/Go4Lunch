@@ -18,8 +18,13 @@ import com.vivant.annecharlotte.go4lunch.BuildConfig;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.User;
 import com.vivant.annecharlotte.go4lunch.R;
+import com.vivant.annecharlotte.go4lunch.Utils.DateFormat;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,6 +39,7 @@ public class ListOfWorkmatesAdapter extends FirestoreRecyclerAdapter<User, ListO
     private RequestManager glide;
     Context context;
     private OnItemClickListener mListener;
+    private String today;
 
     public ListOfWorkmatesAdapter(@NonNull FirestoreRecyclerOptions<User> options, RequestManager glide) {
         super(options);
@@ -43,12 +49,24 @@ public class ListOfWorkmatesAdapter extends FirestoreRecyclerAdapter<User, ListO
     @Override
     protected void onBindViewHolder(@NonNull UserHolder userHolder, int i, @NonNull User user) {
         Log.d(TAG, "onBindViewHolder: username " + user.getUsername());
+        DateFormat forToday = new DateFormat();
+        today = forToday.getTodayDate();
+
+        String registeredDate = user.getRestoDate();
+        Log.d(TAG, "onBindViewHolder: registeredDate "+ registeredDate);
+        Log.d(TAG, "onBindViewHolder: email "+ user.getUserEmail());
+        Log.d(TAG, "onBindViewHolder: resto " + user.getRestoTodayName());
+        Log.d(TAG, "onBindViewHolder: today " + today);
+
         if (user.getRestoTodayName()!= null && !user.getRestoTodayName().isEmpty()) {
-            Log.d(TAG, "onBindViewHolder: username " + user.getUsername());
-            Log.d(TAG, "onBindViewHolder: userResto " + user.getRestoTodayName());
-            text = user.getUsername() + context.getString(R.string.decided) + user.getRestoTodayName();
-            userHolder.textUser.setTypeface(null, Typeface.NORMAL);
-            userHolder.textUser.setTextColor(context.getResources().getColor(R.color.colorMyBlack));
+
+            if(registeredDate.equals(today)){
+                Log.d(TAG, "onBindViewHolder: username " + user.getUsername());
+                Log.d(TAG, "onBindViewHolder: userResto " + user.getRestoTodayName());
+                text = user.getUsername() + context.getString(R.string.decided) + user.getRestoTodayName();
+                userHolder.textUser.setTypeface(null, Typeface.NORMAL);
+                userHolder.textUser.setTextColor(context.getResources().getColor(R.color.colorMyBlack));
+            }
         } else {
             Log.d(TAG, "onBindViewHolder: username " + user.getUsername());
             Log.d(TAG, "onBindViewHolder: pas encore décidé");

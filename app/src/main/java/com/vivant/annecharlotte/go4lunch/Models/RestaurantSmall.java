@@ -10,8 +10,8 @@ import java.util.List;
  * Created by Anne-Charlotte Vivant on 22/02/2019.
  */
 public class RestaurantSmall {
-    private String restoName;
-    private Date dateCreated;
+    private String restoName; private Date dateCreated;
+
     private List<String> clientsTodayList;
 
     public RestaurantSmall() { }
