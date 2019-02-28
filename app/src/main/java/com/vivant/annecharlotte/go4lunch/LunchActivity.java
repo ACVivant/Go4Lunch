@@ -211,10 +211,18 @@ public class LunchActivity extends BaseActivity
                 // return after the user has made a selection.
                 List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
 
+                // Define the region
+              RectangularBounds bounds = RectangularBounds.newInstance(
+                        new LatLng(currentLocation.getLatitude()-0.01, currentLocation.getLongitude()-0.01),
+                        new LatLng(currentLocation.getLatitude()+0.01, currentLocation.getLongitude()+0.01));
+
                 // Start the autocomplete intent.
                 Intent intent = new Autocomplete.IntentBuilder(
                         AutocompleteActivityMode.OVERLAY, fields)
+                        .setLocationBias(bounds)
+                        .setTypeFilter(TypeFilter.ESTABLISHMENT)
                         .build(this);
+
                 startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
 
                 return true;
@@ -230,7 +238,7 @@ public class LunchActivity extends BaseActivity
             if(resultCode == RESULT_OK){
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 Intent intent = new Intent(this, DetailRestoActivity.class);
-                intent.putExtra(IDRESTO, place.getId());
+                intent.putExtra(PLACEIDRESTO, place.getId());
                 startActivity(intent);
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
