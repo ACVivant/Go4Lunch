@@ -108,7 +108,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         Log.d(TAG, "updateNearbyPlaces: nom du premier resto " + placesToShowId.get(0).getName());
         Log.d(TAG, "updateNearbyPlaces: position" + myLatitude + ", " + myLongitude);
         displayNearbyPlaces(placesToShowId);
-        //initMap();
     }
 
     public void setUserLocation(LatLng userLatLng){
@@ -183,8 +182,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude, myLongitude), DEFAULT_ZOOM));
             }
         });
-
-        //displayNearbyPlaces(placesToShowId);
     }
     private void displayNearbyPlaces(List<GooglePlacesResult> tabIdResto) {
 
