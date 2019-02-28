@@ -18,8 +18,10 @@ import com.vivant.annecharlotte.go4lunch.Models.Details.Period;
 import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.Models.RestaurantSmall;
 import com.vivant.annecharlotte.go4lunch.R;
+import com.vivant.annecharlotte.go4lunch.Utils.DateFormat;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +37,7 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
     private float distance;
     private LatLng myLatLng;
     private boolean textOK = false;
+    private String today;
 
     private final static String TAG = "VIEWHOLDER";
 
@@ -112,17 +115,29 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
             this.photo.setImageResource(R.drawable.ic_menu_camera);
         }
 
+        // Nombre de collègues intéressés
+        // Mis à 0 par défaut
+        loversTextView.setText("0");
+        DateFormat forToday = new DateFormat();
+        today = forToday.getTodayDate();
+
         RestaurantSmallHelper.getRestaurant(restaurantDetail.getPlaceId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     RestaurantSmall resto = documentSnapshot.toObject(RestaurantSmall.class);
-                    // Nombre de collègues intéressés
-                    List<String> listUsers = resto.getClientsTodayList();
-                    String textnb = String.valueOf(listUsers.size());
-                    loversTextView.setText(textnb);
-                } else {
-                    loversTextView.setText("0");
+
+                    // Vérification de la date
+                    Date dateRestoSheet = resto.getDateCreated();
+                    DateFormat myDate = new DateFormat();
+                    String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
+
+                    if (dateRegistered.equals(today)) {
+                        // Nombre de collègues intéressés
+                        List<String> listUsers = resto.getClientsTodayList();
+                        String textnb = String.valueOf(listUsers.size());
+                        loversTextView.setText(textnb);
+                    }
                 }
             }
         });

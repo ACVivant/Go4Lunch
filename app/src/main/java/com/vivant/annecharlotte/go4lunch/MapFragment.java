@@ -201,6 +201,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         // On ajuste la couleur de l'épingle en fonction des choix des utilisateurs
         final MarkerOptions markerOptions = new MarkerOptions();
 
+        // Par défaut on met en rouge
+        markerOptions.position(latLng)
+                .title(name)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        //mMap.addMarker(markerOptions);
+        myMarker = mMap.addMarker(markerOptions);
+        myMarker.setTag(placeId);
+
+
         RestaurantSmallHelper.getRestaurant(placeId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -227,29 +236,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
                             //mMap.addMarker(markerOptions);
                             myMarker = mMap.addMarker(markerOptions);
                             myMarker.setTag(placeId);
-                        } else {
-                            markerOptions.position(latLng)
-                                    .title(name)
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                            //mMap.addMarker(markerOptions);
-                            myMarker = mMap.addMarker(markerOptions);
-                            myMarker.setTag(placeId);
                         }
-                    }else {
-                        markerOptions.position(latLng)
-                                .title(name)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                        //mMap.addMarker(markerOptions);
-                        myMarker = mMap.addMarker(markerOptions);
-                        myMarker.setTag(placeId);
                     }
-                }else {
-                    markerOptions.position(latLng)
-                            .title(name)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                    //mMap.addMarker(markerOptions);
-                    myMarker = mMap.addMarker(markerOptions);
-                    myMarker.setTag(placeId);
                 }
             }
         });

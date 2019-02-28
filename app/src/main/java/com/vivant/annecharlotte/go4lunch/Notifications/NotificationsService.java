@@ -46,6 +46,7 @@ public class NotificationsService extends FirebaseMessagingService {
     private String listNames="";
     private String myMessage;
     private boolean notifOk;
+    private Context context;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -85,7 +86,7 @@ public class NotificationsService extends FirebaseMessagingService {
     }
 
     private void createPersonalizedMessage() {
-        myMessage = getString(R.string.notif_message1);
+        context = this.getApplicationContext();
 
         // Je récupère l'id du restoToday de l'utilisateur
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -94,12 +95,6 @@ public class NotificationsService extends FirebaseMessagingService {
                 User user = documentSnapshot.toObject(User.class);
                 userName = user.getUsername();
                 restoTodayId=user.getRestoToday();
-
-                Log.d(TAG, "onSuccess: username " +userName);
-                Log.d(TAG, "onSuccess: restoId " + restoTodayId);
-
-                myMessage = getString(R.string.notif_message1) +userName;
-                Log.d(TAG, "onSuccess: myMessage1 " + myMessage);
 
                 // Je récupère le nom et l'adresse du resto correspondant
                 RestaurantHelper.getRestaurant(restoTodayId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -120,18 +115,20 @@ public class NotificationsService extends FirebaseMessagingService {
                                     String name = user.getUsername();
                                     listNames+= name +", ";
                                     Log.d(TAG, "onSuccess: listnames " +listNames);
+                                }
+                            });
+                        }
 
-                                    // Je crée le message
+                        // Je crée le message
+                        CreateNotifMessage message = new CreateNotifMessage();
+                        myMessage = message.create(context, R.string.notif_message1, restoTodayName, restoTodayAddress, R.string.notif_message2, listNames);
+/*                                    // Je crée le message
                                     myMessage = getString(R.string.notif_message1) + restoTodayName + " " + restoTodayAddress +"\n" + getString(R.string.notif_message2) + " " +listNames;
                                     Log.d(TAG, "createPersonalizedMessage: mymessage " +myMessage);
 
                                     if(myMessage.endsWith(", ")) myMessage = myMessage.substring(0, myMessage.length() - 2);
-                                    Log.d(TAG, "createPersonalizedMessage: mymessage sans virgule " +myMessage);
-
-                                    sendVisualNotification(myMessage);
-                                }
-                            });
-                        }
+                                    Log.d(TAG, "createPersonalizedMessage: mymessage sans virgule " +myMessage);*/
+                        sendVisualNotification(myMessage);
                     }
                 });
             }
