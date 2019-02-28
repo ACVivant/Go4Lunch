@@ -401,7 +401,7 @@ public class LunchActivity extends BaseActivity
                         if (task.isSuccessful()) {
                             Log.d(TAG, "onComplete: found location");
                             currentLocation = (Location) task.getResult();
-                            //Log.d(TAG, "onComplete: lat " + currentLocation.getLatitude() + " lng " +currentLocation.getLongitude());
+                            Log.d(TAG, "onComplete: lat " + currentLocation.getLatitude() + " lng " +currentLocation.getLongitude());
 
                             // On transmet la position de l'utilisateur au map fragment
                             fragment1.setUserLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));

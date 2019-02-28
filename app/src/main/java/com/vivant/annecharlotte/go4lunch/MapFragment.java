@@ -20,6 +20,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -39,6 +40,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, DisplayNearbyPlaces {
 
@@ -82,6 +85,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -94,9 +98,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         DateFormat forToday = new DateFormat();
         today = forToday.getTodayDate();
 
-       /* myLatitude = 49.2335883;
-        myLongitude = 2.8880683;*/
-
         return mView;
     }
 
@@ -107,6 +108,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         Log.d(TAG, "updateNearbyPlaces: nom du premier resto " + placesToShowId.get(0).getName());
         Log.d(TAG, "updateNearbyPlaces: position" + myLatitude + ", " + myLongitude);
         displayNearbyPlaces(placesToShowId);
+        //initMap();
     }
 
     public void setUserLocation(LatLng userLatLng){
@@ -134,6 +136,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         mMapView = (MapView) mView.findViewById(R.id.map);
 
         if (mMapView != null) {
+            Log.d(TAG, "initMap: mMapview non nul");
             mMapView.onCreate(null);
             mMapView.onResume();
             mMapView.getMapAsync(this);
@@ -147,6 +150,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         //Toast.makeText(this, "Map is ready", Toast.LENGTH_LONG).show();
         mMap = googleMap;
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        Log.d(TAG, "onMapReady: lat " +myLatitude + " lng "+ myLongitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude, myLongitude), DEFAULT_ZOOM));
 
         // Supprime les marqueurs par défaut de la carte pour avoir un fond de carte propre
@@ -179,6 +183,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude, myLongitude), DEFAULT_ZOOM));
             }
         });
+
+        //displayNearbyPlaces(placesToShowId);
     }
     private void displayNearbyPlaces(List<GooglePlacesResult> tabIdResto) {
 

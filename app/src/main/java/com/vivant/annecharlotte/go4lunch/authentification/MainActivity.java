@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity {
         Log.d(TAG, "showSnackBar: ");
     }
 
-    //Launch Sign-In Activity with Google
+/*    //Launch Sign-In Activity with Google
     private void startSignInActivityGoogle(){
         startActivityForResult(
                 AuthUI.getInstance()
@@ -136,7 +136,32 @@ public class MainActivity extends BaseActivity {
                         .build(),
                 RC_SIGN_IN_GOOGLE);
         Log.d(TAG, "startSignInActivityGoogle: ");
+    }*/
+
+    //Launch Sign-In Activity with Google
+    private void startSignInActivityGoogle(){
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(
+                                Arrays.asList(new AuthUI.IdpConfig.GoogleBuilder().build()))
+                        .setIsSmartLockEnabled(false, true)
+                        .build(),
+                RC_SIGN_IN_GOOGLE);
+        Log.d(TAG, "startSignInActivityGoogle: ");
     }
+
+/*    //Launch Sign-In Activity with Facebook
+    private void startSignInActivityFacebook(){
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(
+                                Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+                        .setIsSmartLockEnabled(false, true)
+                        .build(),
+                RC_SIGN_IN_FACEBOOK);
+    }*/
 
     //Launch Sign-In Activity with Facebook
     private void startSignInActivityFacebook(){
@@ -144,7 +169,7 @@ public class MainActivity extends BaseActivity {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(
-                                Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+                                Arrays.asList(new AuthUI.IdpConfig.FacebookBuilder().build()))
                         .setIsSmartLockEnabled(false, true)
                         .build(),
                 RC_SIGN_IN_FACEBOOK);
@@ -185,9 +210,11 @@ public class MainActivity extends BaseActivity {
                 Log.d(TAG, "handleResponseAfterSignIn: ERROR");
                 if (response == null) {
                     showSnackBar(this.mainActivityLinearLayout, getString(R.string.error_authentication_canceled));
-                } else if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+                } else if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
+                //} else if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                     showSnackBar(this.mainActivityLinearLayout, getString(R.string.error_no_internet));
-                } else if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                //} else if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                     showSnackBar(this.mainActivityLinearLayout, getString(R.string.error_unknown_error));
                 }
             }
