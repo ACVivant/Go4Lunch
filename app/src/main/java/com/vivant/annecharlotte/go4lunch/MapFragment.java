@@ -198,7 +198,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         Log.d(TAG, "updateLikeColorPin: passage");
         Log.d(TAG, "updateLikeColorPin: name " + name);
 
-        // On ajuste la couleur de l'épingle en fonction des likes de l'utilisateur
+        // On ajuste la couleur de l'épingle en fonction des choix des utilisateurs
         final MarkerOptions markerOptions = new MarkerOptions();
 
         RestaurantSmallHelper.getRestaurant(placeId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -235,6 +235,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
                             myMarker = mMap.addMarker(markerOptions);
                             myMarker.setTag(placeId);
                         }
+                    }else {
+                        markerOptions.position(latLng)
+                                .title(name)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                        //mMap.addMarker(markerOptions);
+                        myMarker = mMap.addMarker(markerOptions);
+                        myMarker.setTag(placeId);
                     }
                 }else {
                     markerOptions.position(latLng)
