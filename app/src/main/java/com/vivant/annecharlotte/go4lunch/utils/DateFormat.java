@@ -17,7 +17,6 @@ public class DateFormat {
 
     public String getRegisteredDate(Date myDate) {
         SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
-        String dateRegistered = f.format(myDate);
-        return  dateRegistered;
+        return  f.format(myDate);
     }
 }

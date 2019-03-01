@@ -2,7 +2,10 @@ package com.vivant.annecharlotte.go4lunch;
 
 import com.vivant.annecharlotte.go4lunch.utils.DateFormat;
 import org.junit.Test;
+
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import static org.junit.Assert.assertEquals;
 
@@ -13,7 +16,12 @@ public class DateFormatTest {
     @Test
     public void  dateFormat() {
         DateFormat dateTest = new DateFormat();
-        Date date = new Date(2018,12,13);
-        assertEquals("13122018", dateTest.getRegisteredDate(date));
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, 2018);
+        cal.set(Calendar.MONTH, 10); // Months are denombrated from 0 to 11, not from 1 to 12
+        cal.set(Calendar.DAY_OF_MONTH, 12);
+        Date date = cal.getTime();
+
+        assertEquals("20181112", dateTest.getRegisteredDate(date));
     }
 }
