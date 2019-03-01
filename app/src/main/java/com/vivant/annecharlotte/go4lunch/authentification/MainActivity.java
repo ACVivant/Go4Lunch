@@ -21,6 +21,7 @@ import com.vivant.annecharlotte.go4lunch.R;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class MainActivity extends BaseActivity {
 
@@ -48,9 +49,15 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         layoutLinks();
-        updateView();
-        //userId = this.getCurrentUser().getUid();
+       //userId = Objects.requireNonNull(this.getCurrentUser()).getUid();
        // printHashKey(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Update UI when activity is resuming
+        this.updateUIWhenResuming();
     }
 
     @Override
@@ -101,18 +108,19 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void updateView() {
-       /* if (this.getCurrentUser().getUid()!= null) {
-            //il trouve un utilisateur mêle quand firebase est vide!!!!
-            Log.d(TAG, "updateView: getCurrentUser " +this.getCurrentUser().getUid());
+    private void updateUIWhenResuming() {
+        if (this.isCurrentUserLogged()) {
+            Log.d(TAG, "updateUIWhenResuming: utilisateur connecté");
+            Log.d(TAG, "updateUIWhenResuming:: getCurrentUser " + Objects.requireNonNull(this.getCurrentUser()).getUid());
             alreadyBtn.setVisibility(View.VISIBLE);
             facebookBtn.setVisibility(View.GONE);
             googleBtn.setVisibility(View.GONE);
-        } else {*/
+        } else {
+            Log.d(TAG, "updateUIWhenResuming: utilisateur non connecté");
             alreadyBtn.setVisibility(View.GONE);
             facebookBtn.setVisibility(View.VISIBLE);
             googleBtn.setVisibility(View.VISIBLE);
-       // }
+        }
     }
 
     // --------------------
@@ -124,19 +132,6 @@ public class MainActivity extends BaseActivity {
         Snackbar.make(linearLayout, message, Snackbar.LENGTH_SHORT).show();
         Log.d(TAG, "showSnackBar: ");
     }
-
-/*    //Launch Sign-In Activity with Google
-    private void startSignInActivityGoogle(){
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(
-                                Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-                        .setIsSmartLockEnabled(false, true)
-                        .build(),
-                RC_SIGN_IN_GOOGLE);
-        Log.d(TAG, "startSignInActivityGoogle: ");
-    }*/
 
     //Launch Sign-In Activity with Google
     private void startSignInActivityGoogle(){
@@ -150,18 +145,6 @@ public class MainActivity extends BaseActivity {
                 RC_SIGN_IN_GOOGLE);
         Log.d(TAG, "startSignInActivityGoogle: ");
     }
-
-/*    //Launch Sign-In Activity with Facebook
-    private void startSignInActivityFacebook(){
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(
-                                Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
-                        .setIsSmartLockEnabled(false, true)
-                        .build(),
-                RC_SIGN_IN_FACEBOOK);
-    }*/
 
     //Launch Sign-In Activity with Facebook
     private void startSignInActivityFacebook(){
@@ -181,9 +164,8 @@ public class MainActivity extends BaseActivity {
     // 1 - Http request that create user in firestore
 
     private void createUserInFirestore(){
-        userId = this.getCurrentUser().getUid();
-        if (this.getCurrentUser() != null && !this.getCurrentUser().getUid().equals(userId)){
-            String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
+        if (isCurrentUserLogged()){
+            String urlPicture = (Objects.requireNonNull(this.getCurrentUser()).getPhotoUrl() != null) ? Objects.requireNonNull(this.getCurrentUser().getPhotoUrl()).toString() : null;
             String username = this.getCurrentUser().getDisplayName();
             String uid = this.getCurrentUser().getUid();
             String userEmail = this.getCurrentUser().getEmail();
@@ -210,7 +192,7 @@ public class MainActivity extends BaseActivity {
                 Log.d(TAG, "handleResponseAfterSignIn: ERROR");
                 if (response == null) {
                     showSnackBar(this.mainActivityLinearLayout, getString(R.string.error_authentication_canceled));
-                } else if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
+                } else if (Objects.requireNonNull(response.getError()).getErrorCode() == ErrorCodes.NO_NETWORK) {
                 //} else if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                     showSnackBar(this.mainActivityLinearLayout, getString(R.string.error_no_internet));
                 } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
@@ -225,11 +207,11 @@ public class MainActivity extends BaseActivity {
     private void startLunchActivity() {
         Log.d(TAG, "startLunchActivity: ");
         Intent intent = new Intent(this, LunchActivity.class);
-        intent.putExtra(USER_ID, userId);
+        intent.putExtra(USER_ID, Objects.requireNonNull(this.getCurrentUser()).getUid());
         startActivity(intent);
     }
 
-    public static void printHashKey(Context context) {
+   /* public static void printHashKey(Context context) {
         try {
             final PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
             for (android.content.pm.Signature signature : info.signatures) {
@@ -241,6 +223,6 @@ public class MainActivity extends BaseActivity {
         } catch (Exception e) {
             Log.e("AppLog", "error:", e);
         }
-    }
+    }*/
 }
 

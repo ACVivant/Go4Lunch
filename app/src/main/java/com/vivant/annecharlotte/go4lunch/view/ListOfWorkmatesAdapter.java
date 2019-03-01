@@ -57,8 +57,8 @@ public class ListOfWorkmatesAdapter extends FirestoreRecyclerAdapter<User, ListO
         userHolder.textUser.setTypeface(null, Typeface.ITALIC);
         userHolder.textUser.setTextColor(context.getResources().getColor(R.color.colorMyGrey));
 
+        // Spécifications si un restaurant a été choisi pour aujourd'hui
         if (user.getRestoTodayName()!= null && !user.getRestoTodayName().isEmpty()) {
-
             if(registeredDate.equals(today)){
                 Log.d(TAG, "onBindViewHolder: username " + user.getUsername());
                 Log.d(TAG, "onBindViewHolder: userResto " + user.getRestoTodayName());

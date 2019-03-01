@@ -194,10 +194,12 @@ public class ProfileActivity extends BaseActivity {
             public void onSuccess(Void aVoid) {
                 switch (origin){
                     case SIGN_OUT_TASK:
-                        finish();
+                        //finish();
+                        startMainActivity();
                         break;
                     case DELETE_USER_TASK:
-                        finish();
+                        //finish();
+                        startMainActivity();
                         break;
                     //Hiding Progress bar after request completed
                     case UPDATE_USERNAME:

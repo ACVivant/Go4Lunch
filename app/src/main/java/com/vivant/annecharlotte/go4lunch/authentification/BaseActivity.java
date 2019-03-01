@@ -37,7 +37,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void configureToolbar(){
         ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     // --------------------
