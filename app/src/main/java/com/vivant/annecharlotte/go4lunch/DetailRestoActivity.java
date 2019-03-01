@@ -26,25 +26,21 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
-import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
-import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantSmallHelper;
-import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
-import com.vivant.annecharlotte.go4lunch.ListResto.Rate;
-import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
-import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
-import com.vivant.annecharlotte.go4lunch.Models.RestaurantSmall;
-import com.vivant.annecharlotte.go4lunch.Models.User;
-import com.vivant.annecharlotte.go4lunch.Utils.DateFormat;
-import com.vivant.annecharlotte.go4lunch.View.ListOfClientsAdapter;
+import com.vivant.annecharlotte.go4lunch.api.ApiClient;
+import com.vivant.annecharlotte.go4lunch.api.ApiInterface;
+import com.vivant.annecharlotte.go4lunch.firestore.RestaurantSmallHelper;
+import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
+import com.vivant.annecharlotte.go4lunch.listResto.Rate;
+import com.vivant.annecharlotte.go4lunch.models.Details.ListDetailResult;
+import com.vivant.annecharlotte.go4lunch.models.Details.RestaurantDetailResult;
+import com.vivant.annecharlotte.go4lunch.models.RestaurantSmall;
+import com.vivant.annecharlotte.go4lunch.models.User;
+import com.vivant.annecharlotte.go4lunch.utils.DateFormat;
+import com.vivant.annecharlotte.go4lunch.view.ListOfClientsAdapter;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class DetailRestoActivity extends AppCompatActivity {
 
@@ -133,7 +129,6 @@ public class DetailRestoActivity extends AppCompatActivity {
 
         call = apiService.getRestaurantDetail(BuildConfig.apikey, placeidResto, "name,rating,photo,url,formatted_phone_number,website,address_component,id,geometry");
 
-        // Toujours ce bug avec opening_hours qu'il faudra rajouter
         call.enqueue(new Callback<ListDetailResult>() {
                          @Override
                          public void onResponse(Call<ListDetailResult> call, Response<ListDetailResult> response) {

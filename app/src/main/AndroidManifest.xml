@@ -20,11 +20,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Chat.ChatActivity"
+
+        <activity android:name=".chat.ChatActivity"
             android:label="@string/toolbar_title_chat_activity"
             android:parentActivityName=".LunchActivity"></activity>
         <!-- NOTIFICATION SERVICE -->
-        <service android:name=".Notifications.NotificationsService">
+        <service android:name=".notifications.NotificationsService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

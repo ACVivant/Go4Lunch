@@ -1,6 +1,6 @@
 package com.vivant.annecharlotte.go4lunch;
 
-import com.vivant.annecharlotte.go4lunch.Utils.DateFormat;
+import com.vivant.annecharlotte.go4lunch.utils.DateFormat;
 import org.junit.Test;
 import java.util.Date;
 

@@ -15,7 +15,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.material.snackbar.Snackbar;
-import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
+import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.LunchActivity;
 import com.vivant.annecharlotte.go4lunch.R;
 
@@ -55,7 +55,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public int getFragmentLayout() {
-        Log.d(TAG, "getFragmentLayout: ");
+        Log.d(TAG, "getFragmentLayout");
         return R.layout.activity_main;
     }
 

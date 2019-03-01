@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.vivant.annecharlotte.go4lunch.Chat.ChatActivity">
+    tools:context="com.vivant.annecharlotte.go4lunch.chat.ChatActivity">
 
     <!-- BUTTONS CHAT CONTAINER -->
     <LinearLayout

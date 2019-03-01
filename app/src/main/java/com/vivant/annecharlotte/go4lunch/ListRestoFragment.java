@@ -18,17 +18,14 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
-import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
-import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
-import com.vivant.annecharlotte.go4lunch.Models.Details.ListDetailResult;
-import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
-import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
-import com.vivant.annecharlotte.go4lunch.View.ListOfRestaurantsAdapter;
+import com.vivant.annecharlotte.go4lunch.api.ApiClient;
+import com.vivant.annecharlotte.go4lunch.api.ApiInterface;
+import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
+import com.vivant.annecharlotte.go4lunch.models.Details.ListDetailResult;
+import com.vivant.annecharlotte.go4lunch.models.Details.RestaurantDetailResult;
+import com.vivant.annecharlotte.go4lunch.models.Nearby.GooglePlacesResult;
+import com.vivant.annecharlotte.go4lunch.view.ListOfRestaurantsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

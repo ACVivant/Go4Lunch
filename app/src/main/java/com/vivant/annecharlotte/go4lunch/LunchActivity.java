@@ -10,23 +10,16 @@ import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.model.AutocompletePrediction;
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
@@ -37,14 +30,14 @@ import android.util.Log;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.vivant.annecharlotte.go4lunch.Api.ApiClient;
-import com.vivant.annecharlotte.go4lunch.Api.ApiInterface;
-import com.vivant.annecharlotte.go4lunch.Chat.ChatActivity;
-import com.vivant.annecharlotte.go4lunch.Firestore.UserHelper;
-import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
-import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
-import com.vivant.annecharlotte.go4lunch.Models.Nearby.NearbyPlacesList;
-import com.vivant.annecharlotte.go4lunch.Models.User;
+import com.vivant.annecharlotte.go4lunch.api.ApiClient;
+import com.vivant.annecharlotte.go4lunch.api.ApiInterface;
+import com.vivant.annecharlotte.go4lunch.chat.ChatActivity;
+import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
+import com.vivant.annecharlotte.go4lunch.models.Details.RestaurantDetailResult;
+import com.vivant.annecharlotte.go4lunch.models.Nearby.GooglePlacesResult;
+import com.vivant.annecharlotte.go4lunch.models.Nearby.NearbyPlacesList;
+import com.vivant.annecharlotte.go4lunch.models.User;
 import com.vivant.annecharlotte.go4lunch.authentification.BaseActivity;
 import com.vivant.annecharlotte.go4lunch.authentification.ProfileActivity;
 
@@ -70,13 +63,9 @@ import android.widget.Toast;
 import com.google.android.libraries.places.api.Places;
 
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class LunchActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -118,10 +107,6 @@ public class LunchActivity extends BaseActivity
     private Context mContext;
 
     private boolean mLocationPermissionGranted = false;
-
- //   private PlaceAutocompleteFragment mPlaceAutocompleteFragment;
-
-    private String hoursMonday, hoursTuesday, hoursWednesday, hoursThursday, hoursFriday, hoursSaturday, hoursSunday;
 
     private int radius;
     private String type;

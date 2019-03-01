@@ -18,9 +18,7 @@ import android.widget.ImageView;
 //import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -29,19 +27,15 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.vivant.annecharlotte.go4lunch.Firestore.RestaurantSmallHelper;
-import com.vivant.annecharlotte.go4lunch.Models.Details.RestaurantDetailResult;
-import com.vivant.annecharlotte.go4lunch.Models.Nearby.GooglePlacesResult;
-import com.vivant.annecharlotte.go4lunch.Models.RestaurantSmall;
-import com.vivant.annecharlotte.go4lunch.Utils.DateFormat;
+import com.vivant.annecharlotte.go4lunch.firestore.RestaurantSmallHelper;
+import com.vivant.annecharlotte.go4lunch.models.Details.RestaurantDetailResult;
+import com.vivant.annecharlotte.go4lunch.models.Nearby.GooglePlacesResult;
+import com.vivant.annecharlotte.go4lunch.models.RestaurantSmall;
+import com.vivant.annecharlotte.go4lunch.utils.DateFormat;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, DisplayNearbyPlaces {
 

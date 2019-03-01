@@ -1,9 +1,8 @@
 package com.vivant.annecharlotte.go4lunch;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 
-import com.vivant.annecharlotte.go4lunch.Chat.ChatActivity;
+import com.vivant.annecharlotte.go4lunch.chat.ChatActivity;
 import com.vivant.annecharlotte.go4lunch.authentification.ProfileActivity;
 
 import org.junit.Before;
@@ -12,9 +11,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowAlertDialog;
+import org.robolectric.annotation.Config;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.robolectric.Shadows.shadowOf;
@@ -23,6 +21,7 @@ import static org.robolectric.Shadows.shadowOf;
  * Created by Anne-Charlotte Vivant on 28/02/2019.
  */
 @RunWith(RobolectricTestRunner.class)
+@Config(manifest= Config.NONE)
 public class LunchActivityRobotTest {
     private LunchActivity activity;
 
