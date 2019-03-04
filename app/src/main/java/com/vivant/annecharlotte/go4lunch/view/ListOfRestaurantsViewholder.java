@@ -28,7 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * Created by Anne-Charlotte Vivant on 06/02/2019.
  */
-class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
+public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
 
     private TextView nameTextView, addressTextView, openTextView, proximityTextView, loversTextView;
     private ImageView star1, star2, star3, photo;
@@ -36,7 +36,7 @@ class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
     private boolean textOK = false;
     private String today;
 
-    ListOfRestaurantsViewholder(View itemView, final ListOfRestaurantsAdapter.OnItemClickedListener listener, Context context, LatLng latLng) {
+    public ListOfRestaurantsViewholder(View itemView, final ListOfRestaurantsAdapter.OnItemClickedListener listener, Context context, LatLng latLng) {
         super(itemView);
 
         Context mContext = context;
@@ -148,11 +148,13 @@ class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
                 String textTime;
                 if(period.getClose().getDay() == calendar.get(Calendar.DAY_OF_WEEK)-1&&!textOK) {
                     //textOK allows you to manage cases where there are several opening hours for the same day
+                    DateFormat hour = new DateFormat();
                     switch (getOpeningHour(period)) {
                         case 1:
                                 openTextView.setTextColor(openTextView.getResources().getColor(R.color.colorPrimary));
                                 text = openTextView.getResources().getString(R.string.open_at);
-                                textTime = getFormat(period.getOpen().getTime());
+                                textTime = hour.getHoursFormat(period.getOpen().getTime());
+                                //textTime = getFormat(period.getOpen().getTime());
                                 text+=textTime;
                                 openTextView.setText(text);
 
@@ -160,7 +162,9 @@ class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
                         case 2:
                                 openTextView.setTextColor(openTextView.getResources().getColor(R.color.colorMyGreen));
                                 text = openTextView.getResources().getString(R.string.open_until);
-                            textTime = getFormat(period.getClose().getTime());
+
+                                textTime = hour.getHoursFormat(period.getClose().getTime());
+                            //textTime = getFormat(period.getClose().getTime());
                             text+=textTime;
                                 openTextView.setText(text);
                             break;
@@ -173,7 +177,7 @@ class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
         }
     }
 
-    private String getFormat(String hour) {
+/*    public String getFormat(String hour) {
         //formats the hours for the display
         String time;
         if (hour.length()==2) {
@@ -182,7 +186,7 @@ class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
             time = hour.substring(0,2)+":"+ hour.substring(2,4);
         }
         return time;
-    }
+    }*/
 
     // Method that get opening hours from GooglePlaces
     private int getOpeningHour(Period period){

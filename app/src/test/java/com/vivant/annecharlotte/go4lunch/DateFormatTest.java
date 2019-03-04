@@ -13,15 +13,27 @@ import static org.junit.Assert.assertEquals;
  * Created by Anne-Charlotte Vivant on 28/02/2019.
  */
 public class DateFormatTest {
+        DateFormat test = new DateFormat();
+
     @Test
     public void  dateFormat() {
-        DateFormat dateTest = new DateFormat();
+
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2018);
         cal.set(Calendar.MONTH, 10); // Months are denombrated from 0 to 11, not from 1 to 12
         cal.set(Calendar.DAY_OF_MONTH, 12);
         Date date = cal.getTime();
 
-        assertEquals("20181112", dateTest.getRegisteredDate(date));
+        assertEquals("20181112", test.getRegisteredDate(date));
+    }
+
+    @Test
+    public void hourFormat_when_length2() {
+        assertEquals("9:30", test.getHoursFormat("930"));
+    }
+
+    @Test
+    public void hourFormat_when_length3() {
+        assertEquals("09:30", test.getHoursFormat("0930"));
     }
 }

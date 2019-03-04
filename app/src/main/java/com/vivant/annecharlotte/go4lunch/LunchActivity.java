@@ -93,6 +93,11 @@ public class LunchActivity extends BaseActivity
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
+
+    public Location getCurrentLocation() {
+        return currentLocation;
+    }
+
     private Location currentLocation;
 
     private NavigationView navigationView;
@@ -320,7 +325,6 @@ public class LunchActivity extends BaseActivity
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
-                    Log.d(TAG, "onResponse: request failed");
                 }
             }
 
@@ -345,7 +349,6 @@ public class LunchActivity extends BaseActivity
                    } else {
                        Intent WVIntent = new Intent(mContext, DetailRestoActivity.class);
                        WVIntent.putExtra(PLACEIDRESTO, lunch);
-                       Log.d(TAG, "onResponse: id " + lunch);
                        startActivity(WVIntent);
                    }
                }
@@ -368,7 +371,7 @@ public class LunchActivity extends BaseActivity
     //----------------------------------------------------------------------------------------------------------------------------
     private void getLocationPermission() {
         FusedLocationProviderClient mFusedLocationProviderClient;
-        Log.d(TAG, "getLocationPermission: getting location permissions");
+        //getLocationPermission: getting location permissions
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
         if (ContextCompat.checkSelfPermission(this, FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -381,7 +384,7 @@ public class LunchActivity extends BaseActivity
                     @Override
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
-                            // onComplete: found location"
+                            // onComplete: found location
                             currentLocation = (Location) task.getResult();
                             // We pass the user's position to the fragment map
                             assert currentLocation != null;

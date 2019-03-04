@@ -1,0 +1,124 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Go4Lunch</string>
+    <string name="main_activity_description">Find a nice restaurant and invite your co-workers for lunch.</string>
+
+    <string name="login_facebook">"Sign in with Facebook"</string>
+    <string name="login_google">"Sign in with Google"</string>
+    <string name="login_already">"Go!"</string>
+
+    <!-- NAVIGATION DRAWER -->
+    <string name="ND_title">"Go4Lunch"</string>
+    <string name="ND_username">"name"</string>
+    <string name="ND_email">"email"</string>
+    <string name="ND_lunch_title">"My lunch"</string>
+    <string name="ND_chat_title">"Chat"</string>
+    <string name="ND_settings_title">"Settings"</string>
+    <string name="ND_logout_title">"Logout"</string>
+
+    <!-- BOTTOM BAR NAVIGATION -->
+    <string name="BBN_map_title">"map"</string>
+    <string name="BBN_list_title">"list"</string>
+    <string name="BBN_workmates_title">"workmates"</string>
+
+    <!-- TOP BAR NAVIGATION -->
+    <string name="TB_title">"I'm hungry!"</string>
+    <string name="TB_search_text">"Search restaurants"</string>
+    <string name="TB_workmates">"Available workmates"</string>
+
+    <!-- NOTIFICATION SERVICE -->
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="notification_title">"There is a notification for you!"</string>
+
+    <!-- MAIN ACTIVITY -->
+    <string name="error_not_connected">You should be connected</string>
+    <string name="error_authentication_canceled">"Ahthentication cancelled"</string>
+    <string name="error_no_internet">"no connexion"</string>
+    <string name="error_unknown_error">"An unknown error has occurred"</string>
+    <string name="connection_succeed">Successful authentication !</string>
+    <string name="button_login_text_logged">Display Profil</string>
+    <string name="button_login_text_not_logged">Log in</string>
+
+    <!-- LOGIN ACTIVITY -->
+    <string name="toolbar_title_login_activity">Your profil</string>
+    <string name="text_input_username">Username</string>
+    <string name="text_view_email">Email:</string>
+    <string name="button_update_account">Update my name</string>
+    <string name="button_delete_account">Delete my account</string>
+    <string name="button_sign_out_account">Sign Out</string>
+    <string name="info_no_email_found">No email address</string>
+    <string name="info_no_username_found">No username</string>
+    <string name="popup_message_confirmation_delete_account">Are you sure you want to delete your account?</string>
+    <string name="popup_message_choice_yes">Yes !</string>
+    <string name="popup_message_choice_no">No</string>
+
+    <!-- FACEBOOK PURPOSE -->
+    <string name="facebook_app_id">1031726573687275</string>
+    <string name="fb_login_protocol_scheme">fb1031726573687275</string>
+    <string name="title_activity_lunch">LunchActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- PHONE CALL -->
+    <string name="no_phone_number">"Phone number is not available"</string>
+    <string name="no_permission_for_call">"Go4Lunch does not have permission to make calls"</string>
+
+    <!-- WEBSITE -->
+    <string name="no_website">"The website address is not available"</string>
+
+    <!--WORKMATES -->
+    <string name="not_decided_ex">"Gaspard has not decided yet."</string>
+    <string name="not_decided">" has not decided yet."</string>
+    <string name="decided">" eat at the restaurant:"</string>
+
+    <!--DETAIL -->
+    <string name="isjoining">" is joining!"</string>
+    <string name="no_hours">"Schedules are not available.</string>
+    <string name="open_at">"Open at </string>
+    <string name="open_until">"Open until "</string>
+    <string name="closed">Closed</string>
+    <string name="closed_today">"Closed today"</string>
+    <string name="always_open">Open 24/7</string>
+
+    <!--LISTRESTO -->
+    <string name="no_openinghours">"Schedules are not available."</string>
+
+    <!-- LUNCH ACTIVITY -->
+    <string name="no_lunch">"You have not chosen a restaurant yet!"</string>
+    <string name="error">"An error has occurred"</string>
+
+    <!-- SETTINGS ACTIVITY -->
+    <string name="radius_text">"How far do you want to search? (in meters)"</string>
+    <string-array name="radius_array">
+        <item>200</item>
+        <item>500</item>
+        <item>1000</item>
+    </string-array>
+
+    <string name="type_text">"What kind of establishments are you looking for?"</string>
+    <string-array name="type_array">
+        <item>restaurant</item>
+        <item>bar</item>
+        <item>cafe</item>
+    </string-array>
+
+    <string name="notifications_onoff">"Would you like to receive a notification at midday telling you about the happy colleagues who will join you?"</string>
+
+    <string name="newsearch">"Relaunch the search"</string>
+
+    <!-- NOTIFICATION ACTIVITY -->
+    <string name="notif_title">"My restaurant"</string>
+    <string name="notif_message1">"Today your meal break will be at: "</string>
+    <string name="notif_message2">"You will have a good time with:  "</string>
+
+    <!-- CHAT ACTIVITY -->
+    <string name="toolbar_title_chat_activity">Chats</string>
+    <string name="text_input_title_user_chat_activity">Compose your message</string>
+    <string name="button_title_user_chat_activity">SEND</string>
+    <string name="text_view_user_chat_error">This thread contains for the moment no message</string>
+    <string name="popup_title_permission_files_access">This application needs permission to work.</string>
+    <string name="toast_title_no_image_chosen">"No image chosen …"</string>
+</resources>

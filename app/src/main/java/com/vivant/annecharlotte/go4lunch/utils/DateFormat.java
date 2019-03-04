@@ -19,4 +19,14 @@ public class DateFormat {
         SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
         return  f.format(myDate);
     }
+
+    public String getHoursFormat(String hour) {
+        String time;
+        if (hour.length()==3) {
+            time = hour.substring(0,1) + ":" + hour.substring(1);
+        } else {
+            time = hour.substring(0,2)+":"+ hour.substring(2);
+        }
+        return time;
+    }
 }
