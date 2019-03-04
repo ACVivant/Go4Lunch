@@ -66,6 +66,7 @@ import com.google.android.libraries.places.api.Places;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class LunchActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -82,10 +83,6 @@ public class LunchActivity extends BaseActivity
     Fragment active = fragment1;
 
     private String TAG = "LUNCHACTIVITY";
-    private static final String LISTNEARBY = "ListOfNearbyRestaurants";
-    private static final String MYLAT = "UserCurrentLatitude";
-    private static final String MYLNG = "UserCurrentLongitude";
-    private String IDRESTO = "resto_id";
     private String PLACEIDRESTO = "resto_place_id";
 
     public static final String SHARED_PREFS = "SharedPrefsPerso";
@@ -96,40 +93,35 @@ public class LunchActivity extends BaseActivity
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location currentLocation;
 
     private NavigationView navigationView;
-
-    private Call<NearbyPlacesList> call;
     private List<GooglePlacesResult> results;
-    private RestaurantDetailResult mResto;
     private Context mContext;
 
     private boolean mLocationPermissionGranted = false;
 
     private int radius;
     private String type;
-    private ArrayList<String> tabId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_lunch);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         fm.beginTransaction().add(R.id.lunch_container, fragment3, "3").hide(fragment3).commit();
@@ -143,27 +135,27 @@ public class LunchActivity extends BaseActivity
         loadPrefs();
         layoutLinks();
         updateUIWhenCreating();
-        getLocationPermission(); // Enchaine sur la recherche des restos à proximité
-
-        Log.d(TAG, "onCreate");
+        getLocationPermission(); // Follow on finding nearby restaurants
     }
 
     public void setActionBarTitle(String bibi) {
-        getSupportActionBar().setTitle(bibi);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(bibi);
     }
 
     private void loadPrefs() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
         String radiusString = sharedPreferences.getString(RADIUS_PREFS, "500");
-        radius  = Integer.parseInt(radiusString);
+        if (radiusString != null) {
+            radius  = Integer.parseInt(radiusString);
+        }
         type = sharedPreferences.getString(TYPE_PREFS, "restaurant");
     }
 
     protected void layoutLinks() {
-        nameTextView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.ND_name_textView);
-        emailTextView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.ND_email_textView);
-        photoImageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.ND_photo_imageView);
+        nameTextView = navigationView.getHeaderView(0).findViewById(R.id.ND_name_textView);
+        emailTextView =  navigationView.getHeaderView(0).findViewById(R.id.ND_email_textView);
+        photoImageView = navigationView.getHeaderView(0).findViewById(R.id.ND_photo_imageView);
     }
 
     @Override
@@ -171,7 +163,7 @@ public class LunchActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -226,15 +218,16 @@ public class LunchActivity extends BaseActivity
                 intent.putExtra(PLACEIDRESTO, place.getId());
                 startActivity(intent);
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                Status status = Autocomplete.getStatusFromIntent(data);
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
             } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
             }
         }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -252,7 +245,7 @@ public class LunchActivity extends BaseActivity
             startActivity(intent);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -285,12 +278,9 @@ public class LunchActivity extends BaseActivity
     //  Update UI when activity is creating
     private void updateUIWhenCreating(){
 
-        Log.d(TAG, "updateUIWhenCreating: début");
         if (this.getCurrentUser() != null){
-
             //Get picture URL from Firebase
             if (this.getCurrentUser().getPhotoUrl() != null) {
-                Log.d(TAG, "updateUIWhenCreating: photo");
                 Glide.with(this)
                         .load(this.getCurrentUser().getPhotoUrl())
                         .apply(RequestOptions.circleCropTransform())
@@ -308,33 +298,25 @@ public class LunchActivity extends BaseActivity
     }
 
     private void searchNearbyRestaurants(){
-        Log.d(TAG, "searchNearbyRestaurants: entrée");
         String keyword = "";
         String key = BuildConfig.apikey;
         String lat = String.valueOf(currentLocation.getLatitude());
         String lng = String.valueOf(currentLocation.getLongitude());
 
         String location = lat+","+lng;
-        Log.d(TAG, "searchNearbyRestaurants: lat, lng " + location);
 
-
+        Call<NearbyPlacesList> call;
         ApiInterface googleMapService = ApiClient.getClient().create(ApiInterface.class);
-        Log.d(TAG, "searchNearbyRestaurants: radius "+ radius);
-        Log.d(TAG, "searchNearbyRestaurants: type " +type);
         call = googleMapService.getNearBy(location, radius, type, keyword, key);
         call.enqueue(new Callback<NearbyPlacesList>() {
             @Override
-            public void onResponse(Call<NearbyPlacesList> call, Response<NearbyPlacesList> response) {
+            public void onResponse(@NonNull Call<NearbyPlacesList> call, @NonNull Response<NearbyPlacesList> response) {
                 if (response.isSuccessful()) {
-                    results = response.body().getResults();
-
-                    Log.d(TAG, "searchNearbyRestaurants onResponse: " + results.get(1).getName());
-                    Log.d(TAG, "searchNearbyRestaurants onResponse: " + results.get(1).getId());
-                    Log.d(TAG, "searchNearbyRestaurants onResponse: " + results.get(1).getPlaceId());
-                    Log.d(TAG, "searchNearbyRestaurants onResponse: " + results.get(1).getGeometry().getLocation().getLat());
-
+                    if (response.body() != null) {
+                        results = response.body().getResults();
                     fragment1.updateNearbyPlaces(results);
                     fragment2.updateNearbyPlaces(results);
+                    }
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
@@ -343,9 +325,8 @@ public class LunchActivity extends BaseActivity
             }
 
             @Override
-            public void onFailure(Call<NearbyPlacesList> call, Throwable t) {
+            public void onFailure(@NonNull Call<NearbyPlacesList> call, @NonNull Throwable t) {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-                Log.d(TAG, "onFailure: " +t.getMessage());
             }
         });
     }
@@ -356,15 +337,17 @@ public class LunchActivity extends BaseActivity
            @Override
            public void onSuccess(DocumentSnapshot documentSnapshot) {
                User myUser = documentSnapshot.toObject(User.class);
-               String lunch = myUser.getRestoToday();
-               if (lunch.equals("")) {
-                   Toast.makeText(mContext, R.string.no_lunch, Toast.LENGTH_LONG).show();
-               } else {
-                   Intent WVIntent = new Intent(mContext, DetailRestoActivity.class);
-                   //WVIntent.putExtra(IDRESTO, lunch);
-                   WVIntent.putExtra(PLACEIDRESTO,lunch );
-                   Log.d(TAG, "onResponse: id " + lunch);
-                   startActivity(WVIntent);
+               String lunch;
+               if (myUser != null) {
+                   lunch = myUser.getRestoToday();
+                   if (lunch.equals("")) {
+                       Toast.makeText(mContext, R.string.no_lunch, Toast.LENGTH_LONG).show();
+                   } else {
+                       Intent WVIntent = new Intent(mContext, DetailRestoActivity.class);
+                       WVIntent.putExtra(PLACEIDRESTO, lunch);
+                       Log.d(TAG, "onResponse: id " + lunch);
+                       startActivity(WVIntent);
+                   }
                }
            }
        });
@@ -384,6 +367,7 @@ public class LunchActivity extends BaseActivity
     // Verify permissions
     //----------------------------------------------------------------------------------------------------------------------------
     private void getLocationPermission() {
+        FusedLocationProviderClient mFusedLocationProviderClient;
         Log.d(TAG, "getLocationPermission: getting location permissions");
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
@@ -397,11 +381,10 @@ public class LunchActivity extends BaseActivity
                     @Override
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
-                            Log.d(TAG, "onComplete: found location");
+                            // onComplete: found location"
                             currentLocation = (Location) task.getResult();
-                            Log.d(TAG, "onComplete: lat " + currentLocation.getLatitude() + " lng " +currentLocation.getLongitude());
-
-                            // On transmet la position de l'utilisateur au map fragment
+                            // We pass the user's position to the fragment map
+                            assert currentLocation != null;
                             fragment1.setUserLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
                             fragment2.setUserLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
                             searchNearbyRestaurants();
@@ -419,18 +402,18 @@ public class LunchActivity extends BaseActivity
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionsResult: called");
+        // onRequestPermissionsResult: called
         mLocationPermissionGranted = false;
         switch (requestCode) {
             case LOCATION_PERMISSION_REQUEST_CODE: {
                 if (grantResults.length > 0) {
-                    for (int i = 0; i < grantResults.length; i++) {
-                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    for (int grantResult : grantResults) {
+                        if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                            // onRequestPermissionsResult: permissions failed
                             mLocationPermissionGranted = false;
-                            Log.d(TAG, "onRequestPermissionsResult: permissions failed");
                             return;
                         }
-                        Log.d(TAG, "onRequestPermissionsResult: Permissions granted");
+                        // onRequestPermissionsResult: Permissions granted
                         mLocationPermissionGranted = true;
                         getLocationPermission();
                     }

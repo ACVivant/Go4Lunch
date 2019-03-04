@@ -21,17 +21,14 @@ import com.vivant.annecharlotte.go4lunch.utils.DateFormat;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-/**
- * Created by Anne-Charlotte Vivant on 13/02/2019.
- */
 public class ListOfWorkmatesAdapter extends FirestoreRecyclerAdapter<User, ListOfWorkmatesAdapter.UserHolder> {
 
     private static final String TAG = "ListOfWorkmatesAdapter";
-    String text;
+
     private RequestManager glide;
-    Context context;
+    private Context context;
     private OnItemClickListener mListener;
-    private String today;
+
 
     public ListOfWorkmatesAdapter(@NonNull FirestoreRecyclerOptions<User> options, RequestManager glide) {
         super(options);
@@ -40,28 +37,19 @@ public class ListOfWorkmatesAdapter extends FirestoreRecyclerAdapter<User, ListO
 
     @Override
     protected void onBindViewHolder(@NonNull UserHolder userHolder, int i, @NonNull User user) {
-        Log.d(TAG, "onBindViewHolder: username " + user.getUsername());
         DateFormat forToday = new DateFormat();
-        today = forToday.getTodayDate();
-
+        String today = forToday.getTodayDate();
         String registeredDate = user.getRestoDate();
-        Log.d(TAG, "onBindViewHolder: registeredDate "+ registeredDate);
-        Log.d(TAG, "onBindViewHolder: email "+ user.getUserEmail());
-        Log.d(TAG, "onBindViewHolder: resto " + user.getRestoTodayName());
-        Log.d(TAG, "onBindViewHolder: today " + today);
 
-        // Valeurs par défaut
-        Log.d(TAG, "onBindViewHolder: username " + user.getUsername());
-        Log.d(TAG, "onBindViewHolder: pas encore décidé");
+        // Default values
+        String text;
         text = user.getUsername() + context.getString(R.string.not_decided);
         userHolder.textUser.setTypeface(null, Typeface.ITALIC);
         userHolder.textUser.setTextColor(context.getResources().getColor(R.color.colorMyGrey));
 
-        // Spécifications si un restaurant a été choisi pour aujourd'hui
+        // Specifications if a restaurant was chosen for today
         if (user.getRestoTodayName()!= null && !user.getRestoTodayName().isEmpty()) {
             if(registeredDate.equals(today)){
-                Log.d(TAG, "onBindViewHolder: username " + user.getUsername());
-                Log.d(TAG, "onBindViewHolder: userResto " + user.getRestoTodayName());
                 text = user.getUsername() + context.getString(R.string.decided) + user.getRestoTodayName();
                 userHolder.textUser.setTypeface(null, Typeface.NORMAL);
                 userHolder.textUser.setTextColor(context.getResources().getColor(R.color.colorMyBlack));
@@ -89,13 +77,11 @@ public class ListOfWorkmatesAdapter extends FirestoreRecyclerAdapter<User, ListO
     }
 
     class UserHolder extends RecyclerView.ViewHolder {
-
         TextView textUser;
         ImageView imageUser;
 
-        public UserHolder(@NonNull View itemView) {
+        UserHolder(@NonNull View itemView) {
             super(itemView);
-
             textUser = itemView.findViewById(R.id.workmates_TextView);
             imageUser = itemView.findViewById(R.id.workmates_ImageView);
 

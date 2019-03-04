@@ -91,6 +91,7 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     //EASY PERMISSIONS
     implementation 'pub.devrel:easypermissions:1.1.1'
+
     //TESTS
     //Robolectric environment
     implementation 'androidx.test:core:1.1.0'

@@ -51,7 +51,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
-                Log.d(TAG, "onFailure: ");
             }
         };
     }
@@ -62,10 +61,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Nullable
     protected FirebaseUser getCurrentUser(){
-        Log.d(TAG, "getCurrentUser: ");
         return FirebaseAuth.getInstance().getCurrentUser(); }
 
     protected Boolean isCurrentUserLogged(){
-        Log.d(TAG, "isCurrentUserLogged: ");
         return (this.getCurrentUser() != null); }
 }

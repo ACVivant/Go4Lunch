@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import com.bumptech.glide.RequestManager;
 import com.vivant.annecharlotte.go4lunch.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -19,20 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class ListOfClientsAdapter extends RecyclerView.Adapter<ListOfClientsViewholder> {
 
-/*    private List<RestaurantDetailResult> restoList;
-    private ArrayList<String> restoIdList;
-    private RequestManager glide;
-    private OnItemClickedListener mListener;
-    private int length;
-    private String id;
-    private LatLng latlng;*/
-
     private List<String> clientsList;
-    private ArrayList<String> clientsIdList;
     private RequestManager glide;
     private OnItemClickedListener mListener;
     private int length;
-    private String id;
 
     private final static String TAG = "CLIENTSADAPTER";
 
@@ -52,8 +42,9 @@ public class ListOfClientsAdapter extends RecyclerView.Adapter<ListOfClientsView
         Log.d(TAG, "ListOfClientsAdapter: constructor");
     }
 
+    @NonNull
     @Override
-    public ListOfClientsViewholder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ListOfClientsViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Creates view holder and inflates its xml layout
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -64,7 +55,7 @@ public class ListOfClientsAdapter extends RecyclerView.Adapter<ListOfClientsView
 
     // update view holder
     @Override
-    public void onBindViewHolder(ListOfClientsViewholder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ListOfClientsViewholder viewHolder, int position) {
         viewHolder.updateWithDetails(this.clientsList.get(position), this.glide);
     }
 

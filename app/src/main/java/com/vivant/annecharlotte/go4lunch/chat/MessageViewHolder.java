@@ -14,7 +14,9 @@ import com.vivant.annecharlotte.go4lunch.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
@@ -25,7 +27,6 @@ public class MessageViewHolder extends RecyclerView.ViewHolder {
     private RelativeLayout rootView;
     private LinearLayout profileContainer;
     private ImageView imageViewProfile;
-    private ImageView imageViewIsMentor;
     private RelativeLayout messageContainer;
     private CardView cardViewImageSent;
     private ImageView imageViewSent;
@@ -43,7 +44,6 @@ public class MessageViewHolder extends RecyclerView.ViewHolder {
         rootView = itemView.findViewById(R.id.activity_user_chat_item_root_view);
         profileContainer = itemView.findViewById(R.id.activity_user_chat_item_profile_container);
         imageViewProfile = itemView.findViewById(R.id.activity_user_chat_item_profile_container_profile_image);
-        //imageViewIsMentor = itemView.findViewById(R.id.activity_user_chat_item_profile_container_profile_image);
         messageContainer = itemView.findViewById(R.id.activity_user_chat_item_message_container);
         cardViewImageSent = itemView.findViewById(R.id.activity_user_chat_item_message_container_image_sent_cardview);
         imageViewSent = itemView.findViewById(R.id.activity_user_chat_item_message_container_image_sent_cardview_image);
@@ -112,7 +112,7 @@ public class MessageViewHolder extends RecyclerView.ViewHolder {
     // ---
 
     private String convertDateToHour(Date date){
-        DateFormat dfTime = new SimpleDateFormat("HH:mm");
+        DateFormat dfTime = new SimpleDateFormat("HH:mm", Locale.FRENCH);
         return dfTime.format(date);
     }
 }

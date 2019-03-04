@@ -91,6 +91,7 @@
 
     <!-- LUNCH ACTIVITY -->
     <string name="no_lunch">"Vous n'avez pas encore choisi de restaurant!"</string>
+    <string name="error">"Une erreur s'est produite</string>
 
     <!-- SETTINGS ACTIVITY -->
     <string name="radius_text">"Sur quelle distance voulez-vous faire la recherche? (en mètres)</string>
@@ -111,7 +112,7 @@
 
     <string name="newsearch">"Relancer la recherche</string>
 
-    <!-- NOTIFICATION ACITIVTY -->
+    <!-- NOTIFICATION ACTIVITY -->
     <string name="notif_title">"Mon resto du jour"</string>
     <string name="notif_message1">"Aujourd'hui votre pause repas se fera chez: "</string>
     <string name="notif_message2">"Vous y passerez un bon moment avec:  "</string>

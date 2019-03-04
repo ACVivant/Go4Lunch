@@ -41,18 +41,15 @@ import com.vivant.annecharlotte.go4lunch.view.ListOfClientsAdapter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class DetailRestoActivity extends AppCompatActivity {
 
     private String WEB = "resto_web";
     private String IDRESTO = "resto_id";
     private String PLACEIDRESTO = "resto_place_id";
-    private boolean restoLike;
     private String restoToday;
-    private List<String> listRestoLike= new ArrayList<String>();
-    private List<String> listClientToday= new ArrayList<String>();
-    private List<String> listClientTodayName= new ArrayList<String>();
-    private List<User> detailListClientToday = new ArrayList<>();
+    private List<String> listRestoLike= new ArrayList<>();
     private TextView nameTV;
     private TextView addressTV;
     private ImageView photoIV;
@@ -67,19 +64,13 @@ public class DetailRestoActivity extends AppCompatActivity {
     private String restoTel;
     private String idResto;
     private String placeidResto;
-    private String placeNameResto;
 
-    private User currentUser;
-    private static final String USER_ID = "userId";
     private String userId;
     private String restoName;
     private String lastRestoId;
-    private String dateResto;
     private String lastRestoDate;
     private String lastRestoName;
     private String today;
-
-    private Call<ListDetailResult> call;
 
     private final static String TAG = "DETAILRESTOACTIVITY";
 
@@ -97,75 +88,59 @@ public class DetailRestoActivity extends AppCompatActivity {
         context = this;
         DateFormat forToday = new DateFormat();
         today = forToday.getTodayDate();
-
         userId = UserHelper.getCurrentUserId();
-        UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                currentUser = documentSnapshot.toObject(User.class);
-            }
-        });
-
-        Log.d(TAG, "onCreate: userId " + userId);
-
-        Log.d(TAG, "onCreate");
-
         idResto = getIntent().getStringExtra(IDRESTO);
         placeidResto = getIntent().getStringExtra(PLACEIDRESTO);
-        Log.d(TAG, "onCreate: idresto " +idResto);
-        Log.d(TAG, "onCreate: placeidresto " +placeidResto);
+
         //---------------------------------------------------------------------------------------------
         // RecyclerView
         //-----------------------------------------------------------------------------------------------
-        recyclerView = (RecyclerView) findViewById(R.id.fragment_workmates_detailresto_recyclerview);
+        recyclerView = findViewById(R.id.fragment_workmates_detailresto_recyclerview);
         setupRecyclerView();
 
         //-----------------------------------------------------------------------------------------------
 
+        Call<ListDetailResult> call;
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-
-        Log.d(TAG, "updateNearbyPlaces: placeId " + placeidResto);
-        Log.d(TAG, "updateNearbyPlaces: key " + BuildConfig.apikey);
-
         call = apiService.getRestaurantDetail(BuildConfig.apikey, placeidResto, "name,rating,photo,url,formatted_phone_number,website,address_component,id,geometry");
-
         call.enqueue(new Callback<ListDetailResult>() {
                          @Override
                          public void onResponse(Call<ListDetailResult> call, Response<ListDetailResult> response) {
                              if (!response.isSuccessful()) {
                                  Toast.makeText(context, "Code: " + response.code(), Toast.LENGTH_LONG).show();
-                                 Log.d(TAG, "onResponse: erreur");
                                  return;
                              }
 
                              ListDetailResult posts = response.body();
-                             RestaurantDetailResult mResto = posts.getResult();
-                             Log.d(TAG, "onResponse: name " + mResto.getName());
+                             RestaurantDetailResult mResto;
+                             if (posts != null) {
+                                 mResto = posts.getResult();
+
 
                              //----------------------------------------------------------------------------------------
                              // Display infos on restaurant
                              //---------------------------------------------------------------------------------------
                              restoName = mResto.getName();
                              String restoAddress = mResto.getFormattedAddress();
-                             nameTV = (TextView) findViewById(R.id.name_detail);
+                             nameTV = findViewById(R.id.name_detail);
                              nameTV.setText(restoName);
-                             addressTV = (TextView) findViewById(R.id.address_detail);
+                             addressTV = findViewById(R.id.address_detail);
                              addressTV.setText(restoAddress);
 
                              //------------------------------------------------------------------------------------------
                              // Rating
                              //-------------------------------------------------------------------------------------------
                              double restoRate = mResto.getRating();
-                             star1 = (ImageView) findViewById(R.id.star1_detail);
-                             star2 = (ImageView) findViewById(R.id.star2_detail);
-                             star3 = (ImageView) findViewById(R.id.star3_detail);
+                             star1 =  findViewById(R.id.star1_detail);
+                             star2 =  findViewById(R.id.star2_detail);
+                             star3 =  findViewById(R.id.star3_detail);
                              Rate myRate = new Rate(restoRate, star1, star2, star3);
 
                              //-------------------------------------------------------------------------------------------
                              // Photo
                              //---------------------------------------------------------------------------------------------
 
-                             photoIV = (ImageView) findViewById(R.id.photo_detail);
+                             photoIV =  findViewById(R.id.photo_detail);
                              if (mResto.getPhotos() != null && !mResto.getPhotos().isEmpty()){
                                  String restoPhoto = mResto.getPhotos().get(0).getPhotoReference();
                                  String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + restoPhoto + "&key=" + BuildConfig.apikey;
@@ -178,8 +153,8 @@ public class DetailRestoActivity extends AppCompatActivity {
                              // Call
                              //-----------------------------------------------------------------------------------------------
                              //restoTel = resto.getPhone();
-                             restoTel = "06 28 08 57 50";
-                             toPhone = (ImageView) findViewById(R.id.phone_detail_button);
+                             restoTel = "06 28 08 57 50";  // for tests
+                             toPhone = findViewById(R.id.phone_detail_button);
                              toPhone.setOnClickListener(new View.OnClickListener() {
                                  @Override
                                  public void onClick(View v) {
@@ -192,7 +167,7 @@ public class DetailRestoActivity extends AppCompatActivity {
                              // Website
                              //-------------------------------------------------------------------------------------------------
                              final String restoWebsite = mResto.getWebsite();
-                             toWebsite = (ImageView) findViewById(R.id.website_detail_button);
+                             toWebsite = findViewById(R.id.website_detail_button);
                              toWebsite.setOnClickListener(new View.OnClickListener() {
                                  @Override
                                  public void onClick(View v) {
@@ -205,6 +180,7 @@ public class DetailRestoActivity extends AppCompatActivity {
                                      }
                                  }
                              });
+                         }
                          }
 
                          @Override
@@ -219,13 +195,13 @@ public class DetailRestoActivity extends AppCompatActivity {
         //-----------------------------------------------------------------------------------------
         // Like or not
         //-------------------------------------------------------------------------------------------
-        likeThisResto = (ImageView) findViewById(R.id.like_detail_button);
-        // mise à jour de la vue
+        likeThisResto =  findViewById(R.id.like_detail_button);
+        // update view
         updateLikeView(placeidResto);
         likeThisResto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // mise à jour de Firestore
+                // update Firestore
                 updateLikeInFirebase(placeidResto);
             }
         });
@@ -233,14 +209,14 @@ public class DetailRestoActivity extends AppCompatActivity {
         //------------------------------------------------------------------------------------------
         // Choose this restaurant today
         //------------------------------------------------------------------------------------------
-        myRestoTodayBtn = (FloatingActionButton) findViewById(R.id.restoToday_FloatingButton);
-        // mise à jour de la vue
+        myRestoTodayBtn = findViewById(R.id.restoToday_FloatingButton);
+        // update view
         updateTodayView(placeidResto);
         myRestoTodayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //mise à jour de Firestore
-                updateRestoTodayInFirebase(placeidResto, restoName, today);
+                //update Firestore
+                updateRestoTodayInFirebase(placeidResto, restoName);
             }
         });
 
@@ -285,7 +261,7 @@ public class DetailRestoActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    listRestoLike = documentSnapshot.toObject(User.class).getRestoLike();
+                    listRestoLike = Objects.requireNonNull(documentSnapshot.toObject(User.class)).getRestoLike();
                     if (listRestoLike != null) {
                         if (listRestoLike.contains(idResto)) {
                             listRestoLike.remove(idResto);
@@ -301,7 +277,7 @@ public class DetailRestoActivity extends AppCompatActivity {
         });
     }
 
-    private void updateRestoInUser(String id, String name, String date, String user ) {
+    private void updateRestoInUser(String id, String name, String date ) {
         UserHelper.updateTodayResto(id, userId);
         UserHelper.updateTodayRestoName(name, userId);
         UserHelper.updateRestoDate(date, userId);
@@ -313,20 +289,24 @@ public class DetailRestoActivity extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
-                    // 1- On regarde si la fiche du restaurant correspond à la date du jour sinon il faudra la mettre à jour
-                    Date dateRestoSheet = usersToday.getDateCreated();
-                    DateFormat myDate = new DateFormat();
-                    String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
+                    // We check if the restaurant's card corresponds to the date of the day, otherwise it will have to be updated
+                    Date dateRestoSheet;
+                    if (usersToday != null) {
+                        dateRestoSheet = usersToday.getDateCreated();
 
-                    if (dateRegistered.equals(today)) {
-                        //2- la fiche resto du jour existe déjà donc on lui retire l'utilisateur
-                        List<String> listUsersToday = new ArrayList<>();
-                        listUsersToday = usersToday.getClientsTodayList();
-                        listUsersToday.remove(userId);
-                        RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);
-                    } else {
-                        //2- La fiche resto du jour n'existait pas donc on la met à jour à vide
-                        RestaurantSmallHelper.createRestaurant(id, name);
+                        DateFormat myDate = new DateFormat();
+                        String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
+
+                        if (dateRegistered.equals(today)) {
+                            // the restaurant card of the day already exists so we remove the user
+                            List<String> listUsersToday = new ArrayList<>();
+                            listUsersToday = usersToday.getClientsTodayList();
+                            listUsersToday.remove(userId);
+                            RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);
+                        } else {
+                            // The restaurant card of the day did not exist so we update it empty
+                            RestaurantSmallHelper.createRestaurant(id, name);
+                        }
                     }
                 }
             }
@@ -340,7 +320,10 @@ public class DetailRestoActivity extends AppCompatActivity {
                 if (documentSnapshot.exists()) {
                     RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
 
-                    Date dateRestoSheet = usersToday.getDateCreated();
+                    Date dateRestoSheet;
+                    if (usersToday != null) {
+                        dateRestoSheet = usersToday.getDateCreated();
+
                     DateFormat myDate = new DateFormat();
                     String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
                     if (dateRegistered.equals(today)) {
@@ -354,6 +337,7 @@ public class DetailRestoActivity extends AppCompatActivity {
                         listUsersToday.add(userId);
                         RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);
                     }
+                    }
                 } else {
                     List<String> listUsersToday = new ArrayList<>();
                     listUsersToday.add(userId);
@@ -364,49 +348,43 @@ public class DetailRestoActivity extends AppCompatActivity {
         });
     }
 
-    private void  updateRestoTodayInFirebase(final String restoChoiceId, final String restoChoiceName, final String restoChoiceDate) {
-        //Mise à jour de User
-        Log.d(TAG, "updateRestoTodayInFirebase: restoChoiceId " + restoChoiceId);
+    private void  updateRestoTodayInFirebase(final String restoChoiceId, final String restoChoiceName) {
+        //Update User
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     User myRestoToday = documentSnapshot.toObject(User.class);
-                    lastRestoId = myRestoToday.getRestoToday();
-                    lastRestoDate = myRestoToday.getRestoDate();
-                    lastRestoName = myRestoToday.getRestoTodayName();
-                    Log.d(TAG, "onSuccess: lastResto" + lastRestoId);
+                    if (myRestoToday != null) {
+                        lastRestoId = myRestoToday.getRestoToday();
+                        lastRestoDate = myRestoToday.getRestoDate();
+                        lastRestoName = myRestoToday.getRestoTodayName();
 
-                    if (lastRestoId!=null&&lastRestoId.length()>0&&lastRestoDate.equals(today)) {
-                        // Un restaurant avait déjà été choisi aujourd'hui
-                        Log.d(TAG, "onSuccess: lastResto n'est pas nul");
-                        // C'était celui_là donc on le déselectionne et on le retire de User
-                        if (lastRestoId.equals(restoChoiceId)) {
-                            Log.d(TAG, "onSuccess: lastResto est égal au resto choisi maintenant");
-                            myRestoTodayBtn.setImageResource(R.drawable.ic_validation_no);
-                            updateRestoInUser("", "", today, userId);
+                        if (lastRestoId != null && lastRestoId.length() > 0 && lastRestoDate.equals(today)) {
+                            // A restaurant had already been chosen today
+                            // That was it, so we unselect it and remove it from User
+                            if (lastRestoId.equals(restoChoiceId)) {
+                                myRestoTodayBtn.setImageResource(R.drawable.ic_validation_no);
+                                updateRestoInUser("", "", today);
+                                // This user is also removed from Restaurant from the guest list
+                                removeUserInRestaurant(restoChoiceId, restoChoiceName);
 
-                            // On retire aussi de Restaurant cet utilisateur de la liste de convives
-                            removeUserInRestaurant(restoChoiceId, restoChoiceName);
-
+                            } else {
+                                // It was not this one so we replace it with the new choice in User
+                                myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
+                                updateRestoInUser(restoChoiceId, restoChoiceName, today);
+                                // We delete the user from the list of guests of his former restaurant chosen
+                                removeUserInRestaurant(lastRestoId, lastRestoName);
+                                // and we add the user in the list of guests of the new restaurant
+                                addUserInRestaurant(restoChoiceId, restoChoiceName);
+                            }
                         } else {
-                            // Ce n'était pas celui là donc on le remplace par le nouveau choix dans User
-                            Log.d(TAG, "onSuccess: restoToday n'est pas le même que celui choisi maintenant");
+                            // No restaurant was registered, so we save this one in User
+                            updateRestoInUser(restoChoiceId, restoChoiceName, today);
                             myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
-                            updateRestoInUser(restoChoiceId, restoChoiceName, today, userId);
-                            // On supprime l'utilisateur de la liste des convives de son ancien resto choisi
-                            removeUserInRestaurant(lastRestoId, lastRestoName);
-
-                            // et on ajoute l'utilisateur dans la liste des convives du nouveau resto
+                            // and we add this guest to the restaurant list
                             addUserInRestaurant(restoChoiceId, restoChoiceName);
                         }
-                    } else {
-                        // Aucun restaurant n'avait été enregistré, donc on enregistre celui là dans User
-                        Log.d(TAG, "onSuccess: il n'y avait aucun resto enregistré");
-                        updateRestoInUser(restoChoiceId, restoChoiceName, today, userId);
-                        myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
-                        // et on ajoute ce convive dans la fiche du restaurant
-                        addUserInRestaurant(restoChoiceId, restoChoiceName);
                     }
                 }
             }
@@ -418,7 +396,7 @@ public class DetailRestoActivity extends AppCompatActivity {
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                listRestoLike = documentSnapshot.toObject(User.class).getRestoLike();
+                listRestoLike = Objects.requireNonNull(documentSnapshot.toObject(User.class)).getRestoLike();
                 if(listRestoLike!=null) {
                     if (listRestoLike.contains(idLike)) {
                         likeThisResto.setImageResource(R.drawable.ic_action_star);
@@ -434,23 +412,23 @@ public class DetailRestoActivity extends AppCompatActivity {
 
     private void updateTodayView(String id) {
         final String idToday = id;
+
+        // Default values
+        myRestoTodayBtn.setImageResource(R.drawable.ic_validation_no);
+
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                restoToday = documentSnapshot.toObject(User.class).getRestoToday();
-                lastRestoDate = documentSnapshot.toObject(User.class).getRestoDate();
+                restoToday = Objects.requireNonNull(documentSnapshot.toObject(User.class)).getRestoToday();
+                lastRestoDate = Objects.requireNonNull(documentSnapshot.toObject(User.class)).getRestoDate();
                 Log.d(TAG, "onSuccess: restoToday " +restoToday);
                 Log.d(TAG, "onSuccess: idresto "+idResto);
                 Log.d(TAG, "onSuccess: lastRestoDate "+ lastRestoDate);
 
-                if (restoToday != null && restoToday.length()>0&&lastRestoDate.equals(today)) { // On vérifie qu'il y a un restaurant enregistré et qu'il a été enregistré aujourd'hui
+                if (restoToday != null && restoToday.length()>0&&lastRestoDate.equals(today)) { // We check that there is a restaurant registered and that it was registered today
                     if (restoToday.equals(idToday)) {
                         myRestoTodayBtn.setImageResource(R.drawable.ic_validation);
-                    } else {
-                        myRestoTodayBtn.setImageResource(R.drawable.ic_validation_no);
                     }
-                } else {
-                    myRestoTodayBtn.setImageResource(R.drawable.ic_validation_no);
                 }
             }
         });
@@ -462,25 +440,27 @@ public class DetailRestoActivity extends AppCompatActivity {
     //------------------------------------------------------------------------------------------------
 
     private void setupRecyclerView() {
-        Log.d(TAG, "setupRecyclerView");
-RestaurantSmallHelper.getRestaurant(placeidResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+
+        RestaurantSmallHelper.getRestaurant(placeidResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
     @Override
     public void onSuccess(DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists()) {
             RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
 
-            Date dateRestoSheet = usersToday.getDateCreated();
-            DateFormat myDate = new DateFormat();
-            String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
+            Date dateRestoSheet;
+            if (usersToday != null) {
+                dateRestoSheet = usersToday.getDateCreated();
+                DateFormat myDate = new DateFormat();
+                String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
 
-            if (dateRegistered.equals(today)) {
-                List<String> listId = usersToday.getClientsTodayList();
+                if (dateRegistered.equals(today)) {
+                    List<String> listId = usersToday.getClientsTodayList();
 
-                if (listId != null) {
-                    Log.d(TAG, "onSuccess recyclerview: le doc existe");
-                    adapter = new ListOfClientsAdapter(listId, Glide.with(recyclerView), listId.size());
-                    recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                    recyclerView.setAdapter(adapter);
+                    if (listId != null) {
+                        adapter = new ListOfClientsAdapter(listId, Glide.with(recyclerView), listId.size());
+                        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                        recyclerView.setAdapter(adapter);
+                    }
                 }
             }
         }

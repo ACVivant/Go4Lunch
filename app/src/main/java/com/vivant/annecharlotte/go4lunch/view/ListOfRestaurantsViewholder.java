@@ -2,7 +2,6 @@ package com.vivant.annecharlotte.go4lunch.view;
 
 import android.content.Context;
 import android.location.Location;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,38 +28,30 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * Created by Anne-Charlotte Vivant on 06/02/2019.
  */
-public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
+class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
 
     private TextView nameTextView, addressTextView, openTextView, proximityTextView, loversTextView;
     private ImageView star1, star2, star3, photo;
-    private Context mContext;
-    private float distance;
     private LatLng myLatLng;
     private boolean textOK = false;
     private String today;
 
-    private final static String TAG = "VIEWHOLDER";
-
-    //private String key = "AIzaSyDzR6PeN7Ejoa6hhRhKAEjIMo8_4uPEAMI";
-
-
-    public ListOfRestaurantsViewholder(View itemView, final ListOfRestaurantsAdapter.OnItemClickedListener listener, Context context, LatLng latLng) {
+    ListOfRestaurantsViewholder(View itemView, final ListOfRestaurantsAdapter.OnItemClickedListener listener, Context context, LatLng latLng) {
         super(itemView);
 
-        mContext = context;
+        Context mContext = context;
         myLatLng = latLng;
 
-        Log.d(TAG, "ListOfRestaurantsViewholder: constructeur");
-        nameTextView = (TextView) itemView.findViewById(R.id.restaurant_name);
-        addressTextView = (TextView) itemView.findViewById(R.id.restaurant_address);
-        openTextView = (TextView) itemView.findViewById(R.id.restaurant_openinghours);
-        proximityTextView = (TextView) itemView.findViewById(R.id.restaurant_proximity);
-        loversTextView = (TextView) itemView.findViewById(R.id.restaurant_lovers_nb);
+        nameTextView =  itemView.findViewById(R.id.restaurant_name);
+        addressTextView =  itemView.findViewById(R.id.restaurant_address);
+        openTextView =  itemView.findViewById(R.id.restaurant_openinghours);
+        proximityTextView =  itemView.findViewById(R.id.restaurant_proximity);
+        loversTextView =  itemView.findViewById(R.id.restaurant_lovers_nb);
 
-        star1 = (ImageView) itemView.findViewById(R.id.restaurant_star1);
-        star2 = (ImageView) itemView.findViewById(R.id.restaurant_star2);
-        star3 = (ImageView) itemView.findViewById(R.id.restaurant_star3);
-        photo = (ImageView) itemView.findViewById(R.id.restaurant_photo);
+        star1 =  itemView.findViewById(R.id.restaurant_star1);
+        star2 =  itemView.findViewById(R.id.restaurant_star2);
+        star3 =  itemView.findViewById(R.id.restaurant_star3);
+        photo =  itemView.findViewById(R.id.restaurant_photo);
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,23 +67,26 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
     }
 
 
-    public void updateWithDetailsRestaurants(RestaurantDetailResult restaurantDetail, RequestManager glide) {
+    void updateWithDetailsRestaurants(RestaurantDetailResult restaurantDetail, RequestManager glide) {
 
-        Log.d(TAG, "updateWithDetailsRestaurants");
+        // Name of restaurant
         this.nameTextView.setText(restaurantDetail.getName());
 
+        //Address
         String address_short = restaurantDetail.getAddressComponents().get(0).getShortName() + ", " + restaurantDetail.getAddressComponents().get(1).getShortName();
         this.addressTextView.setText(address_short);
 
+        // Opening hours
         if(restaurantDetail.getOpeninghours()!= null) {
             openTextView.setText(openTextView.getResources().getString(R.string.closed_today));
-            openTextView.setTextColor(openTextView.getResources().getColor(R.color.colorMyGrey));// valeur par défaut qu'on va écraser avec les horaires du jour si le resto est ouvert ce jour
+            openTextView.setTextColor(openTextView.getResources().getColor(R.color.colorMyGrey));// default value that will be overwritten with today's schedules if the restaurant is open today
             isRestaurantOpen(restaurantDetail);
         } else {
             openTextView.setText(R.string.no_hours);
         }
 
         //Distance
+        float distance;
         float results[] = new float[10];
         double restoLat = restaurantDetail.getGeometry().getLocation().getLat();
         double restoLng = restaurantDetail.getGeometry().getLocation().getLng();
@@ -103,20 +97,19 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
         String dist =  Math.round(distance)+"m";
         proximityTextView.setText(dist);
 
-       // Aucune étoile en dessous de 2.5, 1 étoile entre 2.6 et 3.5, 2 étoiles entre 3.6 et 4.5, 3 étoiles au-dessus
+       // Assign the number of stars
         Double rate = restaurantDetail.getRating();
         Rate myRate = new Rate(rate, star1, star2, star3);
 
        // Images
         if (restaurantDetail.getPhotos() != null && !restaurantDetail.getPhotos().isEmpty()){
-            //this.photo.setImageResource(R.drawable.ic_gps);
-                glide.load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+restaurantDetail.getPhotos().get(0).getPhotoReference()+"&key="+ BuildConfig.apikey).into(photo);
+            glide.load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+restaurantDetail.getPhotos().get(0).getPhotoReference()+"&key="+ BuildConfig.apikey).into(photo);
       } else {
             this.photo.setImageResource(R.drawable.ic_menu_camera);
         }
 
-        // Nombre de collègues intéressés
-        // Mis à 0 par défaut
+        // Number of interested colleagues
+        // Set to 0 by default
         loversTextView.setText("0");
         DateFormat forToday = new DateFormat();
         today = forToday.getTodayDate();
@@ -127,16 +120,18 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
                 if (documentSnapshot.exists()) {
                     RestaurantSmall resto = documentSnapshot.toObject(RestaurantSmall.class);
 
-                    // Vérification de la date
-                    Date dateRestoSheet = resto.getDateCreated();
-                    DateFormat myDate = new DateFormat();
-                    String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
-
-                    if (dateRegistered.equals(today)) {
-                        // Nombre de collègues intéressés
-                        List<String> listUsers = resto.getClientsTodayList();
-                        String textnb = String.valueOf(listUsers.size());
-                        loversTextView.setText(textnb);
+                    // Date check
+                    Date dateRestoSheet;
+                    if (resto != null) {
+                        dateRestoSheet = resto.getDateCreated();
+                        DateFormat myDate = new DateFormat();
+                        String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
+                        if (dateRegistered.equals(today)) {
+                            // Number of interested colleagues
+                            List<String> listUsers = resto.getClientsTodayList();
+                            String textnb = String.valueOf(listUsers.size());
+                            loversTextView.setText(textnb);
+                        }
                     }
                 }
             }
@@ -152,7 +147,7 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
                 String text;
                 String textTime;
                 if(period.getClose().getDay() == calendar.get(Calendar.DAY_OF_WEEK)-1&&!textOK) {
-                    // textOK permet de gérer les cas où il y a plusieurs plages horaires d'ouverture pour la même journée
+                    //textOK allows you to manage cases where there are several opening hours for the same day
                     switch (getOpeningHour(period)) {
                         case 1:
                                 openTextView.setTextColor(openTextView.getResources().getColor(R.color.colorPrimary));
@@ -179,10 +174,10 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
     }
 
     private String getFormat(String hour) {
-        // met en forme les heures pour l'affichage
+        //formats the hours for the display
         String time;
         if (hour.length()==2) {
-            time = hour.substring(0,1) + ":" + hour.substring(1,3);
+            time = hour.substring(0,1) + ":" + hour.substring(1,2);
         } else {
             time = hour.substring(0,2)+":"+ hour.substring(2,4);
         }
@@ -193,18 +188,15 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
     private int getOpeningHour(Period period){
         Calendar calendar = Calendar.getInstance();
         int currentHour = Integer.parseInt("" + calendar.get(Calendar.HOUR_OF_DAY) + calendar.get(Calendar.MINUTE));
-        //int currentHour = 1000; // pour les tests
-        Log.d(TAG, "getOpeningHour: currentHour "+currentHour);
         int closureHour = Integer.parseInt(period.getClose().getTime());
-        Log.d(TAG, "getOpeningHour: closureHour " +closureHour);
         int openHour = Integer.parseInt(period.getOpen().getTime());
-        Log.d(TAG, "getOpeningHour: openHour " +openHour);
+
         if (currentHour<openHour) {
-            textOK = true; // On est plus tôt que le premier horaire il ne faut donc pas aller comparer avec le deuxième
+            textOK = true; // We are earlier than the first schedule so do not go compare with the second
             return 1;
         }
         else if (currentHour>openHour&&currentHour<closureHour) {
-            textOK = true; // On est dans la premuère tranche horaire il ne aut donc pas aller comparer avec la deuxième
+            textOK = true; // We are in the first time slot so do not go compare with the second
             return 2;
         }
         else return 3;

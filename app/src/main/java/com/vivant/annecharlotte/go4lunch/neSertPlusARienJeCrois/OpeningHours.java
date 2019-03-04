@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch.models.Nearby;
+package com.vivant.annecharlotte.go4lunch.neSertPlusARienJeCrois;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

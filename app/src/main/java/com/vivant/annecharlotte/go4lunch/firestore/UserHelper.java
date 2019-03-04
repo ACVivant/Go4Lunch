@@ -19,9 +19,6 @@ public class UserHelper {
     private static final String COLLECTION_NAME = "users";
     private static final String TAG = "USERHELPER";
 
-    FirebaseFirestore mFirebaseFirestore;
-    FirebaseAuth mFirebaseAuth;
-
     // --- COLLECTION REFERENCE ---
     public static CollectionReference getUsersCollection(){
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
@@ -86,7 +83,6 @@ public class UserHelper {
 
     // -- GET ALL USERS --
     public static Query getAllUsers(){
-        //return UserHelper.getUsersCollection().orderBy("restoToday", Query.Direction.DESCENDING);
         return UserHelper.getUsersCollection().orderBy("restoDate", Query.Direction.DESCENDING);
     }
 }

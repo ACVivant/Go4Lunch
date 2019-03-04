@@ -8,7 +8,7 @@ import android.widget.ImageView;
  */
 public class Rate {
 
-    // Aucune étoile en dessous de 2.5, 1 étoile entre 2.6 et 3.5, 2 étoiles entre 3.6 et 4.5, 3 étoiles au-dessus
+    // No star under 2.5, 1 star between 2.6 and 3.5, 2 stars between 3.6 and 4.5, and 3 stars above
 
 public Rate(double rate, ImageView star1, ImageView star2, ImageView star3) {
     int rate_int = (int) Math.round(rate);

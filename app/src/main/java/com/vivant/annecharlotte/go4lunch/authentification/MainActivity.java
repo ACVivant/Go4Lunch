@@ -42,14 +42,12 @@ public class MainActivity extends BaseActivity {
         return userId;
     }
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         layoutLinks();
-       //userId = Objects.requireNonNull(this.getCurrentUser()).getUid();
+
        // printHashKey(this);
     }
 
@@ -62,23 +60,20 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public int getFragmentLayout() {
-        Log.d(TAG, "getFragmentLayout");
         return R.layout.activity_main;
     }
 
-    // Récupère le retour de l'activité d'authentification pour  vérifier si elle s'est bien passée
+    // Retrieves the return of the authentication activity to check if it went well
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //  Handle SignIn Activity response on activity result
         this.handleResponseAfterSignIn(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult: ");
     }
 
 
     // Links between activity and layout
     private void layoutLinks() {
-        Log.d(TAG, "layoutLinks: ");
         mainActivityLinearLayout = (LinearLayout) findViewById(R.id.main_activity_linear_layout);
         facebookBtn = (Button) findViewById(R.id.mainactivity_button_login_facebook);
         googleBtn = (Button) findViewById(R.id.mainactivity_button_login_google);
@@ -110,13 +105,10 @@ public class MainActivity extends BaseActivity {
 
     private void updateUIWhenResuming() {
         if (this.isCurrentUserLogged()) {
-            Log.d(TAG, "updateUIWhenResuming: utilisateur connecté");
-            Log.d(TAG, "updateUIWhenResuming:: getCurrentUser " + Objects.requireNonNull(this.getCurrentUser()).getUid());
             alreadyBtn.setVisibility(View.VISIBLE);
             facebookBtn.setVisibility(View.GONE);
             googleBtn.setVisibility(View.GONE);
         } else {
-            Log.d(TAG, "updateUIWhenResuming: utilisateur non connecté");
             alreadyBtn.setVisibility(View.GONE);
             facebookBtn.setVisibility(View.VISIBLE);
             googleBtn.setVisibility(View.VISIBLE);
@@ -161,7 +153,7 @@ public class MainActivity extends BaseActivity {
     //---------------------
     // REST REQUEST
     //---------------------
-    // 1 - Http request that create user in firestore
+    // Http request that create user in firestore
 
     private void createUserInFirestore(){
         if (isCurrentUserLogged()){
@@ -170,7 +162,6 @@ public class MainActivity extends BaseActivity {
             String uid = this.getCurrentUser().getUid();
             String userEmail = this.getCurrentUser().getEmail();
             UserHelper.createUser(uid, username, userEmail, urlPicture).addOnFailureListener(this.onFailureListener());
-            Log.d(TAG, "createUserInFirestore: ");
         }
     }
     // --------------------
@@ -183,20 +174,15 @@ public class MainActivity extends BaseActivity {
 
         if (requestCode == RC_SIGN_IN_GOOGLE || requestCode == RC_SIGN_IN_FACEBOOK) {
             if (resultCode == RESULT_OK) { // SUCCESS
-                Log.d(TAG, "handleResponseAfterSignIn: SUCCESS");
                 // CREATE USER IN FIRESTORE
                 this.createUserInFirestore();
-                //showSnackBar(this.mainActivityLinearLayout, getString(R.string.connection_succeed));
                 startLunchActivity();
             } else { // ERRORS
-                Log.d(TAG, "handleResponseAfterSignIn: ERROR");
                 if (response == null) {
                     showSnackBar(this.mainActivityLinearLayout, getString(R.string.error_authentication_canceled));
                 } else if (Objects.requireNonNull(response.getError()).getErrorCode() == ErrorCodes.NO_NETWORK) {
-                //} else if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                     showSnackBar(this.mainActivityLinearLayout, getString(R.string.error_no_internet));
                 } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                //} else if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                     showSnackBar(this.mainActivityLinearLayout, getString(R.string.error_unknown_error));
                 }
             }
@@ -205,7 +191,6 @@ public class MainActivity extends BaseActivity {
 
     // launch lunch activity
     private void startLunchActivity() {
-        Log.d(TAG, "startLunchActivity: ");
         Intent intent = new Intent(this, LunchActivity.class);
         intent.putExtra(USER_ID, Objects.requireNonNull(this.getCurrentUser()).getUid());
         startActivity(intent);

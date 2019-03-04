@@ -4,7 +4,7 @@ package com.vivant.annecharlotte.go4lunch;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.widget.Toolbar;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,9 +26,6 @@ import com.vivant.annecharlotte.go4lunch.view.ListOfWorkmatesAdapter;
 public class ListWorkmatesFragment extends Fragment {
     private ListOfWorkmatesAdapter adapter;
     private RecyclerView recyclerView;
-    private View view;
-    private View parentView;
-    private Toolbar toolbar;
     private String PLACEIDRESTO = "resto_place_id";
 
     public ListWorkmatesFragment() {
@@ -36,18 +33,17 @@ public class ListWorkmatesFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        View view;
         // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_list_workmates, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.fragment_workmates_recyclerview);
+        recyclerView = view.findViewById(R.id.fragment_workmates_recyclerview);
 
         //((LunchActivity)getActivity()).setActionBarTitle(getResources().getString(R.string.TB_workmates));
 
         setupRecyclerView();
-        //setupToolbar();
-
         return view;
     }
 
@@ -80,18 +76,18 @@ public class ListWorkmatesFragment extends Fragment {
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
                 if (documentSnapshot.exists()) {
                     User user = documentSnapshot.toObject(User.class);
-                        String restoId = user.getRestoToday();
+                    String restoId;
+                    if (user != null) {
+                        restoId = user.getRestoToday();
+
 
                         Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
                         WVIntent.putExtra(PLACEIDRESTO, restoId);
                         startActivity(WVIntent);
+                    }
                 }
             }
         });
-    }
-
-    private void setupToolbar() {
-        toolbar.setTitle(R.string.TB_workmates);
     }
 
     @Override

@@ -52,7 +52,7 @@ public class NotificationsService extends FirebaseMessagingService {
         notifOk = sharedPreferences.getBoolean(NOTIF_PREFS, true);
         userId = UserHelper.getCurrentUserId();
 
-        // On regarde si l'utilisateur veut recevoir les notifications
+        // We look if the user has to receive notifications
         checkIfNotifToday();
     }
 
@@ -61,21 +61,23 @@ public class NotificationsService extends FirebaseMessagingService {
         DateFormat forToday = new DateFormat();
         final String today = forToday.getTodayDate();
 
-        // On vérifie que l'utilisateur a sélecitonné un resto pour aujourd'hui
+        // We check that the user has selected a restaurant for today
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = documentSnapshot.toObject(User.class);
-                String myRestoToday = user.getRestoToday();
+                String myRestoToday;
+                if (user != null) {
+                    myRestoToday = user.getRestoToday();
                 String registeredDate = user.getRestoDate();
                 if (!myRestoToday.equals("")) {
-                    // On vérifie que le resto a été enregistré pour aujourd'hui
+                    // We check that the restaurant has been registered for today
                     if (registeredDate.equals(today)) {
-                        // On vérifie qu'il a souscrit à l'envoi de notifications
+                        // We check that he has subscribed to the sending of notifications
                         if (notifOk) {
-                            Log.d(TAG, "onMessageReceived: switch " + notifOk);
                             createPersonalizedMessage();
                         }
+                    }
                     }
                 }
             }
@@ -85,46 +87,46 @@ public class NotificationsService extends FirebaseMessagingService {
     private void createPersonalizedMessage() {
         context = this.getApplicationContext();
 
-        // Je récupère l'id du restoToday de l'utilisateur
+        // I get the id of the user's restoToday
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = documentSnapshot.toObject(User.class);
-                userName = user.getUsername();
-                restoTodayId=user.getRestoToday();
+                if (user != null) {
+                    userName = user.getUsername();
+                    restoTodayId=user.getRestoToday();
+                }
 
-                // Je récupère le nom et l'adresse du resto correspondant
+                // I get the name and address of the restaurant
                 RestaurantHelper.getRestaurant(restoTodayId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         Restaurant resto = documentSnapshot.toObject((Restaurant.class));
-                        restoTodayName = resto.getRestoName();
-                        restoTodayAddress = resto.getAddress();
-                        // Je récupère la liste des collègues ayant choisi ce resto
-                        listUserId = resto.getUsersToday();
+                        if (resto != null) {
+                            restoTodayName = resto.getRestoName();
+                            restoTodayAddress = resto.getAddress();
+                        // I retrieve the list of colleagues who have chosen this restaurant
+                            listUserId = resto.getUsersToday();
+                        }
 
-                        // Je récupère la liste des noms des collègues
+                        // I retrieve the list of colleagues' names
                         for (int i=0; i<listUserId.size(); i++) {
                             UserHelper.getUser(listUserId.get(i)).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     User user = documentSnapshot.toObject(User.class);
-                                    String name = user.getUsername();
+                                    String name = null;
+                                    if (user != null) {
+                                        name = user.getUsername();
+                                    }
                                     listNames+= name +", ";
-                                    Log.d(TAG, "onSuccess: listnames " +listNames);
                                 }
                             });
                         }
 
-                        // Je crée le message
+                        // I create the message
                         CreateNotifMessage message = new CreateNotifMessage();
                         myMessage = message.create(context, R.string.notif_message1, restoTodayName, restoTodayAddress, R.string.notif_message2, listNames);
-/*                                    // Je crée le message
-                                    myMessage = getString(R.string.notif_message1) + restoTodayName + " " + restoTodayAddress +"\n" + getString(R.string.notif_message2) + " " +listNames;
-                                    Log.d(TAG, "createPersonalizedMessage: mymessage " +myMessage);
-
-                                    if(myMessage.endsWith(", ")) myMessage = myMessage.substring(0, myMessage.length() - 2);
-                                    Log.d(TAG, "createPersonalizedMessage: mymessage sans virgule " +myMessage);*/
                         sendVisualNotification(myMessage);
                     }
                 });
@@ -133,19 +135,19 @@ public class NotificationsService extends FirebaseMessagingService {
     }
 
     private void sendVisualNotification(String messageBody) {
-        // 1 - Create an Intent that will be shown when user will click on the Notification
+        //  Create an Intent that will be shown when user will click on the Notification
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
-        // 2 - Create a Style for the Notification
+        //  Create a Style for the Notification
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         inboxStyle.setBigContentTitle(getString(R.string.notification_title));
         inboxStyle.addLine(messageBody);
 
-        // 3 - Create a Channel (Android 8)
+        //  Create a Channel (Android 8)
         String channelId = getString(R.string.default_notification_channel_id);
 
-        // 4 - Build a Notification object
+        //  Build a Notification object
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.baseline_local_dining_24)
@@ -156,10 +158,10 @@ public class NotificationsService extends FirebaseMessagingService {
                         .setContentIntent(pendingIntent)
                         .setStyle(inboxStyle);
 
-        // 5 - Add the Notification to the Notification Manager and show it.
+        //  Add the Notification to the Notification Manager and show it.
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // 6 - Support Version >= Android 8
+        //  Support Version >= Android 8
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence channelName = "Message provenant de Firebase";
             int importance = NotificationManager.IMPORTANCE_HIGH;
@@ -167,7 +169,7 @@ public class NotificationsService extends FirebaseMessagingService {
             notificationManager.createNotificationChannel(mChannel);
         }
 
-        // 7 - Show notification
+        //  Show notification
         notificationManager.notify(NOTIFICATION_TAG, NOTIFICATION_ID, notificationBuilder.build());
     }
 

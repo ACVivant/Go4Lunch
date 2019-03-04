@@ -17,7 +17,7 @@ import com.vivant.annecharlotte.go4lunch.R;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ListOfClientsViewholder extends RecyclerView.ViewHolder{
+class ListOfClientsViewholder extends RecyclerView.ViewHolder{
 
     private TextView nameTextView ;
     private ImageView photo;
@@ -25,14 +25,14 @@ public class ListOfClientsViewholder extends RecyclerView.ViewHolder{
 
     private final static String TAG = "VIEWHOLDER";
 
-    public ListOfClientsViewholder(View itemView, final ListOfClientsAdapter.OnItemClickedListener listener, Context context) {
+     ListOfClientsViewholder(View itemView, final ListOfClientsAdapter.OnItemClickedListener listener, Context context) {
         super(itemView);
 
         mContext = context;
 
         Log.d(TAG, "ListOfClientsViewholder: constructeur");
-        nameTextView = (TextView) itemView.findViewById(R.id.workmates_TextView);
-        photo = (ImageView) itemView.findViewById(R.id.workmates_ImageView);
+        nameTextView = itemView.findViewById(R.id.workmates_TextView);
+        photo = itemView.findViewById(R.id.workmates_ImageView);
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,24 +47,31 @@ public class ListOfClientsViewholder extends RecyclerView.ViewHolder{
         });
     }
 
-    public void updateWithDetails(final String clientId, final RequestManager glide) {
+    void updateWithDetails(final String clientId, final RequestManager glide) {
 
         UserHelper.getUser(clientId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User client = documentSnapshot.toObject(User.class);
-                String text = client.getUsername() + mContext.getResources().getString(R.string.isjoining);
-                nameTextView.setText(text);
-                nameTextView.setTypeface(null, Typeface.NORMAL);
-                nameTextView.setTextColor(mContext.getResources().getColor(R.color.colorMyBlack));
+                String text;
+                if (client != null) {
+                    text = client.getUsername() + mContext.getResources().getString(R.string.isjoining);
+                    nameTextView.setText(text);
+                    nameTextView.setTypeface(null, Typeface.NORMAL);
+                    nameTextView.setTextColor(mContext.getResources().getColor(R.color.colorMyBlack));
+                }
 
                 // Images
-                if (client.getUrlPicture().length()>0){
-                    glide.load(client.getUrlPicture())
-                            .apply(RequestOptions.circleCropTransform())
-                            .into(photo);
-                } else {
-                    photo.setImageResource(R.drawable.baseline_people_24);
+                if (client != null) {
+                    if (client.getUrlPicture() != null) {
+                        if (client.getUrlPicture().length()>0){
+                            glide.load(client.getUrlPicture())
+                                    .apply(RequestOptions.circleCropTransform())
+                                    .into(photo);
+                        } else {
+                            photo.setImageResource(R.drawable.baseline_people_24);
+                        }
+                    }
                 }
             }
         });

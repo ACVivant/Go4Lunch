@@ -9,12 +9,11 @@ import android.view.ViewGroup;
 import com.bumptech.glide.RequestManager;
 import com.google.android.gms.maps.model.LatLng;
 import com.vivant.annecharlotte.go4lunch.models.Details.RestaurantDetailResult;
-import com.vivant.annecharlotte.go4lunch.models.Nearby.GooglePlacesResult;
 import com.vivant.annecharlotte.go4lunch.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -23,12 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaurantsViewholder> {
 
     private List<RestaurantDetailResult> restoList;
-    private ArrayList<String> restoIdList;
-    private List<GooglePlacesResult> restoGoogleList;
     private RequestManager glide;
     private OnItemClickedListener mListener;
     private int length;
-    private String id;
     private LatLng latlng;
 
     private final static String TAG = "ADAPTER";
@@ -50,26 +46,9 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
         Log.d(TAG, "ListOfRestaurantsAdapter: constructor");
     }
 
-   /* // Constructor
-    public ListOfRestaurantsAdapter(List<GooglePlacesResult> restoList, RequestManager glide, int length, LatLng latLng) {
-        this.restoGoogleList = restoList;
-        this.glide = glide;
-        this.length =  length;
-        this.latlng = latLng;
-        Log.d(TAG, "ListOfRestaurantsAdapter: constructor");
-    }*/
-
-/*    // Constructor
-    public ListOfRestaurantsAdapter(ArrayList<String> restoIdList, RequestManager glide, int length, LatLng latLng) {
-        this.restoIdList = restoIdList;
-        this.glide = glide;
-        this.length =  length;
-        this.latlng = latLng;
-        Log.d(TAG, "ListOfRestaurantsAdapter: constructor");
-    }*/
-
+    @NonNull
     @Override
-    public ListOfRestaurantsViewholder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ListOfRestaurantsViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Creates view holder and inflates its xml layout
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -80,18 +59,10 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
 
     // update view holder
     @Override
-    public void onBindViewHolder(ListOfRestaurantsViewholder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ListOfRestaurantsViewholder viewHolder, int position) {
         viewHolder.updateWithDetailsRestaurants(this.restoList.get(position), this.glide);
     }
 
-/*    // update view holder
-    @Override
-    public void onBindViewHolder(ListOfRestaurantsViewholder viewHolder, int position) {
-        viewHolder.updateWithDetailsRestaurants(this.restoList.get(position), this.glide);
-        Log.d(TAG, "onBindViewHolder");
-    }*/
-
-        // return the total count of items in the list
     @Override
     public int getItemCount() {
         Log.d(TAG, "getItemCount: "+ length);

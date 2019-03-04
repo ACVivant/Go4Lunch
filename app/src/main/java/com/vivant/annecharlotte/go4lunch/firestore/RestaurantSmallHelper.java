@@ -42,9 +42,4 @@ public class RestaurantSmallHelper {
         return RestaurantHelper.getRestaurantsCollection().document(restoId).update("clientsTodayList", clientsTodayList);
     }
 
-    // -- GET ALL NEARBY RESTAURANT --
-    public static Query getAllTodayRestaurants(){
-        return RestaurantHelper.getRestaurantsCollection().orderBy("restoName", Query.Direction.ASCENDING);
-    }
-
 }

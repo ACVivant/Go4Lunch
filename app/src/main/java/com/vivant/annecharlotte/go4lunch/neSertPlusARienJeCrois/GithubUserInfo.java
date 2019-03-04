@@ -1,8 +1,9 @@
-package com.vivant.annecharlotte.go4lunch.models.Details;
+package com.vivant.annecharlotte.go4lunch.neSertPlusARienJeCrois;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.vivant.annecharlotte.go4lunch.models.Details.RestaurantDetailResult;
 
 public class GithubUserInfo {
 
