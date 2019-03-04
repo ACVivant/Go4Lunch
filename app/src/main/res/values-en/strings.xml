@@ -76,12 +76,12 @@
 
     <!--DETAIL -->
     <string name="isjoining">" is joining!"</string>
-    <string name="no_hours">"Schedules are not available.</string>
-    <string name="open_at">"Open at </string>
+    <string name="no_hours">"Schedules are not available."</string>
+    <string name="open_at">"Open at "</string>
     <string name="open_until">"Open until "</string>
     <string name="closed">Closed</string>
     <string name="closed_today">"Closed today"</string>
-    <string name="always_open">Open 24/7</string>
+    <string name="always_open">"Open 24/7"</string>
 
     <!--LISTRESTO -->
     <string name="no_openinghours">"Schedules are not available."</string>
