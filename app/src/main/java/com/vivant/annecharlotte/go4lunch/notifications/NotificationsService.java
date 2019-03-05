@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.os.Build;
-import android.util.Log;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -19,7 +18,7 @@ import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.neSertPlusARienJeCrois.Restaurant;
 import com.vivant.annecharlotte.go4lunch.models.User;
 import com.vivant.annecharlotte.go4lunch.R;
-import com.vivant.annecharlotte.go4lunch.utils.DateFormat;
+import com.vivant.annecharlotte.go4lunch.utils.MyDateFormat;
 import com.vivant.annecharlotte.go4lunch.authentification.MainActivity;
 
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ public class NotificationsService extends FirebaseMessagingService {
 
 
     private void checkIfNotifToday() {
-        DateFormat forToday = new DateFormat();
+        MyDateFormat forToday = new MyDateFormat();
         final String today = forToday.getTodayDate();
 
         // We check that the user has selected a restaurant for today

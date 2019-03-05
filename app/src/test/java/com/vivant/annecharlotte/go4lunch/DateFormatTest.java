@@ -1,11 +1,10 @@
 package com.vivant.annecharlotte.go4lunch;
 
-import com.vivant.annecharlotte.go4lunch.utils.DateFormat;
+import com.vivant.annecharlotte.go4lunch.utils.MyDateFormat;
 import org.junit.Test;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import static org.junit.Assert.assertEquals;
 
@@ -13,7 +12,7 @@ import static org.junit.Assert.assertEquals;
  * Created by Anne-Charlotte Vivant on 28/02/2019.
  */
 public class DateFormatTest {
-        DateFormat test = new DateFormat();
+        MyDateFormat test = new MyDateFormat();
 
     @Test
     public void  dateFormat() {

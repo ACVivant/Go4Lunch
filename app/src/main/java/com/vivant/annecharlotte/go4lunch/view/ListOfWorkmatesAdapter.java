@@ -2,7 +2,6 @@ package com.vivant.annecharlotte.go4lunch.view;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.vivant.annecharlotte.go4lunch.models.User;
 import com.vivant.annecharlotte.go4lunch.R;
-import com.vivant.annecharlotte.go4lunch.utils.DateFormat;
+import com.vivant.annecharlotte.go4lunch.utils.MyDateFormat;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,7 +36,7 @@ public class ListOfWorkmatesAdapter extends FirestoreRecyclerAdapter<User, ListO
 
     @Override
     protected void onBindViewHolder(@NonNull UserHolder userHolder, int i, @NonNull User user) {
-        DateFormat forToday = new DateFormat();
+        MyDateFormat forToday = new MyDateFormat();
         String today = forToday.getTodayDate();
         String registeredDate = user.getRestoDate();
 

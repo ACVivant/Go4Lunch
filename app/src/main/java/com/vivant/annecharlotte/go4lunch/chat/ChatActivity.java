@@ -33,6 +33,7 @@ import com.vivant.annecharlotte.go4lunch.models.Message;
 import com.vivant.annecharlotte.go4lunch.models.User;
 import com.vivant.annecharlotte.go4lunch.R;
 import com.vivant.annecharlotte.go4lunch.authentification.BaseActivity;
+import com.vivant.annecharlotte.go4lunch.utils.MyDateFormat;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -57,6 +58,7 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
     private User modelCurrentUser;
     private String currentChatName;
     private Uri uriImageSelected;
+    private String today;
 
     // STATIC DATA FOR CHAT
     private static final String CHAT_NAME_RESTAURANT = "restaurant";
@@ -109,6 +111,8 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
             }
         });
 
+        today = (new MyDateFormat()).getTodayDate();
+
         this.configureRecyclerView(CHAT_NAME_RESTAURANT);
         this.configureToolbar();
         this.getCurrentUserFromFirestore();
@@ -138,7 +142,7 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
             // Check if the ImageView is set
             if (this.imageViewPreview.getDrawable() == null) {
                 // SEND A TEXT MESSAGE
-                MessageHelper.createMessageForChat(editTextMessage.getText().toString(), this.currentChatName, modelCurrentUser).addOnFailureListener(this.onFailureListener());
+                MessageHelper.createMessageForChat(editTextMessage.getText().toString(), this.currentChatName, modelCurrentUser, today).addOnFailureListener(this.onFailureListener());
                 this.editTextMessage.setText("");
             } else {
                 // SEND A IMAGE + TEXT IMAGE
@@ -186,7 +190,7 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         String pathImageSavedInFirebase = taskSnapshot.getMetadata().getDownloadUrl().toString();
                         // B - SAVE MESSAGE IN FIRESTORE
-                        MessageHelper.createMessageWithImageForChat(pathImageSavedInFirebase, message, currentChatName, modelCurrentUser).addOnFailureListener(onFailureListener());
+                        MessageHelper.createMessageWithImageForChat(pathImageSavedInFirebase, message, currentChatName, modelCurrentUser, today).addOnFailureListener(onFailureListener());
                     }
                 })
                 .addOnFailureListener(this.onFailureListener());
@@ -227,7 +231,13 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
         //Track current chat name
         this.currentChatName = chatName;
         //Configure Adapter & RecyclerView
-        this.chatAdapter = new ChatAdapter(generateOptionsForAdapter(MessageHelper.getAllMessageForChat(this.currentChatName)), Glide.with(this), this, this.getCurrentUser().getUid());
+        if (chatName.equals(CHAT_NAME_RESTAURANT)) {
+            this.chatAdapter = new ChatAdapter(generateOptionsForAdapter(MessageHelper.getAllTodayMessageForChat(this.currentChatName, today)), Glide.with(this), this, this.getCurrentUser().getUid());
+        } else {
+            this.chatAdapter = new ChatAdapter(generateOptionsForAdapter(MessageHelper.getAllMessageForChat(this.currentChatName)), Glide.with(this), this, this.getCurrentUser().getUid());
+        }
+
+
         chatAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {

@@ -35,11 +35,11 @@
     <string name="error_no_internet">"no connexion"</string>
     <string name="error_unknown_error">"An unknown error has occurred"</string>
     <string name="connection_succeed">Successful authentication !</string>
-    <string name="button_login_text_logged">Display Profil</string>
+    <string name="button_login_text_logged">Display profile</string>
     <string name="button_login_text_not_logged">Log in</string>
 
     <!-- LOGIN ACTIVITY -->
-    <string name="toolbar_title_login_activity">Your profil</string>
+    <string name="toolbar_title_login_activity">Your profile</string>
     <string name="text_input_username">Username</string>
     <string name="text_view_email">Email:</string>
     <string name="button_update_account">Update my name</string>

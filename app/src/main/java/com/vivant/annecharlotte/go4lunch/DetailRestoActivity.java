@@ -35,7 +35,7 @@ import com.vivant.annecharlotte.go4lunch.models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.models.RestaurantSmall;
 import com.vivant.annecharlotte.go4lunch.models.User;
-import com.vivant.annecharlotte.go4lunch.utils.DateFormat;
+import com.vivant.annecharlotte.go4lunch.utils.MyDateFormat;
 import com.vivant.annecharlotte.go4lunch.view.ListOfClientsAdapter;
 
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public class DetailRestoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail_resto);
 
         context = this;
-        DateFormat forToday = new DateFormat();
+        MyDateFormat forToday = new MyDateFormat();
         today = forToday.getTodayDate();
         userId = UserHelper.getCurrentUserId();
         idResto = getIntent().getStringExtra(IDRESTO);
@@ -294,7 +294,7 @@ public class DetailRestoActivity extends AppCompatActivity {
                     if (usersToday != null) {
                         dateRestoSheet = usersToday.getDateCreated();
 
-                        DateFormat myDate = new DateFormat();
+                        MyDateFormat myDate = new MyDateFormat();
                         String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
 
                         if (dateRegistered.equals(today)) {
@@ -324,7 +324,7 @@ public class DetailRestoActivity extends AppCompatActivity {
                     if (usersToday != null) {
                         dateRestoSheet = usersToday.getDateCreated();
 
-                    DateFormat myDate = new DateFormat();
+                    MyDateFormat myDate = new MyDateFormat();
                     String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
                     if (dateRegistered.equals(today)) {
                         List<String> listUsersToday = new ArrayList<>();
@@ -450,7 +450,7 @@ public class DetailRestoActivity extends AppCompatActivity {
             Date dateRestoSheet;
             if (usersToday != null) {
                 dateRestoSheet = usersToday.getDateCreated();
-                DateFormat myDate = new DateFormat();
+                MyDateFormat myDate = new MyDateFormat();
                 String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
 
                 if (dateRegistered.equals(today)) {

@@ -17,7 +17,7 @@ import com.vivant.annecharlotte.go4lunch.models.Details.Period;
 import com.vivant.annecharlotte.go4lunch.models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.models.RestaurantSmall;
 import com.vivant.annecharlotte.go4lunch.R;
-import com.vivant.annecharlotte.go4lunch.utils.DateFormat;
+import com.vivant.annecharlotte.go4lunch.utils.MyDateFormat;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -111,7 +111,7 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
         // Number of interested colleagues
         // Set to 0 by default
         loversTextView.setText("0");
-        DateFormat forToday = new DateFormat();
+        MyDateFormat forToday = new MyDateFormat();
         today = forToday.getTodayDate();
 
         RestaurantSmallHelper.getRestaurant(restaurantDetail.getPlaceId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -124,7 +124,7 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
                     Date dateRestoSheet;
                     if (resto != null) {
                         dateRestoSheet = resto.getDateCreated();
-                        DateFormat myDate = new DateFormat();
+                        MyDateFormat myDate = new MyDateFormat();
                         String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
                         if (dateRegistered.equals(today)) {
                             // Number of interested colleagues
@@ -148,7 +148,7 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
                 String textTime;
                 if(period.getClose().getDay() == calendar.get(Calendar.DAY_OF_WEEK)-1&&!textOK) {
                     //textOK allows you to manage cases where there are several opening hours for the same day
-                    DateFormat hour = new DateFormat();
+                    MyDateFormat hour = new MyDateFormat();
                     switch (getOpeningHour(period)) {
                         case 1:
                                 openTextView.setTextColor(openTextView.getResources().getColor(R.color.colorPrimary));

@@ -29,7 +29,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.vivant.annecharlotte.go4lunch.firestore.RestaurantSmallHelper;
 import com.vivant.annecharlotte.go4lunch.models.Nearby.GooglePlacesResult;
 import com.vivant.annecharlotte.go4lunch.models.RestaurantSmall;
-import com.vivant.annecharlotte.go4lunch.utils.DateFormat;
+import com.vivant.annecharlotte.go4lunch.utils.MyDateFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -72,7 +72,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         mView = inflater.inflate(R.layout.fragment_map, container, false);
         mGps = mView.findViewById(R.id.ic_gps);
 
-        DateFormat forToday = new DateFormat();
+        MyDateFormat forToday = new MyDateFormat();
         today = forToday.getTodayDate();
 
         return mView;
@@ -192,7 +192,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
                     Date dateRestoSheet;
                     if (resto != null) {
                         dateRestoSheet = resto.getDateCreated();
-                    DateFormat myDate = new DateFormat();
+                    MyDateFormat myDate = new MyDateFormat();
                     String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
 
                     if (dateRegistered.equals(today)) {

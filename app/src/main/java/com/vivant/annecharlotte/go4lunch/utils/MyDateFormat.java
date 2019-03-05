@@ -7,7 +7,7 @@ import java.util.Locale;
 /**
  * Created by Anne-Charlotte Vivant on 25/02/2019.
  */
-public class DateFormat {
+public class MyDateFormat {
 
     public String getTodayDate() {
         Date day = new Date();
