@@ -8,11 +8,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.os.Build;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.vivant.annecharlotte.go4lunch.firestore.RestaurantSmallHelper;
+import com.vivant.annecharlotte.go4lunch.models.RestaurantSmall;
 import com.vivant.annecharlotte.go4lunch.neSertPlusARienJeCrois.RestaurantHelper;
 import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.neSertPlusARienJeCrois.Restaurant;
@@ -51,6 +54,7 @@ public class NotificationsService extends FirebaseMessagingService {
         notifOk = sharedPreferences.getBoolean(NOTIF_PREFS, true);
         userId = UserHelper.getCurrentUserId();
 
+        Log.d(TAG, "onMessageReceived");
         // We look if the user has to receive notifications
         checkIfNotifToday();
     }
@@ -69,6 +73,8 @@ public class NotificationsService extends FirebaseMessagingService {
                 if (user != null) {
                     myRestoToday = user.getRestoToday();
                 String registeredDate = user.getRestoDate();
+                    Log.d(TAG, "onSuccess: today " + myRestoToday);
+                    Log.d(TAG, "onSuccess: registered " + registeredDate);
                 if (!myRestoToday.equals("")) {
                     // We check that the restaurant has been registered for today
                     if (registeredDate.equals(today)) {
@@ -97,15 +103,18 @@ public class NotificationsService extends FirebaseMessagingService {
                 }
 
                 // I get the name and address of the restaurant
-                RestaurantHelper.getRestaurant(restoTodayId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                RestaurantSmallHelper.getRestaurant(restoTodayId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Restaurant resto = documentSnapshot.toObject((Restaurant.class));
+                        RestaurantSmall resto = documentSnapshot.toObject((RestaurantSmall.class));
                         if (resto != null) {
                             restoTodayName = resto.getRestoName();
+                            Log.d(TAG, "onSuccess: name " + restoTodayName);
+                            Log.d(TAG, "onSuccess: adress " + resto.getAddress());
                             restoTodayAddress = resto.getAddress();
+                            //restoTodayAddress = "rue de la fourchette";
                         // I retrieve the list of colleagues who have chosen this restaurant
-                            listUserId = resto.getUsersToday();
+                            listUserId = resto.getClientsTodayList();
                         }
 
                         // I retrieve the list of colleagues' names
@@ -119,21 +128,25 @@ public class NotificationsService extends FirebaseMessagingService {
                                         name = user.getUsername();
                                     }
                                     listNames+= name +", ";
+                                    Log.d(TAG, "onSuccess: listnames " + listNames);
+
+                                    String line1_name = getResources().getString(R.string.notif_message1) + " " + restoTodayName;
+                                    String line2_address = restoTodayAddress;
+                                    String line3_with = getResources().getString(R.string.notif_message2);
+                                    String line4_colleagues = listNames;
+                                    if(line4_colleagues.endsWith(", ")) line4_colleagues = line4_colleagues.substring(0, line4_colleagues.length() - 2);
+
+                                    sendVisualNotification(line1_name,line2_address, line3_with, line4_colleagues);
                                 }
                             });
                         }
-
-                        // I create the message
-                        CreateNotifMessage message = new CreateNotifMessage();
-                        myMessage = message.create(context, R.string.notif_message1, restoTodayName, restoTodayAddress, R.string.notif_message2, listNames);
-                        sendVisualNotification(myMessage);
                     }
                 });
             }
         });
     }
 
-    private void sendVisualNotification(String messageBody) {
+    private void sendVisualNotification(String m1, String m2, String m3, String m4) {
         //  Create an Intent that will be shown when user will click on the Notification
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -141,7 +154,10 @@ public class NotificationsService extends FirebaseMessagingService {
         //  Create a Style for the Notification
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         inboxStyle.setBigContentTitle(getString(R.string.notification_title));
-        inboxStyle.addLine(messageBody);
+        inboxStyle.addLine(m1);
+        inboxStyle.addLine(m2);
+        inboxStyle.addLine(m3);
+        inboxStyle.addLine(m4);
 
         //  Create a Channel (Android 8)
         String channelId = getString(R.string.default_notification_channel_id);
@@ -151,7 +167,7 @@ public class NotificationsService extends FirebaseMessagingService {
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.baseline_local_dining_24)
                         .setContentTitle(getString(R.string.app_name))
-                        .setContentText(getString(R.string.notification_title))
+                        .setContentText(m1)
                         .setAutoCancel(true)
                         .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                         .setContentIntent(pendingIntent)
@@ -162,7 +178,7 @@ public class NotificationsService extends FirebaseMessagingService {
 
         //  Support Version >= Android 8
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence channelName = "Message provenant de Firebase";
+            CharSequence channelName = "Firebase Message";
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel mChannel = new NotificationChannel(channelId, channelName, importance);
             notificationManager.createNotificationChannel(mChannel);

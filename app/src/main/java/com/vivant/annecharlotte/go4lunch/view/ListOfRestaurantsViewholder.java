@@ -2,6 +2,7 @@ package com.vivant.annecharlotte.go4lunch.view;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,7 +13,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.vivant.annecharlotte.go4lunch.BuildConfig;
 import com.vivant.annecharlotte.go4lunch.firestore.RestaurantSmallHelper;
-import com.vivant.annecharlotte.go4lunch.listResto.Rate;
+import com.vivant.annecharlotte.go4lunch.utils.Rate;
 import com.vivant.annecharlotte.go4lunch.models.Details.Period;
 import com.vivant.annecharlotte.go4lunch.models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.models.RestaurantSmall;
@@ -29,6 +30,8 @@ import androidx.recyclerview.widget.RecyclerView;
  * Created by Anne-Charlotte Vivant on 06/02/2019.
  */
 public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
+
+    private static final String TAG = "ListOfRestaurantsViewho";
 
     private TextView nameTextView, addressTextView, openTextView, proximityTextView, loversTextView;
     private ImageView star1, star2, star3, photo;
@@ -176,17 +179,6 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
             }
         }
     }
-
-/*    public String getFormat(String hour) {
-        //formats the hours for the display
-        String time;
-        if (hour.length()==2) {
-            time = hour.substring(0,1) + ":" + hour.substring(1,2);
-        } else {
-            time = hour.substring(0,2)+":"+ hour.substring(2,4);
-        }
-        return time;
-    }*/
 
     // Method that get opening hours from GooglePlaces
     private int getOpeningHour(Period period){

@@ -30,7 +30,7 @@ import com.vivant.annecharlotte.go4lunch.api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.api.ApiInterface;
 import com.vivant.annecharlotte.go4lunch.firestore.RestaurantSmallHelper;
 import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
-import com.vivant.annecharlotte.go4lunch.listResto.Rate;
+import com.vivant.annecharlotte.go4lunch.utils.Rate;
 import com.vivant.annecharlotte.go4lunch.models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.models.RestaurantSmall;
@@ -50,6 +50,7 @@ public class DetailRestoActivity extends AppCompatActivity {
     private String PLACEIDRESTO = "resto_place_id";
     private String restoToday;
     private List<String> listRestoLike= new ArrayList<>();
+    private String restoAddress;
     private TextView nameTV;
     private TextView addressTV;
     private ImageView photoIV;
@@ -89,7 +90,7 @@ public class DetailRestoActivity extends AppCompatActivity {
         MyDateFormat forToday = new MyDateFormat();
         today = forToday.getTodayDate();
         userId = UserHelper.getCurrentUserId();
-        idResto = getIntent().getStringExtra(IDRESTO);
+        //idResto = getIntent().getStringExtra(IDRESTO);
         placeidResto = getIntent().getStringExtra(PLACEIDRESTO);
 
         //---------------------------------------------------------------------------------------------
@@ -102,7 +103,7 @@ public class DetailRestoActivity extends AppCompatActivity {
 
         Call<ListDetailResult> call;
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        call = apiService.getRestaurantDetail(BuildConfig.apikey, placeidResto, "name,rating,photo,url,formatted_phone_number,website,address_component,id,geometry");
+        call = apiService.getRestaurantDetail(BuildConfig.apikey, placeidResto, "name,rating,photo,url,formatted_phone_number,website,formatted_address,id,geometry");
         call.enqueue(new Callback<ListDetailResult>() {
                          @Override
                          public void onResponse(Call<ListDetailResult> call, Response<ListDetailResult> response) {
@@ -121,7 +122,8 @@ public class DetailRestoActivity extends AppCompatActivity {
                              // Display infos on restaurant
                              //---------------------------------------------------------------------------------------
                              restoName = mResto.getName();
-                             String restoAddress = mResto.getFormattedAddress();
+                             restoAddress = mResto.getFormattedAddress();
+                                 Log.d(TAG, "onResponse: adress " +restoAddress);
                              nameTV = findViewById(R.id.name_detail);
                              nameTV.setText(restoName);
                              addressTV = findViewById(R.id.address_detail);
@@ -305,7 +307,7 @@ public class DetailRestoActivity extends AppCompatActivity {
                             RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);
                         } else {
                             // The restaurant card of the day did not exist so we update it empty
-                            RestaurantSmallHelper.createRestaurant(id, name);
+                            RestaurantSmallHelper.createRestaurant(id, name, restoAddress);
                         }
                     }
                 }
@@ -332,20 +334,28 @@ public class DetailRestoActivity extends AppCompatActivity {
                         listUsersToday.add(userId);
                         RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);
                     }else {
-                        RestaurantSmallHelper.createRestaurant(id, name);
-                        List<String> listUsersToday = new ArrayList<>();
+                        RestaurantSmallHelper.createRestaurant(id, name, restoAddress);
+                        /*List<String> listUsersToday = new ArrayList<>();
                         listUsersToday.add(userId);
-                        RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);
+                        RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);*/
+                        updateUserTodayInFirebase(userId, id);
                     }
                     }
                 } else {
-                    List<String> listUsersToday = new ArrayList<>();
+                    RestaurantSmallHelper.createRestaurant(id, name, restoAddress);
+                    /*List<String> listUsersToday = new ArrayList<>();
                     listUsersToday.add(userId);
-                    RestaurantSmallHelper.createRestaurant(id, name);
-                    RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);
+                    RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);*/
+                    updateUserTodayInFirebase(userId, id);
                 }
             }
         });
+    }
+
+    private void updateUserTodayInFirebase(String myId, String myRestoId) {
+        List<String> listUsersToday = new ArrayList<>();
+        listUsersToday.add(myId);
+        RestaurantSmallHelper.updateClientsTodayList(listUsersToday, myRestoId);
     }
 
     private void  updateRestoTodayInFirebase(final String restoChoiceId, final String restoChoiceName) {
@@ -421,9 +431,6 @@ public class DetailRestoActivity extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 restoToday = Objects.requireNonNull(documentSnapshot.toObject(User.class)).getRestoToday();
                 lastRestoDate = Objects.requireNonNull(documentSnapshot.toObject(User.class)).getRestoDate();
-                Log.d(TAG, "onSuccess: restoToday " +restoToday);
-                Log.d(TAG, "onSuccess: idresto "+idResto);
-                Log.d(TAG, "onSuccess: lastRestoDate "+ lastRestoDate);
 
                 if (restoToday != null && restoToday.length()>0&&lastRestoDate.equals(today)) { // We check that there is a restaurant registered and that it was registered today
                     if (restoToday.equals(idToday)) {

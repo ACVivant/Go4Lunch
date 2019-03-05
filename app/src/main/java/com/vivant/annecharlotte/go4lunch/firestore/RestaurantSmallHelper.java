@@ -22,8 +22,8 @@ public class RestaurantSmallHelper {
     }
 
     // --- CREATE ---
-    public static Task<Void> createRestaurant(String restoId, String restoName) {
-        RestaurantSmall restaurantToCreate = new RestaurantSmall(restoName);
+    public static Task<Void> createRestaurant(String restoId, String restoName, String address) {
+        RestaurantSmall restaurantToCreate = new RestaurantSmall(restoName, address);
         return RestaurantSmallHelper.getRestaurantsCollection().document(restoId).set(restaurantToCreate);
     }
 
