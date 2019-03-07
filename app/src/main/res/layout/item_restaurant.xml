@@ -13,8 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.5"
-        android:orientation="vertical"
-        android:padding="05dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/restaurant_name"
@@ -27,15 +26,13 @@
             android:id="@+id/restaurant_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="address"
-            android:layout_marginTop="05dp"/>
+            android:text="address" />
 
         <TextView
             android:id="@+id/restaurant_openinghours"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="open or not?"
-            android:layout_marginTop="05dp"/>
+            android:text="open or not?" />
 
     </LinearLayout>
 
@@ -69,7 +66,6 @@
                 android:id="@+id/restaurant_lovers_nb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="05dp"
                 android:text="(???)"/>
         </LinearLayout>
 
