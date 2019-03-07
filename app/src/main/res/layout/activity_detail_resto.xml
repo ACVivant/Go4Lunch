@@ -95,7 +95,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Call"
+                android:text="@string/call"
                 android:textColor="@color/colorAccent"
                 android:textAllCaps="true"
                 android:layout_gravity="center"/>
@@ -118,7 +118,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Like"
+                android:text="@string/like"
                 android:textColor="@color/colorAccent"
                 android:textAllCaps="true"
                 android:layout_gravity="center"/>
@@ -141,7 +141,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Website"
+                android:text="@string/website"
                 android:textColor="@color/colorAccent"
                 android:textAllCaps="true"
                 android:layout_gravity="center"/>

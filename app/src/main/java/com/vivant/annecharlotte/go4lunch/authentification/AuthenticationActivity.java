@@ -1,17 +1,12 @@
 package com.vivant.annecharlotte.go4lunch.authentification;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.facebook.FacebookSdk;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -20,7 +15,6 @@ import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.LunchActivity;
 import com.vivant.annecharlotte.go4lunch.R;
 
-import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -46,7 +40,7 @@ public class AuthenticationActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_authentication);
         layoutLinks();
 
        // printHashKey(this);
@@ -61,7 +55,7 @@ public class AuthenticationActivity extends BaseActivity {
 
     @Override
     public int getFragmentLayout() {
-        return R.layout.activity_main;
+        return R.layout.activity_authentication;
     }
 
     // Retrieves the return of the authentication activity to check if it went well

@@ -17,6 +17,7 @@
 
         <!-- IMAGE VIEW GO4LUNCH -->
     <ImageView
+        android:id="@+id/logo_main"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_gravity="center_horizontal"

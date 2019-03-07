@@ -75,6 +75,12 @@
     <string name="decided">" mange au restaurant: "</string>
 
     <!--DETAIL -->
+    <string name="call">"Tel"</string>
+    <string name="website">"Site web"</string>
+    <string name="like">"J'aime"</string>
+
+    <!--LISTRESTO -->
+    <string name="no_openinghours">"Les horaires ne sont pas disponibles."</string>
     <string name="isjoining">" vient!"</string>
     <string name="no_hours">"Les horaires ne sont pas disponibles."</string>
     <string name="open_at">"Ouvre à "</string>
@@ -82,9 +88,6 @@
     <string name="closed">Fermé</string>
     <string name="closed_today">"Fermé aujourd'hui"</string>
     <string name="always_open">Ouvert 24/7</string>
-
-    <!--LISTRESTO -->
-    <string name="no_openinghours">"Les horaires ne sont pas disponibles."</string>
 
     <!-- LUNCH ACTIVITY -->
     <string name="no_lunch">"Vous n'avez pas encore choisi de restaurant!"</string>

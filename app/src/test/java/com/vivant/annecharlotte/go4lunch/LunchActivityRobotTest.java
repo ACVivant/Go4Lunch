@@ -2,6 +2,7 @@ package com.vivant.annecharlotte.go4lunch;
 
 import android.content.Intent;
 
+import com.google.firebase.FirebaseApp;
 import com.vivant.annecharlotte.go4lunch.chat.ChatActivity;
 import com.vivant.annecharlotte.go4lunch.authentification.ProfileActivity;
 
@@ -12,6 +13,8 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
+import androidx.test.core.app.ApplicationProvider;
+
 import static org.junit.Assert.assertEquals;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -21,10 +24,11 @@ import static org.robolectric.Shadows.shadowOf;
  */
 @RunWith(RobolectricTestRunner.class)
 public class LunchActivityRobotTest {
-   /* private LunchActivity activity;
+/*    private LunchActivity activity;
 
     @Before
     public void setUp() {
+        FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext());
         activity = Robolectric.buildActivity(LunchActivity.class)
                 .create()
                 .resume()

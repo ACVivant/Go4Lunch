@@ -92,13 +92,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         Log.d(TAG, "setUserLocation");
         myLatitude = userLatLng.latitude;
         myLongitude = userLatLng.longitude;
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude, myLongitude), DEFAULT_ZOOM));
+
+        if (mMap != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude, myLongitude), DEFAULT_ZOOM));
+        }
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
+        //initMap();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         initMap();
     }
 
@@ -121,7 +130,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d(TAG, "onMapReady");
+        Log.d(TAG, "onMapReady lat " + myLatitude + " lgn: " + myLongitude);
         mMap = googleMap;
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude, myLongitude), DEFAULT_ZOOM));
