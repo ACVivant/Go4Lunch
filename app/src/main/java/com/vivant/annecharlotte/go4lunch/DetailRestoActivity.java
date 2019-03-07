@@ -146,7 +146,7 @@ public class DetailRestoActivity extends AppCompatActivity {
                                  String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + restoPhoto + "&key=" + BuildConfig.apikey;
                                  Glide.with(context).load(photoUrl).into(photoIV);
                              } else {
-                                 photoIV.setImageResource(R.drawable.ic_camera);
+                                 photoIV.setImageResource(R.drawable.buffet3);
                              }
 
                              //-----------------------------------------------------------------------------------------------
