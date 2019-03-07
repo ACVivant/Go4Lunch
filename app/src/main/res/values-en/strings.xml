@@ -52,6 +52,8 @@
     <string name="popup_message_choice_no">No</string>
 
     <!-- FACEBOOK PURPOSE -->
+    <!--string name="facebook_application_id">1031726573687275</string-->
+    <!--string name="fb_login_protocol_scheme">fb1031726573687275</string-->
     <string name="title_activity_lunch">LunchActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -119,4 +121,8 @@
     <string name="text_view_user_chat_error">This thread contains for the moment no message</string>
     <string name="popup_title_permission_files_access">This application needs permission to work.</string>
     <string name="toast_title_no_image_chosen">"No image chosen …"</string>
+    <string name="chat_image_preview">"Image"</string>
+    <string name="chat_add">"Add an image"</string>
+    <string name="chat_title_restaurants">"Which restaurant for today?"</string>
+    <string name="chat_title_photos">"Photos of good times!"</string>
 </resources>

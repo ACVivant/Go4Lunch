@@ -1,28 +1,30 @@
 package com.vivant.annecharlotte.go4lunch;
 
-/*
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
 
+import android.content.Context;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import androidx.test.InstrumentationRegistry;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import static org.junit.Assert.*;
-*/
+
 
 /**
  * Instrumented test, which will execute on an Android device.
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-//@RunWith(AndroidJUnit4.class)
+@RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
-   /* @Test
-    public void useAppContext() {
+    @Test
+    public void testUseAppContext() {
         // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
+        //Context appContext = InstrumentationRegistry.getTargetContext();
+        Context appContext = ApplicationProvider.getApplicationContext();
 
         assertEquals("com.vivant.annecharlotte.go4lunch", appContext.getPackageName());
-    }*/
+    }
 }

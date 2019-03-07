@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.facebook.FacebookSdk;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -23,7 +24,7 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class MainActivity extends BaseActivity {
+public class AuthenticationActivity extends BaseActivity {
 
     private LinearLayout mainActivityLinearLayout;
     private Button facebookBtn;

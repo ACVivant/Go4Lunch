@@ -263,6 +263,11 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
     public void onDataChanged() {
         textViewRecyclerViewEmpty.setVisibility(this.chatAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
+
+    @Override
+    public void onBackPressed() {
+            super.onBackPressed();
+    }
 }
 
 

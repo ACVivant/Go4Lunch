@@ -98,6 +98,7 @@ public class ProfileActivity extends BaseActivity {
                 .setPositiveButton(R.string.popup_message_choice_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        signOutUserFromFirebase();
                         deleteUserFromFirebase();
                         startMainActivity();
                     }
@@ -217,7 +218,7 @@ public class ProfileActivity extends BaseActivity {
     //------------------------------------------------
 
     private void startMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, AuthenticationActivity.class);
         startActivity(intent);
     }
 

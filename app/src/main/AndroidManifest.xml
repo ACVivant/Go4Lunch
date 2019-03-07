@@ -28,9 +28,10 @@
 
         <activity android:name=".chat.ChatActivity"
             android:label="@string/toolbar_title_chat_activity"
-            android:parentActivityName=".LunchActivity"></activity>
+            android:parentActivityName=".LunchActivity"/>
         <!-- NOTIFICATION SERVICE -->
-        <service android:name=".notifications.NotificationsService">
+        <service android:name=".notifications.NotificationsService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -50,7 +51,7 @@
         <!-- FACEBOOK -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"
+            android:value="@string/facebook_application_id"
             tools:replace="android:value" />
 
         <activity
@@ -74,11 +75,10 @@
             android:label="@string/title_activity_lunch"
             android:theme="@style/AppTheme.NoTitle" />
         <activity
-            android:name=".authentification.MainActivity"
+            android:name=".authentification.AuthenticationActivity"
             android:theme="@style/AppTheme.NoTitle"> <!-- DISABLE TOOLBAR IN MAIN ACTIVITY -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- PROFILE ACTIVITY -->

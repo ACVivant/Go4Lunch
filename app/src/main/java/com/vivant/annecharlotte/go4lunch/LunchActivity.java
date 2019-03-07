@@ -112,6 +112,7 @@ public class LunchActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: LunchActivity");
 
         setContentView(R.layout.activity_lunch);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -155,16 +156,20 @@ public class LunchActivity extends BaseActivity
             radius  = Integer.parseInt(radiusString);
         }
         type = sharedPreferences.getString(TYPE_PREFS, "restaurant");
+        Log.d(TAG, "loadPrefs");
     }
 
     protected void layoutLinks() {
         nameTextView = navigationView.getHeaderView(0).findViewById(R.id.ND_name_textView);
         emailTextView =  navigationView.getHeaderView(0).findViewById(R.id.ND_email_textView);
         photoImageView = navigationView.getHeaderView(0).findViewById(R.id.ND_photo_imageView);
+        Log.d(TAG, "layoutLinks");
     }
 
     @Override
-    public int getFragmentLayout() { return R.layout.activity_profile; }
+    public int getFragmentLayout() {
+        Log.d(TAG, "getFragmentLayout");
+        return R.layout.activity_profile; }
 
     @Override
     public void onBackPressed() {
@@ -180,6 +185,7 @@ public class LunchActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the toolbar menu
         getMenuInflater().inflate(R.menu.toolbar, menu);
+        Log.d(TAG, "onCreateOptionsMenu");
         return true;
     }
 
@@ -283,6 +289,7 @@ public class LunchActivity extends BaseActivity
     //  Update UI when activity is creating
     private void updateUIWhenCreating(){
 
+        Log.d(TAG, "updateUIWhenCreating");
         if (this.getCurrentUser() != null){
             //Get picture URL from Firebase
             if (this.getCurrentUser().getPhotoUrl() != null) {
@@ -303,6 +310,7 @@ public class LunchActivity extends BaseActivity
     }
 
     private void searchNearbyRestaurants(){
+        Log.d(TAG, "searchNearbyRestaurants");
         String keyword = "";
         String key = BuildConfig.apikey;
         String lat = String.valueOf(currentLocation.getLatitude());
@@ -336,6 +344,7 @@ public class LunchActivity extends BaseActivity
     }
 
     private void startDetailActivity() {
+        Log.d(TAG, "startDetailActivity");
        String userId=  UserHelper.getCurrentUserId();
        UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
            @Override
@@ -370,6 +379,7 @@ public class LunchActivity extends BaseActivity
     // Verify permissions
     //----------------------------------------------------------------------------------------------------------------------------
     private void getLocationPermission() {
+        Log.d(TAG, "getLocationPermission");
         FusedLocationProviderClient mFusedLocationProviderClient;
         //getLocationPermission: getting location permissions
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
@@ -388,6 +398,12 @@ public class LunchActivity extends BaseActivity
                             currentLocation = (Location) task.getResult();
                             // We pass the user's position to the fragment map
                             assert currentLocation != null;
+                            /*try {
+                                Log.d(TAG, "onComplete: sleep");
+                                Thread.sleep(5000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }*/
                             fragment1.setUserLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
                             fragment2.setUserLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
                             searchNearbyRestaurants();

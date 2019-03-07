@@ -16,6 +16,7 @@
         <!-- BUTTON CHAT RESTAURANT -->
         <ImageButton
             android:id="@+id/activity_user_chat_restaurant_chat_button"
+            android:contentDescription="@string/chat_title_restaurants"
             android:layout_width="wrap_content"
             android:layout_height="50dip"
             android:layout_weight="1"
@@ -27,6 +28,7 @@
         <!-- BUTTON CHAT PHOTOS -->
         <ImageButton
             android:id="@+id/activity_user_chat_photo_chat_button"
+            android:contentDescription="@string/chat_title_photos"
             android:layout_width="wrap_content"
             android:layout_height="50dip"
             android:layout_weight="1"
@@ -67,6 +69,7 @@
     <!-- IMAGE CHOSEN PREVIEW -->
     <ImageView
         android:id="@+id/activity_user_chat_image_chosen_preview"
+        android:contentDescription="@string/chat_image_preview"
         android:layout_width="50dip"
         android:layout_height="50dip"
         android:layout_margin="@dimen/default_margin"
@@ -83,6 +86,7 @@
         <!-- ADD FILE BUTTON -->
         <ImageButton
             android:id="@+id/activity_user_chat_add_file_button"
+            android:contentDescription="@string/chat_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"

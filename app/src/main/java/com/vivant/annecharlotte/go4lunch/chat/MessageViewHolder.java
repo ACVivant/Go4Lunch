@@ -1,6 +1,7 @@
 package com.vivant.annecharlotte.go4lunch.chat;
 
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,7 +24,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MessageViewHolder extends RecyclerView.ViewHolder {
-
+    private static final String TAG = "MessageViewHolder";
+    
     private RelativeLayout rootView;
     private LinearLayout profileContainer;
     private ImageView imageViewProfile;

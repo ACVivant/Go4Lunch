@@ -157,7 +157,6 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
                                 openTextView.setTextColor(openTextView.getResources().getColor(R.color.colorPrimary));
                                 text = openTextView.getResources().getString(R.string.open_at);
                                 textTime = hour.getHoursFormat(period.getOpen().getTime());
-                                //textTime = getFormat(period.getOpen().getTime());
                                 text+=textTime;
                                 openTextView.setText(text);
 
@@ -167,7 +166,6 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
                                 text = openTextView.getResources().getString(R.string.open_until);
 
                                 textTime = hour.getHoursFormat(period.getClose().getTime());
-                            //textTime = getFormat(period.getClose().getTime());
                             text+=textTime;
                                 openTextView.setText(text);
                             break;

@@ -16,13 +16,11 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.vivant.annecharlotte.go4lunch.firestore.RestaurantSmallHelper;
 import com.vivant.annecharlotte.go4lunch.models.RestaurantSmall;
-import com.vivant.annecharlotte.go4lunch.neSertPlusARienJeCrois.RestaurantHelper;
 import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
-import com.vivant.annecharlotte.go4lunch.neSertPlusARienJeCrois.Restaurant;
 import com.vivant.annecharlotte.go4lunch.models.User;
 import com.vivant.annecharlotte.go4lunch.R;
 import com.vivant.annecharlotte.go4lunch.utils.MyDateFormat;
-import com.vivant.annecharlotte.go4lunch.authentification.MainActivity;
+import com.vivant.annecharlotte.go4lunch.authentification.AuthenticationActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +53,7 @@ public class NotificationsService extends FirebaseMessagingService {
         userId = UserHelper.getCurrentUserId();
 
         Log.d(TAG, "onMessageReceived");
-        // We look if the user has to receive notifications
+        // We look if the user wants to receive notifications
         checkIfNotifToday();
     }
 
@@ -112,7 +110,6 @@ public class NotificationsService extends FirebaseMessagingService {
                             Log.d(TAG, "onSuccess: name " + restoTodayName);
                             Log.d(TAG, "onSuccess: adress " + resto.getAddress());
                             restoTodayAddress = resto.getAddress();
-                            //restoTodayAddress = "rue de la fourchette";
                         // I retrieve the list of colleagues who have chosen this restaurant
                             listUserId = resto.getClientsTodayList();
                         }
@@ -148,7 +145,7 @@ public class NotificationsService extends FirebaseMessagingService {
 
     private void sendVisualNotification(String m1, String m2, String m3, String m4) {
         //  Create an Intent that will be shown when user will click on the Notification
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, AuthenticationActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         //  Create a Style for the Notification
