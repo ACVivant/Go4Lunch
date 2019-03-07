@@ -28,13 +28,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.vivant.annecharlotte.go4lunch.api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.api.ApiInterface;
-import com.vivant.annecharlotte.go4lunch.firestore.RestaurantSmallHelper;
+import com.vivant.annecharlotte.go4lunch.firestore.RestauranHelper;
 import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.utils.Rate;
 import com.vivant.annecharlotte.go4lunch.models.Details.ListDetailResult;
 import com.vivant.annecharlotte.go4lunch.models.Details.RestaurantDetailResult;
-import com.vivant.annecharlotte.go4lunch.models.RestaurantSmall;
-import com.vivant.annecharlotte.go4lunch.models.User;
+import com.vivant.annecharlotte.go4lunch.firestore.Restaurant;
+import com.vivant.annecharlotte.go4lunch.firestore.User;
 import com.vivant.annecharlotte.go4lunch.utils.MyDateFormat;
 import com.vivant.annecharlotte.go4lunch.view.ListOfClientsAdapter;
 
@@ -42,11 +42,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
+/**
+ * activity that manages restaurant detail sheets
+ */
 public class DetailRestoActivity extends AppCompatActivity {
 
     private String WEB = "resto_web";
-    private String IDRESTO = "resto_id";
     private String PLACEIDRESTO = "resto_place_id";
     private String restoToday;
     private List<String> listRestoLike= new ArrayList<>();
@@ -63,7 +64,6 @@ public class DetailRestoActivity extends AppCompatActivity {
     private FloatingActionButton myRestoTodayBtn;
 
     private String restoTel;
-    private String idResto;
     private String placeidResto;
 
     private String userId;
@@ -90,7 +90,6 @@ public class DetailRestoActivity extends AppCompatActivity {
         MyDateFormat forToday = new MyDateFormat();
         today = forToday.getTodayDate();
         userId = UserHelper.getCurrentUserId();
-        //idResto = getIntent().getStringExtra(IDRESTO);
         placeidResto = getIntent().getStringExtra(PLACEIDRESTO);
 
         //---------------------------------------------------------------------------------------------
@@ -106,7 +105,7 @@ public class DetailRestoActivity extends AppCompatActivity {
         call = apiService.getRestaurantDetail(BuildConfig.apikey, placeidResto, "name,rating,photo,url,formatted_phone_number,website,formatted_address,id,geometry");
         call.enqueue(new Callback<ListDetailResult>() {
                          @Override
-                         public void onResponse(Call<ListDetailResult> call, Response<ListDetailResult> response) {
+                         public void onResponse(@NonNull Call<ListDetailResult> call, @NonNull Response<ListDetailResult> response) {
                              if (!response.isSuccessful()) {
                                  Toast.makeText(context, "Code: " + response.code(), Toast.LENGTH_LONG).show();
                                  return;
@@ -123,7 +122,6 @@ public class DetailRestoActivity extends AppCompatActivity {
                              //---------------------------------------------------------------------------------------
                              restoName = mResto.getName();
                              restoAddress = mResto.getFormattedAddress();
-                                 Log.d(TAG, "onResponse: adress " +restoAddress);
                              nameTV = findViewById(R.id.name_detail);
                              nameTV.setText(restoName);
                              addressTV = findViewById(R.id.address_detail);
@@ -161,7 +159,6 @@ public class DetailRestoActivity extends AppCompatActivity {
                                  @Override
                                  public void onClick(View v) {
                                      makePhoneCall();
-                                     Log.d(TAG, "onCreate: restoTel " + restoTel);
                                  }
                              });
 
@@ -186,7 +183,7 @@ public class DetailRestoActivity extends AppCompatActivity {
                          }
 
                          @Override
-                         public void onFailure(Call<ListDetailResult> call, Throwable t) {
+                         public void onFailure(@NonNull Call<ListDetailResult> call, @NonNull Throwable t) {
                              Toast.makeText(context, t.getMessage(), Toast.LENGTH_LONG).show();
                              Log.e(TAG, t.toString());
                          }
@@ -257,8 +254,6 @@ public class DetailRestoActivity extends AppCompatActivity {
     // Update Firebase
     //---------------------------------------------------------------------------------------------------
     private void updateLikeInFirebase(final String idResto) {
-        Log.d(TAG, "updateLikeInFirebase: idresto " +idResto);
-
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -286,11 +281,11 @@ public class DetailRestoActivity extends AppCompatActivity {
     }
 
     private void removeUserInRestaurant(final String id, final String name){
-        RestaurantSmallHelper.getRestaurant(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        RestauranHelper.getRestaurant(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
+                    Restaurant usersToday = documentSnapshot.toObject(Restaurant.class);
                     // We check if the restaurant's card corresponds to the date of the day, otherwise it will have to be updated
                     Date dateRestoSheet;
                     if (usersToday != null) {
@@ -304,10 +299,10 @@ public class DetailRestoActivity extends AppCompatActivity {
                             List<String> listUsersToday = new ArrayList<>();
                             listUsersToday = usersToday.getClientsTodayList();
                             listUsersToday.remove(userId);
-                            RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);
+                            RestauranHelper.updateClientsTodayList(listUsersToday, id);
                         } else {
                             // The restaurant card of the day did not exist so we update it empty
-                            RestaurantSmallHelper.createRestaurant(id, name, restoAddress);
+                            RestauranHelper.createRestaurant(id, name, restoAddress);
                         }
                     }
                 }
@@ -316,11 +311,11 @@ public class DetailRestoActivity extends AppCompatActivity {
     }
 
     private void addUserInRestaurant(final String id, final String name) {
-        RestaurantSmallHelper.getRestaurant(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        RestauranHelper.getRestaurant(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
+                    Restaurant usersToday = documentSnapshot.toObject(Restaurant.class);
 
                     Date dateRestoSheet;
                     if (usersToday != null) {
@@ -332,20 +327,14 @@ public class DetailRestoActivity extends AppCompatActivity {
                         List<String> listUsersToday = new ArrayList<>();
                         listUsersToday = usersToday.getClientsTodayList();
                         listUsersToday.add(userId);
-                        RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);
+                        RestauranHelper.updateClientsTodayList(listUsersToday, id);
                     }else {
-                        RestaurantSmallHelper.createRestaurant(id, name, restoAddress);
-                        /*List<String> listUsersToday = new ArrayList<>();
-                        listUsersToday.add(userId);
-                        RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);*/
+                        RestauranHelper.createRestaurant(id, name, restoAddress);
                         updateUserTodayInFirebase(userId, id);
                     }
                     }
                 } else {
-                    RestaurantSmallHelper.createRestaurant(id, name, restoAddress);
-                    /*List<String> listUsersToday = new ArrayList<>();
-                    listUsersToday.add(userId);
-                    RestaurantSmallHelper.updateClientsTodayList(listUsersToday, id);*/
+                    RestauranHelper.createRestaurant(id, name, restoAddress);
                     updateUserTodayInFirebase(userId, id);
                 }
             }
@@ -355,7 +344,7 @@ public class DetailRestoActivity extends AppCompatActivity {
     private void updateUserTodayInFirebase(String myId, String myRestoId) {
         List<String> listUsersToday = new ArrayList<>();
         listUsersToday.add(myId);
-        RestaurantSmallHelper.updateClientsTodayList(listUsersToday, myRestoId);
+        RestauranHelper.updateClientsTodayList(listUsersToday, myRestoId);
     }
 
     private void  updateRestoTodayInFirebase(final String restoChoiceId, final String restoChoiceName) {
@@ -448,11 +437,11 @@ public class DetailRestoActivity extends AppCompatActivity {
 
     private void setupRecyclerView() {
 
-        RestaurantSmallHelper.getRestaurant(placeidResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        RestauranHelper.getRestaurant(placeidResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
     @Override
     public void onSuccess(DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists()) {
-            RestaurantSmall usersToday = documentSnapshot.toObject(RestaurantSmall.class);
+            Restaurant usersToday = documentSnapshot.toObject(Restaurant.class);
 
             Date dateRestoSheet;
             if (usersToday != null) {

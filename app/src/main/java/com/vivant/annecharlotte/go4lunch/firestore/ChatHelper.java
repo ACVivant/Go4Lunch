@@ -4,7 +4,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
- * Created by Anne-Charlotte Vivant on 22/02/2019.
+ * Methods related to Chat Collection in Firebase
  */
 public class ChatHelper {
 

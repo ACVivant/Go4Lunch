@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,8 +20,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.LunchActivity;
-import com.vivant.annecharlotte.go4lunch.models.User;
+import com.vivant.annecharlotte.go4lunch.firestore.User;
 import com.vivant.annecharlotte.go4lunch.R;
+
+import java.util.Objects;
 
 public class ProfileActivity extends BaseActivity {
 
@@ -32,9 +33,7 @@ public class ProfileActivity extends BaseActivity {
     private ImageView imageViewProfile;
     private EditText textInputEditTextUsername;
     private TextView textViewEmail;
-    private Button deleteBtn;
-    private Button signoutBtn;
-    private Button updateBtn;
+
     private ProgressBar progressBar;
 
     //FOR DATA
@@ -49,18 +48,20 @@ public class ProfileActivity extends BaseActivity {
         layoutLinks();
         this.configureToolbar();
         this.updateUIWhenCreating();
-        Log.d(TAG, "onCreate: ");
     }
 
     public void layoutLinks() {
-        Log.d(TAG, "layoutLinks: ");
-        imageViewProfile = (ImageView) findViewById(R.id.profile_activity_imageview_profile);
-        textInputEditTextUsername = (EditText) findViewById(R.id.profile_activity_edit_text_username);
-        textViewEmail = (TextView) findViewById(R.id.profile_activity_text_view_email);
-        deleteBtn = (Button) findViewById(R.id.profile_activity_button_delete);
-        signoutBtn = (Button) findViewById(R.id.profile_activity_button_sign_out);
-        updateBtn = (Button) findViewById(R.id.profile_activity_button_update);
-        progressBar = (ProgressBar) findViewById(R.id.profile_activity_progress_bar);
+        Button deleteBtn;
+        Button signoutBtn;
+        Button updateBtn;
+
+        imageViewProfile = findViewById(R.id.profile_activity_imageview_profile);
+        textInputEditTextUsername = findViewById(R.id.profile_activity_edit_text_username);
+        textViewEmail= findViewById(R.id.profile_activity_text_view_email);
+        deleteBtn = findViewById(R.id.profile_activity_button_delete);
+        signoutBtn = findViewById(R.id.profile_activity_button_sign_out);
+        updateBtn = findViewById(R.id.profile_activity_button_update);
+        progressBar = findViewById(R.id.profile_activity_progress_bar);
 
 
         deleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -181,7 +182,7 @@ public class ProfileActivity extends BaseActivity {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     User currentUser = documentSnapshot.toObject(User.class);
-                    String username = TextUtils.isEmpty(currentUser.getUsername()) ? getString(R.string.info_no_username_found) : currentUser.getUsername();
+                    String username = TextUtils.isEmpty(Objects.requireNonNull(currentUser).getUsername()) ? getString(R.string.info_no_username_found) : currentUser.getUsername();
                     textInputEditTextUsername.setText(username);
                 }
             });

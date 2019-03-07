@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 /**
- * Created by Anne-Charlotte Vivant on 08/02/2019.
+ * Convert google rate in stars
  */
 public class Rate {
 

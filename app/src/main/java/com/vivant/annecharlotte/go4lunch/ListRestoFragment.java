@@ -31,14 +31,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
+/**
+ * Fragment from LunchActivity with list of all nearby restaurants
+ */
 public class ListRestoFragment extends Fragment implements DisplayNearbyPlaces{
 
     private RecyclerView mRecyclerView;
 
     private final static String TAG = "ListRestoFragment" ;
-    private static final String LISTNEARBY = "ListOfNearbyRestaurants";
-    private String IDRESTO = "resto_id";
     private String PLACEIDRESTO = "resto_place_id";
 
     private ListOfRestaurantsAdapter adapter;

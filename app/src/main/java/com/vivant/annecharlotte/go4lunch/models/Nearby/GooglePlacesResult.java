@@ -3,7 +3,6 @@ package com.vivant.annecharlotte.go4lunch.models.Nearby;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.vivant.annecharlotte.go4lunch.neSertPlusARienJeCrois.OpeningHours;
 
 public class GooglePlacesResult {
 

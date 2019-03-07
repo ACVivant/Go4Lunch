@@ -13,14 +13,15 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Switch;
 
+/**
+ * Activity for personnalized options (type of establishment, distance, notifications)
+ */
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    private static final String TAG = "SettingsActivity";
     public static final String SHARED_PREFS = "SharedPrefsPerso";
     public static final String RADIUS_PREFS = "radiusForSearch";
     public static final String TYPE_PREFS = "typeOfSearch";
     public static final String NOTIF_PREFS = "notifications";
 
-    private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
     private Switch notif;
@@ -32,7 +33,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         setContentView(R.layout.activity_settings);
 
         final Context context = this;
-        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences  sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
         //final SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);

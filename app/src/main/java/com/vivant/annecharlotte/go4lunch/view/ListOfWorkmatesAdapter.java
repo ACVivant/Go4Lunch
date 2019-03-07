@@ -13,16 +13,17 @@ import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.vivant.annecharlotte.go4lunch.models.User;
+import com.vivant.annecharlotte.go4lunch.firestore.User;
 import com.vivant.annecharlotte.go4lunch.R;
 import com.vivant.annecharlotte.go4lunch.utils.MyDateFormat;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Adapter and ViewHolder for list of workmates
+ */
 public class ListOfWorkmatesAdapter extends FirestoreRecyclerAdapter<User, ListOfWorkmatesAdapter.UserHolder> {
-
-    private static final String TAG = "ListOfWorkmatesAdapter";
 
     private RequestManager glide;
     private Context context;

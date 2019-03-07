@@ -8,12 +8,12 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.vivant.annecharlotte.go4lunch.models.User;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
- * Created by Anne-Charlotte Vivant on 09/02/2019.
+ * Methods related to Use Collection in Firebase
  */
 public class UserHelper {
     private static final String COLLECTION_NAME = "users";
@@ -38,12 +38,12 @@ public class UserHelper {
 
     // --- GET CURRENT USER ID ---
     public static String getCurrentUserId() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+        return Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
     }
 
     // --- GET CURRENT USER NAME ---
     public static String getCurrentUserName() {
-        return FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        return Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getDisplayName();
     }
 
     // --- GET CURRENT USER URL PICTURE ---

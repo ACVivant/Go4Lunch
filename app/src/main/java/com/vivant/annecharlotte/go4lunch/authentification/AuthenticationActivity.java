@@ -18,6 +18,9 @@ import com.vivant.annecharlotte.go4lunch.R;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Activity for authentification at Go4Lunch launching
+ */
 public class AuthenticationActivity extends BaseActivity {
 
     private LinearLayout mainActivityLinearLayout;
@@ -31,11 +34,6 @@ public class AuthenticationActivity extends BaseActivity {
     private static final int RC_SIGN_IN_FACEBOOK = 456;
 
     private static final String USER_ID = "userId";
-
-    private String userId;
-    public String getUserId() {
-        return userId;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +67,10 @@ public class AuthenticationActivity extends BaseActivity {
 
     // Links between activity and layout
     private void layoutLinks() {
-        mainActivityLinearLayout = (LinearLayout) findViewById(R.id.main_activity_linear_layout);
-        facebookBtn = (Button) findViewById(R.id.mainactivity_button_login_facebook);
-        googleBtn = (Button) findViewById(R.id.mainactivity_button_login_google);
-        alreadyBtn = (Button) findViewById(R.id.mainactivity_button_already_connected);
+        mainActivityLinearLayout = findViewById(R.id.main_activity_linear_layout);
+        facebookBtn = findViewById(R.id.mainactivity_button_login_facebook);
+        googleBtn = findViewById(R.id.mainactivity_button_login_google);
+        alreadyBtn = findViewById(R.id.mainactivity_button_already_connected);
 
         facebookBtn.setOnClickListener(new View.OnClickListener() {
             @Override

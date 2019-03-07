@@ -1,5 +1,6 @@
 package com.vivant.annecharlotte.go4lunch.chat;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,8 +30,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.vivant.annecharlotte.go4lunch.firestore.MessageHelper;
 import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
-import com.vivant.annecharlotte.go4lunch.models.Message;
-import com.vivant.annecharlotte.go4lunch.models.User;
+import com.vivant.annecharlotte.go4lunch.firestore.Message;
+import com.vivant.annecharlotte.go4lunch.firestore.User;
 import com.vivant.annecharlotte.go4lunch.R;
 import com.vivant.annecharlotte.go4lunch.authentification.BaseActivity;
 import com.vivant.annecharlotte.go4lunch.utils.MyDateFormat;
@@ -38,6 +39,7 @@ import com.vivant.annecharlotte.go4lunch.utils.MyDateFormat;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
@@ -47,10 +49,8 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
     private TextView textViewRecyclerViewEmpty;
     private TextInputEditText editTextMessage;
     private ImageView imageViewPreview;
-    private Button sendMessageBtn;
-    private ImageButton restaurantMessage;
+       private ImageButton restaurantMessage;
     private ImageButton photoMessage;
-    private ImageButton addMessageBtn;
 
     // FOR DATA
     private ChatAdapter chatAdapter;
@@ -73,6 +73,9 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Button sendMessageBtn;
+        ImageButton addMessageBtn;
 
         recyclerView = findViewById(R.id.activity_user_chat_recycler_view);
         textViewRecyclerViewEmpty = findViewById(R.id.activity_user_chat_text_view_recycler_view_empty);
@@ -122,7 +125,7 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
     public int getFragmentLayout() { return R.layout.activity_chat; }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
@@ -142,11 +145,11 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
             // Check if the ImageView is set
             if (this.imageViewPreview.getDrawable() == null) {
                 // SEND A TEXT MESSAGE
-                MessageHelper.createMessageForChat(editTextMessage.getText().toString(), this.currentChatName, modelCurrentUser, today).addOnFailureListener(this.onFailureListener());
+                MessageHelper.createMessageForChat(Objects.requireNonNull(editTextMessage.getText()).toString(), this.currentChatName, modelCurrentUser, today).addOnFailureListener(this.onFailureListener());
                 this.editTextMessage.setText("");
             } else {
                 // SEND A IMAGE + TEXT IMAGE
-                this.uploadPhotoInFirebaseAndSendMessage(editTextMessage.getText().toString());
+                this.uploadPhotoInFirebaseAndSendMessage(Objects.requireNonNull(editTextMessage.getText()).toString());
                 this.editTextMessage.setText("");
                 this.imageViewPreview.setImageDrawable(null);
             }
@@ -172,7 +175,7 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
     // --------------------
 
     private void getCurrentUserFromFirestore(){
-        UserHelper.getUser(getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        UserHelper.getUser(Objects.requireNonNull(getCurrentUser()).getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 modelCurrentUser = documentSnapshot.toObject(User.class);
@@ -188,7 +191,7 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
                 .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        String pathImageSavedInFirebase = taskSnapshot.getMetadata().getDownloadUrl().toString();
+                        String pathImageSavedInFirebase = Objects.requireNonNull(Objects.requireNonNull(taskSnapshot.getMetadata()).getDownloadUrl()).toString();
                         // B - SAVE MESSAGE IN FIRESTORE
                         MessageHelper.createMessageWithImageForChat(pathImageSavedInFirebase, message, currentChatName, modelCurrentUser, today).addOnFailureListener(onFailureListener());
                     }
@@ -232,9 +235,9 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
         this.currentChatName = chatName;
         //Configure Adapter & RecyclerView
         if (chatName.equals(CHAT_NAME_RESTAURANT)) {
-            this.chatAdapter = new ChatAdapter(generateOptionsForAdapter(MessageHelper.getAllTodayMessageForChat(this.currentChatName, today)), Glide.with(this), this, this.getCurrentUser().getUid());
+            this.chatAdapter = new ChatAdapter(generateOptionsForAdapter(MessageHelper.getAllTodayMessageForChat(this.currentChatName, today)), Glide.with(this), this, Objects.requireNonNull(this.getCurrentUser()).getUid());
         } else {
-            this.chatAdapter = new ChatAdapter(generateOptionsForAdapter(MessageHelper.getAllMessageForChat(this.currentChatName)), Glide.with(this), this, this.getCurrentUser().getUid());
+            this.chatAdapter = new ChatAdapter(generateOptionsForAdapter(MessageHelper.getAllMessageForChat(this.currentChatName)), Glide.with(this), this, Objects.requireNonNull(this.getCurrentUser()).getUid());
         }
 
 

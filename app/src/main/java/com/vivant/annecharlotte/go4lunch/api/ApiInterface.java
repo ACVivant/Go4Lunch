@@ -8,7 +8,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 /**
- * Created by Anne-Charlotte Vivant on 06/02/2019.
+ * requests for Nearby and Places data
  */
 public interface ApiInterface {
 

@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch.models;
+package com.vivant.annecharlotte.go4lunch.firestore;
 
 import com.google.firebase.firestore.ServerTimestamp;
 
@@ -7,19 +7,18 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Anne-Charlotte Vivant on 22/02/2019.
+ * Class describing Restaurant Collection
  */
-public class RestaurantSmall {
+public class Restaurant {
     private String restoName;
     private Date dateCreated;
     private String address;
 
     private List<String> clientsTodayList;
 
-    public RestaurantSmall() { }
+    public Restaurant() {}
 
-
-    public RestaurantSmall(String restoName, String address) {
+    public Restaurant(String restoName, String address) {
         this.restoName = restoName;
         this.clientsTodayList = new ArrayList<>();
         this.address = address;

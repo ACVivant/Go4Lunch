@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch.models;
+package com.vivant.annecharlotte.go4lunch.firestore;
 
 
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.List;
 import androidx.annotation.Nullable;
 
 /**
- * Created by Anne-Charlotte Vivant on 09/02/2019.
+ * Class describing User Collection
  */
 public class User {
 

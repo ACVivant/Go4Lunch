@@ -26,24 +26,24 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.vivant.annecharlotte.go4lunch.firestore.RestaurantSmallHelper;
+import com.vivant.annecharlotte.go4lunch.firestore.RestauranHelper;
 import com.vivant.annecharlotte.go4lunch.models.Nearby.GooglePlacesResult;
-import com.vivant.annecharlotte.go4lunch.models.RestaurantSmall;
+import com.vivant.annecharlotte.go4lunch.firestore.Restaurant;
 import com.vivant.annecharlotte.go4lunch.utils.MyDateFormat;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Fragment of LunchActivity that displays map anf pins for nearby restaurants
+ */
 public class MapFragment extends Fragment implements OnMapReadyCallback, DisplayNearbyPlaces {
 
     private View mView;
 
     private final static String TAG = "MapFragment";
     private static final float DEFAULT_ZOOM = 16f;
-
-    private String IDRESTO = "resto_id";
-    private String PLACEIDRESTO = "resto_place_id";
 
     //widgets
     private ImageView mGps;
@@ -61,7 +61,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
 
     }
@@ -69,7 +68,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView");
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_map, container, false);
         mGps = mView.findViewById(R.id.ic_gps);
@@ -77,19 +75,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         MyDateFormat forToday = new MyDateFormat();
         today = forToday.getTodayDate();
 
+        // Default position before geolocalisation
+        myLatitude = 48.858511;
+        myLongitude = 2.294524;
+
         return mView;
     }
 
     @Override
     public void updateNearbyPlaces(List<GooglePlacesResult> googlePlacesResults){
-        Log.d(TAG, "updateNearbyPlaces");
         List<GooglePlacesResult> placesToShowId;
         placesToShowId = googlePlacesResults;
         displayNearbyPlaces(placesToShowId);
     }
 
     public void setUserLocation(LatLng userLatLng){
-        Log.d(TAG, "setUserLocation");
+        // update location with geolocalisation
         myLatitude = userLatLng.latitude;
         myLongitude = userLatLng.longitude;
 
@@ -101,13 +102,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d(TAG, "onActivityCreated");
-        //initMap();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         initMap();
     }
 
@@ -116,7 +110,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     //-------------------------------------------------------------------------------------------------------------
     //initializing map
     private void initMap() {
-        Log.d(TAG, "initMap");
         MapView mMapView;
         mMapView = mView.findViewById(R.id.map);
 
@@ -130,7 +123,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d(TAG, "onMapReady lat " + myLatitude + " lgn: " + myLongitude);
         mMap = googleMap;
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude, myLongitude), DEFAULT_ZOOM));
@@ -155,7 +147,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
 
     private void init() {
         // click on gps
-        Log.d(TAG, "init");
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,7 +155,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         });
     }
     private void displayNearbyPlaces(List<GooglePlacesResult> tabIdResto) {
-        Log.d(TAG, "displayNearbyPlaces");
         for (int i = 0; i < tabIdResto.size(); i++) {
             GooglePlacesResult oneResto = tabIdResto.get(i);
             String restoName = oneResto.getName();
@@ -190,7 +180,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     //---------------------------------------------------------------------------------------------------
     private void updateLikeColorPin(final String placeId, final String name, final LatLng latLng) {
 
-        Log.d(TAG, "updateLikeColorPin");
         // The color of the pin is adjusted according to the user's choice
         final MarkerOptions markerOptions = new MarkerOptions();
 
@@ -202,12 +191,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
         myMarker.setTag(placeId);
 
 
-        RestaurantSmallHelper.getRestaurant(placeId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        RestauranHelper.getRestaurant(placeId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()){
 
-                    RestaurantSmall resto = documentSnapshot.toObject(RestaurantSmall.class);
+                    Restaurant resto = documentSnapshot.toObject(Restaurant.class);
                     Date dateRestoSheet;
                     if (resto != null) {
                         dateRestoSheet = resto.getDateCreated();
@@ -231,10 +220,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
     }
 
     //--------------------------------------------------------------------------------------------------------------------
-    // gère le clic sur la bulle d'info
+    //manages the click on the info bubble
     //--------------------------------------------------------------------------------------------------------------------
     private void launchRestaurantDetail(Marker marker ) {
-        Log.d(TAG, "launchRestaurantDetail");
+        String PLACEIDRESTO = "resto_place_id";
         String ref = (String) marker.getTag();
         Intent WVIntent = new Intent(getContext(), DetailRestoActivity.class);
         //Id

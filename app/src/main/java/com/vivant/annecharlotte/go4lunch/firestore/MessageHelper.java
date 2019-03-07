@@ -1,14 +1,11 @@
 package com.vivant.annecharlotte.go4lunch.firestore;
 
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
-import com.vivant.annecharlotte.go4lunch.models.Message;
-import com.vivant.annecharlotte.go4lunch.models.User;
 
 /**
- * Created by Anne-Charlotte Vivant on 22/02/2019.
+ * Methods related to Message Collection in Firebase
  */
 public class MessageHelper {
 

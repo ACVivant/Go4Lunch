@@ -14,10 +14,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.vivant.annecharlotte.go4lunch.firestore.RestaurantSmallHelper;
-import com.vivant.annecharlotte.go4lunch.models.RestaurantSmall;
+import com.vivant.annecharlotte.go4lunch.firestore.RestauranHelper;
+import com.vivant.annecharlotte.go4lunch.firestore.Restaurant;
 import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
-import com.vivant.annecharlotte.go4lunch.models.User;
+import com.vivant.annecharlotte.go4lunch.firestore.User;
 import com.vivant.annecharlotte.go4lunch.R;
 import com.vivant.annecharlotte.go4lunch.utils.MyDateFormat;
 import com.vivant.annecharlotte.go4lunch.authentification.AuthenticationActivity;
@@ -34,16 +34,15 @@ public class NotificationsService extends FirebaseMessagingService {
     public static final String SHARED_PREFS = "SharedPrefsPerso";
     public static final String NOTIF_PREFS = "notifications";
 
-    private String userName;
+
     private String userId;
     private String restoTodayId;
     private String restoTodayName;
     private String restoTodayAddress;
     private List<String> listUserId = new ArrayList<>();
     private String listNames="";
-    private String myMessage;
     private boolean notifOk;
-    private Context context;
+
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -88,23 +87,21 @@ public class NotificationsService extends FirebaseMessagingService {
     }
 
     private void createPersonalizedMessage() {
-        context = this.getApplicationContext();
 
-        // I get the id of the user's restoToday
+         // I get the id of the user's restoToday
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = documentSnapshot.toObject(User.class);
                 if (user != null) {
-                    userName = user.getUsername();
                     restoTodayId=user.getRestoToday();
                 }
 
                 // I get the name and address of the restaurant
-                RestaurantSmallHelper.getRestaurant(restoTodayId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                RestauranHelper.getRestaurant(restoTodayId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        RestaurantSmall resto = documentSnapshot.toObject((RestaurantSmall.class));
+                        Restaurant resto = documentSnapshot.toObject((Restaurant.class));
                         if (resto != null) {
                             restoTodayName = resto.getRestoName();
                             Log.d(TAG, "onSuccess: name " + restoTodayName);

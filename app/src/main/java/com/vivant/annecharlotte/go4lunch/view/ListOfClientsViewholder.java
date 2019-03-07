@@ -2,7 +2,6 @@ package com.vivant.annecharlotte.go4lunch.view;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,39 +11,25 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
-import com.vivant.annecharlotte.go4lunch.models.User;
+import com.vivant.annecharlotte.go4lunch.firestore.User;
 import com.vivant.annecharlotte.go4lunch.R;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * ViewHolder for items of list of clients in DetailRestoActivity
+ */
 class ListOfClientsViewholder extends RecyclerView.ViewHolder{
-
     private TextView nameTextView ;
     private ImageView photo;
     private Context mContext;
 
-    private final static String TAG = "VIEWHOLDER";
-
-     ListOfClientsViewholder(View itemView, final ListOfClientsAdapter.OnItemClickedListener listener, Context context) {
+     ListOfClientsViewholder(View itemView, Context context) {
         super(itemView);
 
         mContext = context;
-
-        Log.d(TAG, "ListOfClientsViewholder: constructeur");
         nameTextView = itemView.findViewById(R.id.workmates_TextView);
         photo = itemView.findViewById(R.id.workmates_ImageView);
-
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener!=null) {
-                    int position = getAdapterPosition();
-                    if (position!= RecyclerView.NO_POSITION) {
-                        listener.OnItemClicked(position);
-                    }
-                }
-            }
-        });
     }
 
     void updateWithDetails(final String clientId, final RequestManager glide) {

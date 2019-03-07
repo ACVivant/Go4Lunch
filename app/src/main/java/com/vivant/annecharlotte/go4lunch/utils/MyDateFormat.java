@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Created by Anne-Charlotte Vivant on 25/02/2019.
+ * Class to homogeneize date format and display them
  */
 public class MyDateFormat {
 

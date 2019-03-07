@@ -10,7 +10,6 @@ import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
@@ -26,7 +25,6 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -34,10 +32,9 @@ import com.vivant.annecharlotte.go4lunch.api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.api.ApiInterface;
 import com.vivant.annecharlotte.go4lunch.chat.ChatActivity;
 import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
-import com.vivant.annecharlotte.go4lunch.models.Details.RestaurantDetailResult;
 import com.vivant.annecharlotte.go4lunch.models.Nearby.GooglePlacesResult;
 import com.vivant.annecharlotte.go4lunch.models.Nearby.NearbyPlacesList;
-import com.vivant.annecharlotte.go4lunch.models.User;
+import com.vivant.annecharlotte.go4lunch.firestore.User;
 import com.vivant.annecharlotte.go4lunch.authentification.BaseActivity;
 import com.vivant.annecharlotte.go4lunch.authentification.ProfileActivity;
 
@@ -63,11 +60,13 @@ import android.widget.Toast;
 import com.google.android.libraries.places.api.Places;
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * activity that control MapFragment, ListRestoFragment and ListWorkmatesFragment
+ */
 public class LunchActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -82,7 +81,6 @@ public class LunchActivity extends BaseActivity
     final FragmentManager fm = getSupportFragmentManager();
     Fragment active = fragment1;
 
-    private String TAG = "LUNCHACTIVITY";
     private String PLACEIDRESTO = "resto_place_id";
 
     public static final String SHARED_PREFS = "SharedPrefsPerso";
@@ -112,7 +110,6 @@ public class LunchActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate: LunchActivity");
 
         setContentView(R.layout.activity_lunch);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -156,19 +153,16 @@ public class LunchActivity extends BaseActivity
             radius  = Integer.parseInt(radiusString);
         }
         type = sharedPreferences.getString(TYPE_PREFS, "restaurant");
-        Log.d(TAG, "loadPrefs");
     }
 
     protected void layoutLinks() {
         nameTextView = navigationView.getHeaderView(0).findViewById(R.id.ND_name_textView);
-        emailTextView =  navigationView.getHeaderView(0).findViewById(R.id.ND_email_textView);
+        emailTextView = navigationView.getHeaderView(0).findViewById(R.id.ND_email_textView);
         photoImageView = navigationView.getHeaderView(0).findViewById(R.id.ND_photo_imageView);
-        Log.d(TAG, "layoutLinks");
     }
 
     @Override
     public int getFragmentLayout() {
-        Log.d(TAG, "getFragmentLayout");
         return R.layout.activity_profile; }
 
     @Override
@@ -185,7 +179,6 @@ public class LunchActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the toolbar menu
         getMenuInflater().inflate(R.menu.toolbar, menu);
-        Log.d(TAG, "onCreateOptionsMenu");
         return true;
     }
 
@@ -289,7 +282,6 @@ public class LunchActivity extends BaseActivity
     //  Update UI when activity is creating
     private void updateUIWhenCreating(){
 
-        Log.d(TAG, "updateUIWhenCreating");
         if (this.getCurrentUser() != null){
             //Get picture URL from Firebase
             if (this.getCurrentUser().getPhotoUrl() != null) {
@@ -310,7 +302,6 @@ public class LunchActivity extends BaseActivity
     }
 
     private void searchNearbyRestaurants(){
-        Log.d(TAG, "searchNearbyRestaurants");
         String keyword = "";
         String key = BuildConfig.apikey;
         String lat = String.valueOf(currentLocation.getLatitude());
@@ -344,7 +335,6 @@ public class LunchActivity extends BaseActivity
     }
 
     private void startDetailActivity() {
-        Log.d(TAG, "startDetailActivity");
        String userId=  UserHelper.getCurrentUserId();
        UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
            @Override
@@ -379,7 +369,6 @@ public class LunchActivity extends BaseActivity
     // Verify permissions
     //----------------------------------------------------------------------------------------------------------------------------
     private void getLocationPermission() {
-        Log.d(TAG, "getLocationPermission");
         FusedLocationProviderClient mFusedLocationProviderClient;
         //getLocationPermission: getting location permissions
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
@@ -398,12 +387,7 @@ public class LunchActivity extends BaseActivity
                             currentLocation = (Location) task.getResult();
                             // We pass the user's position to the fragment map
                             assert currentLocation != null;
-                            /*try {
-                                Log.d(TAG, "onComplete: sleep");
-                                Thread.sleep(5000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }*/
+
                             fragment1.setUserLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
                             fragment2.setUserLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
                             searchNearbyRestaurants();

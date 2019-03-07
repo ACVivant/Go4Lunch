@@ -6,7 +6,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -14,9 +13,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.vivant.annecharlotte.go4lunch.R;
 
+/**
+ * Activity for authentification used by AuthenticationActivity
+ */
 public abstract class BaseActivity extends AppCompatActivity {
-    
-    private final static String TAG = "BASEACTIVITY";
 
     // --------------------
     // LIFE CYCLE

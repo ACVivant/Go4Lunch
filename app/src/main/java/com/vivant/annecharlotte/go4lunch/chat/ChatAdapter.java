@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.RequestManager;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.vivant.annecharlotte.go4lunch.models.Message;
+import com.vivant.annecharlotte.go4lunch.firestore.Message;
 import com.vivant.annecharlotte.go4lunch.R;
 
 import androidx.annotation.NonNull;
@@ -36,8 +36,9 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Message, MessageViewHo
         holder.updateWithMessage(model, this.idCurrentUser, this.glide);
     }
 
+    @NonNull
     @Override
-    public MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new MessageViewHolder(LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.activity_chat_item, parent, false));
     }

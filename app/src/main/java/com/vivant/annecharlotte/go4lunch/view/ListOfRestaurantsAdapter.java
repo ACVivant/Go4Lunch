@@ -1,7 +1,6 @@
 package com.vivant.annecharlotte.go4lunch.view;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * Created by Anne-Charlotte Vivant on 06/02/2019.
+ * Adapter for list of restaurants in ListRestoFragment
  */
 public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaurantsViewholder> {
 
@@ -26,8 +25,6 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
     private OnItemClickedListener mListener;
     private int length;
     private LatLng latlng;
-
-    private final static String TAG = "ADAPTER";
 
     public interface OnItemClickedListener{
         void OnItemClicked(int position);
@@ -43,7 +40,6 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
         this.glide = glide;
         this.length =  length;
         this.latlng = latLng;
-        Log.d(TAG, "ListOfRestaurantsAdapter: constructor");
     }
 
     @NonNull
@@ -53,8 +49,7 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_restaurant, parent, false);
-        Log.d(TAG, "onCreateViewHolder");
-        return new ListOfRestaurantsViewholder(view, mListener, context, latlng);
+        return new ListOfRestaurantsViewholder(view, mListener, latlng);
     }
 
     // update view holder
@@ -65,7 +60,6 @@ public class ListOfRestaurantsAdapter extends RecyclerView.Adapter<ListOfRestaur
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "getItemCount: "+ length);
         return length ;
     }
 }

@@ -2,7 +2,6 @@ package com.vivant.annecharlotte.go4lunch.view;
 
 import android.content.Context;
 import android.location.Location;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,11 +11,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.vivant.annecharlotte.go4lunch.BuildConfig;
-import com.vivant.annecharlotte.go4lunch.firestore.RestaurantSmallHelper;
+import com.vivant.annecharlotte.go4lunch.firestore.RestauranHelper;
 import com.vivant.annecharlotte.go4lunch.utils.Rate;
 import com.vivant.annecharlotte.go4lunch.models.Details.Period;
 import com.vivant.annecharlotte.go4lunch.models.Details.RestaurantDetailResult;
-import com.vivant.annecharlotte.go4lunch.models.RestaurantSmall;
+import com.vivant.annecharlotte.go4lunch.firestore.Restaurant;
 import com.vivant.annecharlotte.go4lunch.R;
 import com.vivant.annecharlotte.go4lunch.utils.MyDateFormat;
 
@@ -27,11 +26,9 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * Created by Anne-Charlotte Vivant on 06/02/2019.
+ * ViewHolder for items of list of restaurants in ListRestoFragment
  */
 public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
-
-    private static final String TAG = "ListOfRestaurantsViewho";
 
     private TextView nameTextView, addressTextView, openTextView, proximityTextView, loversTextView;
     private ImageView star1, star2, star3, photo;
@@ -39,10 +36,9 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
     private boolean textOK = false;
     private String today;
 
-    public ListOfRestaurantsViewholder(View itemView, final ListOfRestaurantsAdapter.OnItemClickedListener listener, Context context, LatLng latLng) {
+    public ListOfRestaurantsViewholder(View itemView, final ListOfRestaurantsAdapter.OnItemClickedListener listener, LatLng latLng) {
         super(itemView);
 
-        Context mContext = context;
         myLatLng = latLng;
 
         nameTextView =  itemView.findViewById(R.id.restaurant_name);
@@ -117,11 +113,11 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
         MyDateFormat forToday = new MyDateFormat();
         today = forToday.getTodayDate();
 
-        RestaurantSmallHelper.getRestaurant(restaurantDetail.getPlaceId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        RestauranHelper.getRestaurant(restaurantDetail.getPlaceId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    RestaurantSmall resto = documentSnapshot.toObject(RestaurantSmall.class);
+                    Restaurant resto = documentSnapshot.toObject(Restaurant.class);
 
                     // Date check
                     Date dateRestoSheet;

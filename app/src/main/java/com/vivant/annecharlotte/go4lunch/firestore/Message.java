@@ -1,11 +1,12 @@
-package com.vivant.annecharlotte.go4lunch.models;
+package com.vivant.annecharlotte.go4lunch.firestore;
 
 import com.google.firebase.firestore.ServerTimestamp;
+import com.vivant.annecharlotte.go4lunch.firestore.User;
 
 import java.util.Date;
 
 /**
- * Created by Anne-Charlotte Vivant on 22/02/2019.
+ * Class describing Message Collection
  */
 public class Message {
 

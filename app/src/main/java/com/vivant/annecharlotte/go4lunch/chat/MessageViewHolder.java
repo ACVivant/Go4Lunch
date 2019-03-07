@@ -1,7 +1,6 @@
 package com.vivant.annecharlotte.go4lunch.chat;
 
 import android.graphics.drawable.GradientDrawable;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -10,12 +9,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
-import com.vivant.annecharlotte.go4lunch.models.Message;
+import com.vivant.annecharlotte.go4lunch.firestore.Message;
 import com.vivant.annecharlotte.go4lunch.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -24,8 +22,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MessageViewHolder extends RecyclerView.ViewHolder {
-    private static final String TAG = "MessageViewHolder";
-    
+
     private RelativeLayout rootView;
     private LinearLayout profileContainer;
     private ImageView imageViewProfile;

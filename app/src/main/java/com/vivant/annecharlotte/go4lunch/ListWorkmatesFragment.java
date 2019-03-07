@@ -19,10 +19,13 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
-import com.vivant.annecharlotte.go4lunch.models.User;
+import com.vivant.annecharlotte.go4lunch.firestore.User;
 import com.vivant.annecharlotte.go4lunch.utils.MyDividerItemDecoration;
 import com.vivant.annecharlotte.go4lunch.view.ListOfWorkmatesAdapter;
 
+/**
+ * Fragment of LunchActivity which displays list of workamtes
+ */
 public class ListWorkmatesFragment extends Fragment {
     private ListOfWorkmatesAdapter adapter;
     private RecyclerView recyclerView;
@@ -40,8 +43,6 @@ public class ListWorkmatesFragment extends Fragment {
         // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_list_workmates, container, false);
         recyclerView = view.findViewById(R.id.fragment_workmates_recyclerview);
-
-        //((LunchActivity)getActivity()).setActionBarTitle(getResources().getString(R.string.TB_workmates));
 
         setupRecyclerView();
         return view;
