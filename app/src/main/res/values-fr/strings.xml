@@ -29,7 +29,7 @@
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="notification_title">"Vous avez reçu une notification"</string>
 
-    <!-- MAIN ACTIVITY -->
+    <!-- AUTHENTICATION ACTIVITY -->
     <string name="error_not_connected">"Vous devez vous connecter !"</string>
     <string name="error_authentication_canceled">"Authentification annulée"</string>
     <string name="error_no_internet">"Aucune connexion internet !"</string>
@@ -38,7 +38,7 @@
     <string name="button_login_text_logged">"Afficher le profil"</string>
     <string name="button_login_text_not_logged">"Connexion"</string>
 
-    <!-- LOGIN ACTIVITY -->
+    <!-- PROFILE ACTIVITY -->
     <string name="toolbar_title_login_activity">"Votre Profil"</string>
     <string name="text_input_username">"Nom d'utilisateur"</string>
     <string name="text_view_email">"Adresse email :"</string>
@@ -50,6 +50,8 @@
     <string name="popup_message_confirmation_delete_account">"Es-tu sûr(e) de vouloir supprimer ton compte ?"</string>
     <string name="popup_message_choice_yes">"Oui !"</string>
     <string name="popup_message_choice_no">"Non"</string>
+    <string name="logo_go4lunch">"logo"</string>
+    <string name="photo_profile">"photo de profil"</string>
 
     <!-- FACEBOOK PURPOSE -->
     <!--string name="facebook_application_id">1031726573687275</string-->
@@ -88,6 +90,14 @@
     <string name="closed">Fermé</string>
     <string name="closed_today">"Fermé aujourd'hui"</string>
     <string name="always_open">Ouvert 24/7</string>
+    <string name="resto_name">"Nom du resto"</string>
+    <string name="resto_address">"Adresse du resto"</string>
+    <string name="resto_open">"Horaires du resto"</string>
+    <string name="resto_distance">"Distance"</string>
+    <string name="logo_colleagues">"logo nombre de collèques"</string>
+    <string name="resto_number_colleagues">"nombre de collèques</string>
+    <string name="resto_star">"étoile"</string>
+    <string name="resto_photo">"photo du restaurant"</string>
 
     <!-- LUNCH ACTIVITY -->
     <string name="no_lunch">"Vous n'avez pas encore choisi de restaurant!"</string>
@@ -128,4 +138,9 @@
     <string name="chat_add">"Ajouter une image"</string>
     <string name="chat_title_restaurants">"Si on choisissait ensemble un resto?"</string>
     <string name="chat_title_photos">"Bons moments en images"</string>
+    <string name="chat_image_sent">"Image envoyée"</string>
+    <string name="chat_image_profile">"Photo de profil"</string>
+
+    <!-- MAP FRAGMENT -->
+    <string name="gps">"gps"</string>
 </resources>

@@ -10,6 +10,7 @@
 
     <ImageView
         android:id="@+id/workmates_ImageView"
+        android:contentDescription="@string/photo_profile"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
