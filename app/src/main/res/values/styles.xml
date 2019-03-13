@@ -1,21 +1,21 @@
 <resources>
 
-    <!-- Base application theme. -->
+    <!-- BASE APPLICATION THEME. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#F4511E</item>
-        <item name="colorPrimaryDark">#FF8A65</item>
-        <item name="colorAccent">#BF360C</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <!-- STYLE FOR MAIN ACTIVITY -->
+    <!-- STYLE FOR AUTHENTICATION ACTIVITY -->
     <style name="AppTheme.NoTitle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="actionBarTheme">@null</item>
-        <item name="colorPrimary">#F4511E</item>
-        <item name="colorPrimaryDark">#FF8A65</item>
-        <item name="colorAccent">#BF360C</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

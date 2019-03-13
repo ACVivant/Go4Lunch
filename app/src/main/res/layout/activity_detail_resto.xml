@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/colorAccent"
+        android:background="@color/colorPrimaryDark"
         android:padding="15dp"
 >
 
@@ -38,7 +38,7 @@
             android:id="@+id/name_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="nom du resto"
+            android:text="@string/resto_name"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             />
@@ -68,7 +68,7 @@
             android:id="@+id/address_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="resto adresse"
+            android:text="@string/resto_address"
             android:textColor="@android:color/white"/>
 
     </LinearLayout>
@@ -96,7 +96,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/call"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/colorPrimaryDark"
                 android:textAllCaps="true"
                 android:layout_gravity="center"/>
 
@@ -119,7 +119,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/like"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/colorPrimaryDark"
                 android:textAllCaps="true"
                 android:layout_gravity="center"/>
         </LinearLayout>
@@ -142,7 +142,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/website"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/colorPrimaryDark"
                 android:textAllCaps="true"
                 android:layout_gravity="center"/>
         </LinearLayout>

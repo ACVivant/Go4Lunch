@@ -2,6 +2,7 @@ package com.vivant.annecharlotte.go4lunch.view;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,6 +36,8 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
     private LatLng myLatLng;
     private boolean textOK = false;
     private String today;
+
+    private static final String TAG = "ListOfRestaurantsViewho";
 
     public ListOfRestaurantsViewholder(View itemView, final ListOfRestaurantsAdapter.OnItemClickedListener listener, LatLng latLng) {
         super(itemView);

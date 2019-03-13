@@ -54,7 +54,7 @@ public class ListWorkmatesFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        // Stocké dans le cache quelque part... voir comment gérer une mise à jour dynamique
+
         Query allUsers= UserHelper.getAllUsers()
                 .orderBy("restoTodayName", Query.Direction.ASCENDING);
 
@@ -71,7 +71,7 @@ public class ListWorkmatesFragment extends Fragment {
         MyDividerItemDecoration mDividerItemDecoration = new MyDividerItemDecoration(recyclerView.getContext());
         recyclerView.addItemDecoration(mDividerItemDecoration);
 
-        // on gère le clic sur les items workmates
+        // on click items actions
         adapter.setOnItemClickListener(new ListOfWorkmatesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
