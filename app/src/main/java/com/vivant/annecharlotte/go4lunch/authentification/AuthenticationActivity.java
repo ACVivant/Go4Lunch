@@ -143,20 +143,6 @@ public class AuthenticationActivity extends BaseActivity {
                 RC_SIGN_IN_FACEBOOK);
     }
 
-    //---------------------
-    // REST REQUEST
-    //---------------------
-    // Http request that create user in firestore
-
-    private void createUserInFirestore(){
-        if (isCurrentUserLogged()){
-            String urlPicture = (Objects.requireNonNull(this.getCurrentUser()).getPhotoUrl() != null) ? Objects.requireNonNull(this.getCurrentUser().getPhotoUrl()).toString() : null;
-            String username = this.getCurrentUser().getDisplayName();
-            String uid = this.getCurrentUser().getUid();
-            String userEmail = this.getCurrentUser().getEmail();
-            UserHelper.createUser(uid, username, userEmail, urlPicture).addOnFailureListener(this.onFailureListener());
-        }
-    }
     // --------------------
     // UTILS
     // --------------------
@@ -179,6 +165,21 @@ public class AuthenticationActivity extends BaseActivity {
                     showSnackBar(this.mainActivityLinearLayout, getString(R.string.error_unknown_error));
                 }
             }
+        }
+    }
+
+    //---------------------
+    // REST REQUEST
+    //---------------------
+    // Http request that create user in firestore
+
+    private void createUserInFirestore(){
+        if (isCurrentUserLogged()){
+            String urlPicture = (Objects.requireNonNull(this.getCurrentUser()).getPhotoUrl() != null) ? Objects.requireNonNull(this.getCurrentUser().getPhotoUrl()).toString() : null;
+            String username = this.getCurrentUser().getDisplayName();
+            String uid = this.getCurrentUser().getUid();
+            String userEmail = this.getCurrentUser().getEmail();
+            UserHelper.createUser(uid, username, userEmail, urlPicture).addOnFailureListener(this.onFailureListener());
         }
     }
 
