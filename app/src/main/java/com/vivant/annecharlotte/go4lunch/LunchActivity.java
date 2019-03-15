@@ -1,6 +1,7 @@
 package com.vivant.annecharlotte.go4lunch;
 
 import android.Manifest;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +29,7 @@ import android.text.TextUtils;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.maps.android.quadtree.PointQuadTree;
 import com.vivant.annecharlotte.go4lunch.api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.api.ApiInterface;
 import com.vivant.annecharlotte.go4lunch.chat.ChatActivity;
@@ -101,6 +103,7 @@ public class LunchActivity extends BaseActivity
     private NavigationView navigationView;
     private List<GooglePlacesResult> results;
     private Context mContext;
+    private int clic = 0;
 
     private boolean mLocationPermissionGranted = false;
 
@@ -174,6 +177,20 @@ public class LunchActivity extends BaseActivity
             super.onBackPressed();
         }
     }
+
+    // Autocomplete button not for workmates fragment
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (clic ==3) {
+            menu.removeItem(R.id.menu_activity_main_search);
+        } else {
+            if (menu.findItem(R.id.menu_activity_main_search) == null) {
+                menu.add(Menu.NONE, R.id.menu_activity_main_search, 5, "Autocomplete");
+            }
+        }
+        return true;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -263,16 +280,25 @@ public class LunchActivity extends BaseActivity
                 case R.id.bottom_navigation_map:
                     fm.beginTransaction().hide(active).show(fragment1).commit();
                     active = fragment1;
+                    getSupportActionBar().setTitle(R.string.TB_title);
+                    clic = 1; // To know which fragment was choosen how to design ActionBar
+                    invalidateOptionsMenu();
                     return true;
 
                 case R.id.bottom_navigation_listresto:
                     fm.beginTransaction().hide(active).show(fragment2).commit();
                     active = fragment2;
+                    getSupportActionBar().setTitle(R.string.TB_title);
+                    clic = 2;
+                    invalidateOptionsMenu();
                     return true;
 
                 case R.id.bottom_navigation_listworkmates:
                     fm.beginTransaction().hide(active).show(fragment3).commit();
                     active = fragment3;
+                    getSupportActionBar().setTitle(R.string.TB_workmates);
+                    clic = 3;
+                    invalidateOptionsMenu();
                     return true;
             }
             return false;
