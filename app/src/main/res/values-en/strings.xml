@@ -31,7 +31,7 @@
 
     <!-- AUTHENTICATION ACTIVITY -->
     <string name="error_not_connected">You should be connected</string>
-    <string name="error_authentication_canceled">"Ahthentication cancelled"</string>
+    <string name="error_authentication_canceled">"Authentication cancelled"</string>
     <string name="error_no_internet">"no connexion"</string>
     <string name="error_unknown_error">"An unknown error has occurred"</string>
     <string name="connection_succeed">Successful authentication !</string>
