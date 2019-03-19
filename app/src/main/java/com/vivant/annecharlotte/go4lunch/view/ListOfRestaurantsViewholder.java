@@ -70,6 +70,7 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
 
 
     void updateWithDetailsRestaurants(RestaurantDetailResult restaurantDetail, RequestManager glide) {
+        Log.d(TAG, "updateWithDetailsRestaurants");
 
         // Name of restaurant
         this.nameTextView.setText(restaurantDetail.getName());
@@ -80,9 +81,10 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
 
         // Opening hours
         if(restaurantDetail.getOpeninghours()!= null) {
-            openTextView.setText(openTextView.getResources().getString(R.string.closed_today));
+            //openTextView.setText(openTextView.getResources().getString(R.string.closed_today));
             openTextView.setTextColor(openTextView.getResources().getColor(R.color.colorMyGrey));// default value that will be overwritten with today's schedules if the restaurant is open today
             isRestaurantOpen(restaurantDetail);
+            textOK = false;
         } else {
             openTextView.setText(R.string.no_hours);
         }
@@ -141,14 +143,22 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
     }
 
     private void isRestaurantOpen(RestaurantDetailResult restaurantDetail) {
+        Log.d(TAG, "isRestaurantOpen: name " + restaurantDetail.getName());
         Calendar calendar = Calendar.getInstance();
+        openTextView.setTextColor(openTextView.getResources().getColor(R.color.colorMyGrey));
+        openTextView.setText(openTextView.getResources().getString(R.string.closed_today));
+
         for(Period period: restaurantDetail.getOpeninghours().getPeriods()){
+            Log.d(TAG, "isRestaurantOpen: passage dans la boucle for");
             if(period.getClose() == null) {
                 openTextView.setText(openTextView.getResources().getString(R.string.always_open));
+                Log.d(TAG, "isRestaurantOpen: getClose est null");
             } else {
+                Log.d(TAG, "isRestaurantOpen: getClose n'est pas null");
                 String text;
                 String textTime;
                 if(period.getClose().getDay() == calendar.get(Calendar.DAY_OF_WEEK)-1&&!textOK) {
+                    Log.d(TAG, "isRestaurantOpen: text " + period.getClose().getDay());
                     //textOK allows you to manage cases where there are several opening hours for the same day
                     MyDateFormat hour = new MyDateFormat();
                     switch (getOpeningHour(period)) {
@@ -158,6 +168,7 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
                                 textTime = hour.getHoursFormat(period.getOpen().getTime());
                                 text+=textTime;
                                 openTextView.setText(text);
+                            Log.d(TAG, "isRestaurantOpen: case 1 "  + text);
 
                         break;
                         case 2:
@@ -167,10 +178,14 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
                                 textTime = hour.getHoursFormat(period.getClose().getTime());
                             text+=textTime;
                                 openTextView.setText(text);
+                            Log.d(TAG, "isRestaurantOpen: case 2 " + text);
+
                             break;
                         case 3:
                             openTextView.setTextColor(openTextView.getResources().getColor(R.color.colorMyGrey));
                             openTextView.setText(openTextView.getResources().getString(R.string.closed));
+                            Log.d(TAG, "isRestaurantOpen: case 3 " + "Fermé");
+
                     }
                 }
             }
@@ -179,6 +194,7 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
 
     // Method that get opening hours from GooglePlaces
     private int getOpeningHour(Period period){
+
         Calendar calendar = Calendar.getInstance();
         int currentHour = Integer.parseInt("" + calendar.get(Calendar.HOUR_OF_DAY) + calendar.get(Calendar.MINUTE));
         int closureHour = Integer.parseInt(period.getClose().getTime());
@@ -186,13 +202,17 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
 
         if (currentHour<openHour) {
             textOK = true; // We are earlier than the first schedule so do not go compare with the second
+            Log.d(TAG, "getOpeningHour 1");
             return 1;
         }
         else if (currentHour>openHour&&currentHour<closureHour) {
             textOK = true; // We are in the first time slot so do not go compare with the second
+            Log.d(TAG, "getOpeningHour 2");
             return 2;
         }
-        else return 3;
+        else
+            Log.d(TAG, "getOpeningHour 3");
+        return 3;
     }
 }
 
