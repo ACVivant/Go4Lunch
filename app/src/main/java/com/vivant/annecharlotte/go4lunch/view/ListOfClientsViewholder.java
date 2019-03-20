@@ -24,7 +24,7 @@ class ListOfClientsViewholder extends RecyclerView.ViewHolder{
     private ImageView photo;
     private Context mContext;
 
-     ListOfClientsViewholder(View itemView, Context context) {
+    ListOfClientsViewholder(View itemView, Context context) {
         super(itemView);
 
         mContext = context;

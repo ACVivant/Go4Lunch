@@ -49,7 +49,7 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
     private TextView textViewRecyclerViewEmpty;
     private TextInputEditText editTextMessage;
     private ImageView imageViewPreview;
-       private ImageButton restaurantMessage;
+    private ImageButton restaurantMessage;
     private ImageButton photoMessage;
 
     // FOR DATA
@@ -269,7 +269,7 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener {
 
     @Override
     public void onBackPressed() {
-            super.onBackPressed();
+        super.onBackPressed();
     }
 }
 

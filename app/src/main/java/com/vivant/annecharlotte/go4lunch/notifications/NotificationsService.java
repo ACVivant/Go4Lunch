@@ -69,17 +69,17 @@ public class NotificationsService extends FirebaseMessagingService {
                 String myRestoToday;
                 if (user != null) {
                     myRestoToday = user.getRestoToday();
-                String registeredDate = user.getRestoDate();
+                    String registeredDate = user.getRestoDate();
                     Log.d(TAG, "onSuccess: today " + myRestoToday);
                     Log.d(TAG, "onSuccess: registered " + registeredDate);
-                if (!myRestoToday.equals("")) {
-                    // We check that the restaurant has been registered for today
-                    if (registeredDate.equals(today)) {
-                        // We check that he has subscribed to the sending of notifications
-                        if (notifOk) {
-                            createPersonalizedMessage();
+                    if (!myRestoToday.equals("")) {
+                        // We check that the restaurant has been registered for today
+                        if (registeredDate.equals(today)) {
+                            // We check that he has subscribed to the sending of notifications
+                            if (notifOk) {
+                                createPersonalizedMessage();
+                            }
                         }
-                    }
                     }
                 }
             }
@@ -88,7 +88,7 @@ public class NotificationsService extends FirebaseMessagingService {
 
     private void createPersonalizedMessage() {
 
-         // I get the id of the user's restoToday
+        // I get the id of the user's restoToday
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -107,7 +107,7 @@ public class NotificationsService extends FirebaseMessagingService {
                             Log.d(TAG, "onSuccess: name " + restoTodayName);
                             Log.d(TAG, "onSuccess: adress " + resto.getAddress());
                             restoTodayAddress = resto.getAddress();
-                        // I retrieve the list of colleagues who have chosen this restaurant
+                            // I retrieve the list of colleagues who have chosen this restaurant
                             listUserId = resto.getClientsTodayList();
                         }
 

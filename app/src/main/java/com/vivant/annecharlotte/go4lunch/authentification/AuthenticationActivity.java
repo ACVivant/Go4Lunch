@@ -41,7 +41,7 @@ public class AuthenticationActivity extends BaseActivity {
         setContentView(R.layout.activity_authentication);
         layoutLinks();
 
-       // printHashKey(this);
+        // printHashKey(this);
     }
 
     @Override

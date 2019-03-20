@@ -210,7 +210,7 @@ public class LunchActivity extends BaseActivity
                 List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
 
                 // Define the region
-              RectangularBounds bounds = RectangularBounds.newInstance(
+                RectangularBounds bounds = RectangularBounds.newInstance(
                         new LatLng(currentLocation.getLatitude()-0.01, currentLocation.getLongitude()-0.01),
                         new LatLng(currentLocation.getLatitude()+0.01, currentLocation.getLongitude()+0.01));
 
@@ -259,7 +259,7 @@ public class LunchActivity extends BaseActivity
             startSettingsActivity();
 
         } else if (id == R.id.nav_chat) {
-        startChatActivity();
+            startChatActivity();
         }
         else if (id == R.id.nav_logout) {
             Intent intent = new Intent(this, ProfileActivity.class);
@@ -344,8 +344,8 @@ public class LunchActivity extends BaseActivity
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         results = response.body().getResults();
-                    fragment1.updateNearbyPlaces(results);
-                    fragment2.updateNearbyPlaces(results);
+                        fragment1.updateNearbyPlaces(results);
+                        fragment2.updateNearbyPlaces(results);
                     }
 
                 } else {
@@ -361,24 +361,24 @@ public class LunchActivity extends BaseActivity
     }
 
     private void startDetailActivity() {
-       String userId=  UserHelper.getCurrentUserId();
-       UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-           @Override
-           public void onSuccess(DocumentSnapshot documentSnapshot) {
-               User myUser = documentSnapshot.toObject(User.class);
-               String lunch;
-               if (myUser != null) {
-                   lunch = myUser.getRestoToday();
-                   if (lunch.equals("")) {
-                       Toast.makeText(mContext, R.string.no_lunch, Toast.LENGTH_LONG).show();
-                   } else {
-                       Intent WVIntent = new Intent(mContext, DetailRestoActivity.class);
-                       WVIntent.putExtra(PLACEIDRESTO, lunch);
-                       startActivity(WVIntent);
-                   }
-               }
-           }
-       });
+        String userId=  UserHelper.getCurrentUserId();
+        UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User myUser = documentSnapshot.toObject(User.class);
+                String lunch;
+                if (myUser != null) {
+                    lunch = myUser.getRestoToday();
+                    if (lunch.equals("")) {
+                        Toast.makeText(mContext, R.string.no_lunch, Toast.LENGTH_LONG).show();
+                    } else {
+                        Intent WVIntent = new Intent(mContext, DetailRestoActivity.class);
+                        WVIntent.putExtra(PLACEIDRESTO, lunch);
+                        startActivity(WVIntent);
+                    }
+                }
+            }
+        });
     }
 
     private void startSettingsActivity() {

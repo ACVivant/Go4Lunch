@@ -56,37 +56,37 @@ public class MessageViewHolder extends RecyclerView.ViewHolder {
 
     public void updateWithMessage(Message message, String currentUserId, RequestManager glide) {
 
-            // Check if current user is the sender
-            Boolean isCurrentUser = message.getUserSender().getUid().equals(currentUserId);
+        // Check if current user is the sender
+        Boolean isCurrentUser = message.getUserSender().getUid().equals(currentUserId);
 
-            // Update message TextView
-            this.textViewMessage.setText(message.getMessage());
-            this.textViewMessage.setTextAlignment(isCurrentUser ? View.TEXT_ALIGNMENT_TEXT_END : View.TEXT_ALIGNMENT_TEXT_START);
+        // Update message TextView
+        this.textViewMessage.setText(message.getMessage());
+        this.textViewMessage.setTextAlignment(isCurrentUser ? View.TEXT_ALIGNMENT_TEXT_END : View.TEXT_ALIGNMENT_TEXT_START);
 
-            // Update date TextView
-            if (message.getDateCreated() != null)
-                this.textViewDate.setText(this.convertDateToHour(message.getDateCreated()));
+        // Update date TextView
+        if (message.getDateCreated() != null)
+            this.textViewDate.setText(this.convertDateToHour(message.getDateCreated()));
 
-            // Update profile picture ImageView
-            if (message.getUserSender().getUrlPicture() != null)
-                glide.load(message.getUserSender().getUrlPicture())
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(imageViewProfile);
+        // Update profile picture ImageView
+        if (message.getUserSender().getUrlPicture() != null)
+            glide.load(message.getUserSender().getUrlPicture())
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(imageViewProfile);
 
-            // Update image sent ImageView
-            if (message.getUrlImage() != null) {
-                glide.load(message.getUrlImage())
-                        .into(imageViewSent);
-                this.imageViewSent.setVisibility(View.VISIBLE);
-            } else {
-                this.imageViewSent.setVisibility(View.GONE);
-            }
+        // Update image sent ImageView
+        if (message.getUrlImage() != null) {
+            glide.load(message.getUrlImage())
+                    .into(imageViewSent);
+            this.imageViewSent.setVisibility(View.VISIBLE);
+        } else {
+            this.imageViewSent.setVisibility(View.GONE);
+        }
 
-            //Update Message Bubble Color Background
-            ((GradientDrawable) textMessageContainer.getBackground()).setColor(isCurrentUser ? colorCurrentUser : colorRemoteUser);
+        //Update Message Bubble Color Background
+        ((GradientDrawable) textMessageContainer.getBackground()).setColor(isCurrentUser ? colorCurrentUser : colorRemoteUser);
 
-            // Update all views alignment depending is current user or not
-            this.updateDesignDependingUser(isCurrentUser);
+        // Update all views alignment depending is current user or not
+        this.updateDesignDependingUser(isCurrentUser);
     }
 
     private void updateDesignDependingUser(Boolean isSender){

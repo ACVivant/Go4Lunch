@@ -104,90 +104,90 @@ public class DetailRestoActivity extends AppCompatActivity {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         call = apiService.getRestaurantDetail(BuildConfig.apikey, placeidResto, "name,rating,photo,url,formatted_phone_number,website,formatted_address,id,geometry");
         call.enqueue(new Callback<ListDetailResult>() {
-                         @Override
-                         public void onResponse(@NonNull Call<ListDetailResult> call, @NonNull Response<ListDetailResult> response) {
-                             if (!response.isSuccessful()) {
-                                 Toast.makeText(context, "Code: " + response.code(), Toast.LENGTH_LONG).show();
-                                 return;
-                             }
+            @Override
+            public void onResponse(@NonNull Call<ListDetailResult> call, @NonNull Response<ListDetailResult> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(context, "Code: " + response.code(), Toast.LENGTH_LONG).show();
+                    return;
+                }
 
-                             ListDetailResult posts = response.body();
-                             RestaurantDetailResult mResto;
-                             if (posts != null) {
-                                 mResto = posts.getResult();
+                ListDetailResult posts = response.body();
+                RestaurantDetailResult mResto;
+                if (posts != null) {
+                    mResto = posts.getResult();
 
 
-                             //----------------------------------------------------------------------------------------
-                             // Display infos on restaurant
-                             //---------------------------------------------------------------------------------------
-                             restoName = mResto.getName();
-                             restoAddress = mResto.getFormattedAddress();
-                             nameTV = findViewById(R.id.name_detail);
-                             nameTV.setText(restoName);
-                             addressTV = findViewById(R.id.address_detail);
-                             addressTV.setText(restoAddress);
+                    //----------------------------------------------------------------------------------------
+                    // Display infos on restaurant
+                    //---------------------------------------------------------------------------------------
+                    restoName = mResto.getName();
+                    restoAddress = mResto.getFormattedAddress();
+                    nameTV = findViewById(R.id.name_detail);
+                    nameTV.setText(restoName);
+                    addressTV = findViewById(R.id.address_detail);
+                    addressTV.setText(restoAddress);
 
-                             //------------------------------------------------------------------------------------------
-                             // Rating
-                             //-------------------------------------------------------------------------------------------
-                             double restoRate = mResto.getRating();
-                             star1 =  findViewById(R.id.star1_detail);
-                             star2 =  findViewById(R.id.star2_detail);
-                             star3 =  findViewById(R.id.star3_detail);
-                             Rate myRate = new Rate(restoRate, star1, star2, star3);
+                    //------------------------------------------------------------------------------------------
+                    // Rating
+                    //-------------------------------------------------------------------------------------------
+                    double restoRate = mResto.getRating();
+                    star1 =  findViewById(R.id.star1_detail);
+                    star2 =  findViewById(R.id.star2_detail);
+                    star3 =  findViewById(R.id.star3_detail);
+                    Rate myRate = new Rate(restoRate, star1, star2, star3);
 
-                             //-------------------------------------------------------------------------------------------
-                             // Photo
-                             //---------------------------------------------------------------------------------------------
+                    //-------------------------------------------------------------------------------------------
+                    // Photo
+                    //---------------------------------------------------------------------------------------------
 
-                             photoIV =  findViewById(R.id.photo_detail);
-                             if (mResto.getPhotos() != null && !mResto.getPhotos().isEmpty()){
-                                 String restoPhoto = mResto.getPhotos().get(0).getPhotoReference();
-                                 String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + restoPhoto + "&key=" + BuildConfig.apikey;
-                                 Glide.with(context).load(photoUrl).into(photoIV);
-                             } else {
-                                 photoIV.setImageResource(R.drawable.buffet3);
-                             }
+                    photoIV =  findViewById(R.id.photo_detail);
+                    if (mResto.getPhotos() != null && !mResto.getPhotos().isEmpty()){
+                        String restoPhoto = mResto.getPhotos().get(0).getPhotoReference();
+                        String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + restoPhoto + "&key=" + BuildConfig.apikey;
+                        Glide.with(context).load(photoUrl).into(photoIV);
+                    } else {
+                        photoIV.setImageResource(R.drawable.buffet3);
+                    }
 
-                             //-----------------------------------------------------------------------------------------------
-                             // Call
-                             //-----------------------------------------------------------------------------------------------
-                             //restoTel = resto.getPhone();
-                             restoTel = "06 28 08 57 50";  // for tests
-                             toPhone = findViewById(R.id.phone_detail_button);
-                             toPhone.setOnClickListener(new View.OnClickListener() {
-                                 @Override
-                                 public void onClick(View v) {
-                                     makePhoneCall();
-                                 }
-                             });
+                    //-----------------------------------------------------------------------------------------------
+                    // Call
+                    //-----------------------------------------------------------------------------------------------
+                    //restoTel = resto.getPhone();
+                    restoTel = "06 28 08 57 50";  // for tests
+                    toPhone = findViewById(R.id.phone_detail_button);
+                    toPhone.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            makePhoneCall();
+                        }
+                    });
 
-                             //--------------------------------------------------------------------------------------------------
-                             // Website
-                             //-------------------------------------------------------------------------------------------------
-                             final String restoWebsite = mResto.getWebsite();
-                             toWebsite = findViewById(R.id.website_detail_button);
-                             toWebsite.setOnClickListener(new View.OnClickListener() {
-                                 @Override
-                                 public void onClick(View v) {
-                                     if (restoWebsite.equals("no-website")) {
-                                         Toast.makeText(DetailRestoActivity.this, R.string.no_website, Toast.LENGTH_LONG).show();
-                                     } else {
-                                         Intent WVIntent = new Intent(DetailRestoActivity.this, WebViewActivity.class);
-                                         WVIntent.putExtra(WEB, restoWebsite);
-                                         startActivity(WVIntent);
-                                     }
-                                 }
-                             });
-                         }
-                         }
+                    //--------------------------------------------------------------------------------------------------
+                    // Website
+                    //-------------------------------------------------------------------------------------------------
+                    final String restoWebsite = mResto.getWebsite();
+                    toWebsite = findViewById(R.id.website_detail_button);
+                    toWebsite.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (restoWebsite.equals("no-website")) {
+                                Toast.makeText(DetailRestoActivity.this, R.string.no_website, Toast.LENGTH_LONG).show();
+                            } else {
+                                Intent WVIntent = new Intent(DetailRestoActivity.this, WebViewActivity.class);
+                                WVIntent.putExtra(WEB, restoWebsite);
+                                startActivity(WVIntent);
+                            }
+                        }
+                    });
+                }
+            }
 
-                         @Override
-                         public void onFailure(@NonNull Call<ListDetailResult> call, @NonNull Throwable t) {
-                             Toast.makeText(context, t.getMessage(), Toast.LENGTH_LONG).show();
-                             Log.e(TAG, t.toString());
-                         }
-                     });
+            @Override
+            public void onFailure(@NonNull Call<ListDetailResult> call, @NonNull Throwable t) {
+                Toast.makeText(context, t.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e(TAG, t.toString());
+            }
+        });
 
         //------------------------------------------------------------------------------------------------
 
@@ -321,17 +321,17 @@ public class DetailRestoActivity extends AppCompatActivity {
                     if (usersToday != null) {
                         dateRestoSheet = usersToday.getDateCreated();
 
-                    MyDateFormat myDate = new MyDateFormat();
-                    String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
-                    if (dateRegistered.equals(today)) {
-                        List<String> listUsersToday = new ArrayList<>();
-                        listUsersToday = usersToday.getClientsTodayList();
-                        listUsersToday.add(userId);
-                        RestauranHelper.updateClientsTodayList(listUsersToday, id);
-                    }else {
-                        RestauranHelper.createRestaurant(id, name, restoAddress);
-                        updateUserTodayInFirebase(userId, id);
-                    }
+                        MyDateFormat myDate = new MyDateFormat();
+                        String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
+                        if (dateRegistered.equals(today)) {
+                            List<String> listUsersToday = new ArrayList<>();
+                            listUsersToday = usersToday.getClientsTodayList();
+                            listUsersToday.add(userId);
+                            RestauranHelper.updateClientsTodayList(listUsersToday, id);
+                        }else {
+                            RestauranHelper.createRestaurant(id, name, restoAddress);
+                            updateUserTodayInFirebase(userId, id);
+                        }
                     }
                 } else {
                     RestauranHelper.createRestaurant(id, name, restoAddress);
@@ -438,30 +438,30 @@ public class DetailRestoActivity extends AppCompatActivity {
     private void setupRecyclerView() {
 
         RestauranHelper.getRestaurant(placeidResto).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-    @Override
-    public void onSuccess(DocumentSnapshot documentSnapshot) {
-        if (documentSnapshot.exists()) {
-            Restaurant usersToday = documentSnapshot.toObject(Restaurant.class);
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    Restaurant usersToday = documentSnapshot.toObject(Restaurant.class);
 
-            Date dateRestoSheet;
-            if (usersToday != null) {
-                dateRestoSheet = usersToday.getDateCreated();
-                MyDateFormat myDate = new MyDateFormat();
-                String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
+                    Date dateRestoSheet;
+                    if (usersToday != null) {
+                        dateRestoSheet = usersToday.getDateCreated();
+                        MyDateFormat myDate = new MyDateFormat();
+                        String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
 
-                if (dateRegistered.equals(today)) {
-                    List<String> listId = usersToday.getClientsTodayList();
+                        if (dateRegistered.equals(today)) {
+                            List<String> listId = usersToday.getClientsTodayList();
 
-                    if (listId != null) {
-                        adapter = new ListOfClientsAdapter(listId, Glide.with(recyclerView), listId.size());
-                        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                        recyclerView.setAdapter(adapter);
+                            if (listId != null) {
+                                adapter = new ListOfClientsAdapter(listId, Glide.with(recyclerView), listId.size());
+                                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                                recyclerView.setAdapter(adapter);
+                            }
+                        }
                     }
                 }
             }
-        }
-    }
-});
+        });
 
     }
 }

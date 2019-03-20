@@ -78,7 +78,7 @@ public class ListRestoFragment extends Fragment implements DisplayNearbyPlaces{
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
         for (int i = 0; i < googlePlacesResults.size(); i++) {
-          call = apiService.getRestaurantDetail(BuildConfig.apikey, googlePlacesResults.get(i).getPlaceId(), "name,rating,photo,url,formatted_phone_number,website,address_component,id,geometry,place_id,opening_hours");
+            call = apiService.getRestaurantDetail(BuildConfig.apikey, googlePlacesResults.get(i).getPlaceId(), "name,rating,photo,url,formatted_phone_number,website,address_component,id,geometry,place_id,opening_hours");
 
             call.enqueue(new Callback<ListDetailResult>() {
                 @Override

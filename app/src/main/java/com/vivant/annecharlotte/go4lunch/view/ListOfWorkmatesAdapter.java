@@ -89,9 +89,9 @@ public class ListOfWorkmatesAdapter extends FirestoreRecyclerAdapter<User, ListO
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                   if (mListener!=null){
-                       mListener.onItemClick(getSnapshots().getSnapshot(position), position);
-                   }
+                    if (mListener!=null){
+                        mListener.onItemClick(getSnapshots().getSnapshot(position), position);
+                    }
                 }
             });
         }

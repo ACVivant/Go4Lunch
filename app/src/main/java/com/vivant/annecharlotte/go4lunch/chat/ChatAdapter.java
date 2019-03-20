@@ -23,7 +23,6 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Message, MessageViewHo
 
     //FOR COMMUNICATION
     private Listener callback;
-    private String tag;
 
     public ChatAdapter(@NonNull FirestoreRecyclerOptions<Message> options, RequestManager glide, Listener callback, String idCurrentUser) {
         super(options);

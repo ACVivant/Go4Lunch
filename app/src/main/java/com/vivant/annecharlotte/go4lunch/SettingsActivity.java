@@ -56,8 +56,8 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             case "1000":
                 spinnerRadius.setSelection(2);
                 break;
-                default:
-                    spinnerRadius.setSelection(1);
+            default:
+                spinnerRadius.setSelection(1);
         }
 
         spinnerRadius.setOnItemSelectedListener(this);

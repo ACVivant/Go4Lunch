@@ -162,16 +162,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
             double restoLng = oneResto.getGeometry().getLocation().getLng();
             String restoPlaceId = oneResto.getPlaceId();
 
-                    // we posts pins
-                    LatLng restoLatLng = new LatLng(restoLat, restoLng);
-                    updateLikeColorPin( restoPlaceId, restoName, restoLatLng);
+            // we posts pins
+            LatLng restoLatLng = new LatLng(restoLat, restoLng);
+            updateLikeColorPin( restoPlaceId, restoName, restoLatLng);
 
-                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                        @Override
-                        public void onInfoWindowClick(Marker marker) {
-                            launchRestaurantDetail(marker);
-                        }
-                    });
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    launchRestaurantDetail(marker);
+                }
+            });
         }
     }
 
@@ -200,19 +200,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Display
                     Date dateRestoSheet;
                     if (resto != null) {
                         dateRestoSheet = resto.getDateCreated();
-                    MyDateFormat myDate = new MyDateFormat();
-                    String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
+                        MyDateFormat myDate = new MyDateFormat();
+                        String dateRegistered = myDate.getRegisteredDate(dateRestoSheet);
 
-                    if (dateRegistered.equals(today)) {
-                        int nbreUsers = resto.getClientsTodayList().size();
-                        if (nbreUsers > 0) {
-                            markerOptions.position(latLng)
-                                    .title(name)
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                            myMarker = mMap.addMarker(markerOptions);
-                            myMarker.setTag(placeId);
+                        if (dateRegistered.equals(today)) {
+                            int nbreUsers = resto.getClientsTodayList().size();
+                            if (nbreUsers > 0) {
+                                markerOptions.position(latLng)
+                                        .title(name)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                                myMarker = mMap.addMarker(markerOptions);
+                                myMarker.setTag(placeId);
+                            }
                         }
-                    }
                     }
                 }
             }
