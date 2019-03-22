@@ -25,15 +25,15 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:tag="10"/>
 
-        <!-- BUTTON CHAT PHOTOS -->
+        <!-- BUTTON CHAT GOOD TIME -->
         <ImageButton
-            android:id="@+id/activity_user_chat_photo_chat_button"
-            android:contentDescription="@string/chat_title_photos"
+            android:id="@+id/activity_user_chat_good_chat_button"
+            android:contentDescription="@string/chat_title_good"
             android:layout_width="wrap_content"
             android:layout_height="50dip"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
-            android:src="@drawable/ic_camera_white"
+            android:src="@drawable/ic_happy"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:tag="20"/>
 
@@ -66,15 +66,6 @@
 
     </LinearLayout>
 
-    <!-- IMAGE CHOSEN PREVIEW -->
-    <ImageView
-        android:id="@+id/activity_user_chat_image_chosen_preview"
-        android:contentDescription="@string/chat_image_preview"
-        android:layout_width="50dip"
-        android:layout_height="50dip"
-        android:layout_margin="@dimen/default_margin"
-        android:layout_above="@id/activity_user_chat_add_message_container"/>
-
     <!-- ADD MESSAGE CONTAINER -->
     <LinearLayout
         android:id="@+id/activity_user_chat_add_message_container"
@@ -82,16 +73,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/default_margin">
-
-        <!-- ADD FILE BUTTON -->
-        <ImageButton
-            android:id="@+id/activity_user_chat_add_file_button"
-            android:contentDescription="@string/chat_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ic_add"
-            style="@style/Widget.AppCompat.Button.Borderless"/>
 
         <!-- TEXT MESSAGE EDIT TEXT -->
         <com.google.android.material.textfield.TextInputEditText

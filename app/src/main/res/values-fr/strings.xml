@@ -137,7 +137,7 @@
     <string name="chat_image_preview">"Image"</string>
     <string name="chat_add">"Ajouter une image"</string>
     <string name="chat_title_restaurants">"Si on choisissait ensemble un resto?"</string>
-    <string name="chat_title_photos">"Bons moments en images"</string>
+    <string name="chat_title_good">"Bons moments partagés"</string>
     <string name="chat_image_sent">"Image envoyée"</string>
     <string name="chat_image_profile">"Photo de profil"</string>
 

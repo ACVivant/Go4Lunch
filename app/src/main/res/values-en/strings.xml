@@ -137,7 +137,7 @@
     <string name="chat_image_preview">"Image"</string>
     <string name="chat_add">"Add an image"</string>
     <string name="chat_title_restaurants">"Which restaurant for today?"</string>
-    <string name="chat_title_photos">"Photos of good times!"</string>
+    <string name="chat_title_good">"Good times!"</string>
     <string name="chat_image_sent">"Image sent"</string>
     <string name="chat_image_profile">"Photo profil"</string>
 
