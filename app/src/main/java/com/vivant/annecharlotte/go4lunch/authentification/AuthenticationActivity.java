@@ -128,7 +128,6 @@ public class AuthenticationActivity extends BaseActivity {
                         .setIsSmartLockEnabled(false, true)
                         .build(),
                 RC_SIGN_IN_GOOGLE);
-        Log.d(TAG, "startSignInActivityGoogle: ");
     }
 
     //Launch Sign-In Activity with Facebook
@@ -174,12 +173,14 @@ public class AuthenticationActivity extends BaseActivity {
     // Http request that create user in firestore
 
     private void createUserInFirestore(){
-        if (isCurrentUserLogged()){
-            String urlPicture = (Objects.requireNonNull(this.getCurrentUser()).getPhotoUrl() != null) ? Objects.requireNonNull(this.getCurrentUser().getPhotoUrl()).toString() : null;
-            String username = this.getCurrentUser().getDisplayName();
-            String uid = this.getCurrentUser().getUid();
-            String userEmail = this.getCurrentUser().getEmail();
-            UserHelper.createUser(uid, username, userEmail, urlPicture).addOnFailureListener(this.onFailureListener());
+        if (isCurrentUserLogged()) {
+            if (UserHelper.getCurrentUserId() == null) {
+                String urlPicture = (Objects.requireNonNull(this.getCurrentUser()).getPhotoUrl() != null) ? Objects.requireNonNull(this.getCurrentUser().getPhotoUrl()).toString() : null;
+                String username = this.getCurrentUser().getDisplayName();
+                String uid = this.getCurrentUser().getUid();
+                String userEmail = this.getCurrentUser().getEmail();
+                UserHelper.createUser(uid, username, userEmail, urlPicture).addOnFailureListener(this.onFailureListener());
+            }
         }
     }
 
