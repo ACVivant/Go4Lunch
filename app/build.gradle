@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'Go4LunchKey'
+            keyPassword 'myAndr01dK3y'
+            storeFile file('D:/ProjetsAndroidStudio/keystore/android.jks')
+            storePassword 'k3yst0re'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId 'com.vivant.annecharlotte.go4lunch'
@@ -15,12 +23,10 @@ android {
         useLibrary 'android.test.base'
 
     }
-
     buildTypes {
         debug {
             buildConfigField("String", "apikey", PLACES_API_KEY)
             resValue("string", "apikey", PLACES_API_KEY)
-
             buildConfigField("String", "mapapikey", MAP_API_KEY)
             resValue("string", "mapapikey", MAP_API_KEY)
         }
@@ -29,11 +35,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField("String", "apikey", PLACES_API_KEY)
             resValue("string", "apikey", PLACES_API_KEY)
-
             buildConfigField("String", "mapapikey", MAP_API_KEY)
             resValue("string", "mapapikey", MAP_API_KEY)
+            signingConfig signingConfigs.config
         }
-
     }
     productFlavors {
     }
@@ -48,12 +53,11 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0-alpha04'
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-
     //Firebase
     implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation 'com.google.firebase:firebase-messaging:17.4.0'
     // FirebaseUI
-    implementation'com.google.firebase:firebase-auth:16.2.0'
+    implementation 'com.google.firebase:firebase-auth:16.2.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     // FIRESTORE
@@ -83,18 +87,14 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     //EASY PERMISSIONS
     implementation 'pub.devrel:easypermissions:1.1.1'
-
     //TESTS
     //Robolectric environment
     implementation 'androidx.test:core:1.1.0'
     testImplementation 'org.robolectric:robolectric:4.1'
-
     // Junit 4 framework
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-
     androidTestImplementation 'com.google.truth:truth:0.41'
-
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     //Espresso

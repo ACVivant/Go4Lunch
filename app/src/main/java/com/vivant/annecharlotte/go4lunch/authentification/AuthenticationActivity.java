@@ -32,7 +32,7 @@ public class AuthenticationActivity extends BaseActivity {
     private Button facebookBtn;
     private Button googleBtn;
     private Button alreadyBtn;
-    private static final String TAG = "MAINACTIVITY";
+    private static final String TAG = "AUTHENTICATIONACTIVITY";
 
     // Identifier for Sign-In Activity
     private static final int RC_SIGN_IN_GOOGLE = 123;
