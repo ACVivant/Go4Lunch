@@ -47,17 +47,19 @@ public class NotificationsService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
+        Log.d(TAG, "onMessageReceived");
+
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         notifOk = sharedPreferences.getBoolean(NOTIF_PREFS, true);
         userId = UserHelper.getCurrentUserId();
 
-        Log.d(TAG, "onMessageReceived");
         // We look if the user wants to receive notifications
         checkIfNotifToday();
     }
 
 
     private void checkIfNotifToday() {
+        Log.d(TAG, "checkIfNotifToday");
         MyDateFormat forToday = new MyDateFormat();
         final String today = forToday.getTodayDate();
 
@@ -70,11 +72,11 @@ public class NotificationsService extends FirebaseMessagingService {
                 if (user != null) {
                     myRestoToday = user.getRestoToday();
                     String registeredDate = user.getRestoDate();
-                    Log.d(TAG, "onSuccess: today " + myRestoToday);
-                    Log.d(TAG, "onSuccess: registered " + registeredDate);
                     if (!myRestoToday.equals("")) {
+                        Log.d(TAG, "onSuccess: il y a une date");
                         // We check that the restaurant has been registered for today
                         if (registeredDate.equals(today)) {
+                            Log.d(TAG, "onSuccess: la date est la même");
                             // We check that he has subscribed to the sending of notifications
                             if (notifOk) {
                                 createPersonalizedMessage();
@@ -87,6 +89,7 @@ public class NotificationsService extends FirebaseMessagingService {
     }
 
     private void createPersonalizedMessage() {
+        Log.d(TAG, "createPersonalizedMessage");
 
         // I get the id of the user's restoToday
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -104,8 +107,6 @@ public class NotificationsService extends FirebaseMessagingService {
                         Restaurant resto = documentSnapshot.toObject((Restaurant.class));
                         if (resto != null) {
                             restoTodayName = resto.getRestoName();
-                            Log.d(TAG, "onSuccess: name " + restoTodayName);
-                            Log.d(TAG, "onSuccess: adress " + resto.getAddress());
                             restoTodayAddress = resto.getAddress();
                             // I retrieve the list of colleagues who have chosen this restaurant
                             listUserId = resto.getClientsTodayList();
@@ -122,7 +123,6 @@ public class NotificationsService extends FirebaseMessagingService {
                                         name = user.getUsername();
                                     }
                                     listNames+= name +", ";
-                                    Log.d(TAG, "onSuccess: listnames " + listNames);
 
                                     String line1_name = getResources().getString(R.string.notif_message1) + " " + restoTodayName;
                                     String line2_address = restoTodayAddress;
@@ -141,6 +141,7 @@ public class NotificationsService extends FirebaseMessagingService {
     }
 
     private void sendVisualNotification(String m1, String m2, String m3, String m4) {
+        Log.d(TAG, "sendVisualNotification");
         //  Create an Intent that will be shown when user will click on the Notification
         Intent intent = new Intent(this, AuthenticationActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);

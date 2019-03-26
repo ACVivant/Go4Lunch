@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch;
+package com.vivant.annecharlotte.go4lunch.lunchfragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +20,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
+import com.vivant.annecharlotte.go4lunch.BuildConfig;
+import com.vivant.annecharlotte.go4lunch.DetailRestoActivity;
+import com.vivant.annecharlotte.go4lunch.DisplayNearbyPlaces;
+import com.vivant.annecharlotte.go4lunch.LunchActivity;
+import com.vivant.annecharlotte.go4lunch.R;
 import com.vivant.annecharlotte.go4lunch.api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.api.ApiInterface;
 import com.vivant.annecharlotte.go4lunch.models.Details.ListDetailResult;
@@ -34,7 +39,7 @@ import java.util.Objects;
 /**
  * Fragment from LunchActivity with list of all nearby restaurants
  */
-public class ListRestoFragment extends Fragment implements DisplayNearbyPlaces{
+public class ListRestoFragment extends Fragment implements DisplayNearbyPlaces {
 
     private RecyclerView mRecyclerView;
 

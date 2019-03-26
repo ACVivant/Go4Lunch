@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch;
+package com.vivant.annecharlotte.go4lunch.lunchfragments;
 
 
 import android.content.Intent;
@@ -18,6 +18,8 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
+import com.vivant.annecharlotte.go4lunch.DetailRestoActivity;
+import com.vivant.annecharlotte.go4lunch.R;
 import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.firestore.User;
 import com.vivant.annecharlotte.go4lunch.utils.MyDividerItemDecoration;

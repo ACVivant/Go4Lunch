@@ -254,16 +254,20 @@ public class DetailRestoActivity extends AppCompatActivity {
     // Update Firebase
     //---------------------------------------------------------------------------------------------------
     private void updateLikeInFirebase(final String idResto) {
+        Log.d(TAG, "updateLikeInFirebase: idresto " +idResto);
         UserHelper.getUser(userId).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
+                    Log.d(TAG, "onSuccess: documentSnapshot exists");
                     listRestoLike = Objects.requireNonNull(documentSnapshot.toObject(User.class)).getRestoLike();
                     if (listRestoLike != null) {
                         if (listRestoLike.contains(idResto)) {
+                            Log.d(TAG, "onSuccess: retirer le resto");
                             listRestoLike.remove(idResto);
                             likeThisResto.setImageResource(R.drawable.ic_action_star_no);
                         } else {
+                            Log.d(TAG, "onSuccess: ajouter le resto");
                             listRestoLike.add(idResto);
                             likeThisResto.setImageResource(R.drawable.ic_action_star);
                         }

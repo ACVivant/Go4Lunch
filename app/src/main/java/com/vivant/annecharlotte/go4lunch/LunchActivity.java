@@ -1,7 +1,6 @@
 package com.vivant.annecharlotte.go4lunch;
 
 import android.Manifest;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,11 +28,13 @@ import android.text.TextUtils;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.maps.android.quadtree.PointQuadTree;
 import com.vivant.annecharlotte.go4lunch.api.ApiClient;
 import com.vivant.annecharlotte.go4lunch.api.ApiInterface;
 import com.vivant.annecharlotte.go4lunch.chat.ChatActivity;
 import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
+import com.vivant.annecharlotte.go4lunch.lunchfragments.ListRestoFragment;
+import com.vivant.annecharlotte.go4lunch.lunchfragments.ListWorkmatesFragment;
+import com.vivant.annecharlotte.go4lunch.lunchfragments.MapFragment;
 import com.vivant.annecharlotte.go4lunch.models.Nearby.GooglePlacesResult;
 import com.vivant.annecharlotte.go4lunch.models.Nearby.NearbyPlacesList;
 import com.vivant.annecharlotte.go4lunch.firestore.User;

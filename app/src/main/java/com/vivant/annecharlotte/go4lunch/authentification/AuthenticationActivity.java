@@ -1,7 +1,11 @@
 package com.vivant.annecharlotte.go4lunch.authentification;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +19,7 @@ import com.vivant.annecharlotte.go4lunch.firestore.UserHelper;
 import com.vivant.annecharlotte.go4lunch.LunchActivity;
 import com.vivant.annecharlotte.go4lunch.R;
 
+import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -41,7 +46,7 @@ public class AuthenticationActivity extends BaseActivity {
         setContentView(R.layout.activity_authentication);
         layoutLinks();
 
-        // printHashKey(this);
+        //printHashKey(this);
     }
 
     @Override
@@ -98,10 +103,12 @@ public class AuthenticationActivity extends BaseActivity {
 
     private void updateUIWhenResuming() {
         if (this.isCurrentUserLogged()) {
+            Log.d(TAG, "updateUIWhenResuming: currentUserLogged");
             alreadyBtn.setVisibility(View.VISIBLE);
             facebookBtn.setVisibility(View.GONE);
             googleBtn.setVisibility(View.GONE);
         } else {
+            Log.d(TAG, "updateUIWhenResuming: currentUser not Logged");
             alreadyBtn.setVisibility(View.GONE);
             facebookBtn.setVisibility(View.VISIBLE);
             googleBtn.setVisibility(View.VISIBLE);
@@ -115,11 +122,11 @@ public class AuthenticationActivity extends BaseActivity {
     //  Show Snack Bar with a message
     private void showSnackBar(LinearLayout linearLayout, String message){
         Snackbar.make(linearLayout, message, Snackbar.LENGTH_SHORT).show();
-        Log.d(TAG, "showSnackBar: ");
     }
 
     //Launch Sign-In Activity with Google
     private void startSignInActivityGoogle(){
+        Log.d(TAG, "startSignInActivityGoogle");
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
@@ -150,8 +157,10 @@ public class AuthenticationActivity extends BaseActivity {
     private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data){
         IdpResponse response = IdpResponse.fromResultIntent(data);
 
+        Log.d(TAG, "handleResponseAfterSignIn");
         if (requestCode == RC_SIGN_IN_GOOGLE || requestCode == RC_SIGN_IN_FACEBOOK) {
             if (resultCode == RESULT_OK) { // SUCCESS
+                Log.d(TAG, "handleResponseAfterSignIn: Success");
                 // CREATE USER IN FIRESTORE
                 this.createUserInFirestore();
                 startLunchActivity();
@@ -174,13 +183,14 @@ public class AuthenticationActivity extends BaseActivity {
 
     private void createUserInFirestore(){
         if (isCurrentUserLogged()) {
-            if (UserHelper.getCurrentUserId() == null) {
+           // if (UserHelper.getCurrentUserId() == null) {
+                Log.d(TAG, "createUserInFirestore");
                 String urlPicture = (Objects.requireNonNull(this.getCurrentUser()).getPhotoUrl() != null) ? Objects.requireNonNull(this.getCurrentUser().getPhotoUrl()).toString() : null;
                 String username = this.getCurrentUser().getDisplayName();
                 String uid = this.getCurrentUser().getUid();
                 String userEmail = this.getCurrentUser().getEmail();
                 UserHelper.createUser(uid, username, userEmail, urlPicture).addOnFailureListener(this.onFailureListener());
-            }
+            //}
         }
     }
 
@@ -191,7 +201,7 @@ public class AuthenticationActivity extends BaseActivity {
         startActivity(intent);
     }
 
-   /* public static void printHashKey(Context context) {
+/*    public static void printHashKey(Context context) {
         try {
             final PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
             for (android.content.pm.Signature signature : info.signatures) {

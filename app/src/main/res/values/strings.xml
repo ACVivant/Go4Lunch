@@ -54,7 +54,7 @@
     <string name="photo_profile">"photo de profil"</string>
 
     <!-- FACEBOOK PURPOSE -->
-    <string name="facebook_application_id" translatable="false" >1031726573687275</string>
+    <string name="facebook_application_id" translatable="false">1031726573687275</string>
     <string name="fb_login_protocol_scheme" translatable="false">fb1031726573687275</string>
     <string name="title_activity_lunch">LunchActivity</string>
     <string name="navigation_drawer_open">"Open navigation drawer</string>

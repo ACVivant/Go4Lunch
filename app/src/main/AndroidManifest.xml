@@ -21,63 +21,51 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
-        <uses-library android:name="android.test.base"
+        <uses-library
+            android:name="android.test.base"
             android:required="false" />
-
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
-
-        <!-- AUTHENTICATION ACTIVITY -->
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" /> <!-- AUTHENTICATION ACTIVITY -->
         <activity
             android:name=".authentification.AuthenticationActivity"
             android:theme="@style/AppTheme.NoTitle"> <!-- DISABLE TOOLBAR IN MAIN ACTIVITY -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- PROFILE ACTIVITY -->
+        </activity> <!-- PROFILE ACTIVITY -->
         <activity
             android:name=".authentification.ProfileActivity"
             android:label="@string/toolbar_title_login_activity"
-            android:parentActivityName=".LunchActivity" />
-
-        <!-- LUNCH ACTIVITY -->
+            android:parentActivityName=".LunchActivity" /> <!-- LUNCH ACTIVITY -->
         <activity
             android:name=".LunchActivity"
             android:label="@string/title_activity_lunch"
-            android:theme="@style/AppTheme.NoTitle" />
-
-        <!-- DETAIL ACTIVITY -->
+            android:theme="@style/AppTheme.NoTitle" /> <!-- DETAIL ACTIVITY -->
         <activity
             android:name=".DetailRestoActivity"
-            android:theme="@style/AppTheme.NoTitle" />
-
-        <!-- WEBVIEW ACTIVITY -->
+            android:theme="@style/AppTheme.NoTitle" /> <!-- WEBVIEW ACTIVITY -->
         <activity
             android:name=".WebViewActivity"
-            android:theme="@style/AppTheme.NoTitle" />
-
-        <!-- CHAT ACTIVITY -->
-        <activity android:name=".chat.ChatActivity"
+            android:theme="@style/AppTheme.NoTitle" /> <!-- CHAT ACTIVITY -->
+        <activity
+            android:name=".chat.ChatActivity"
             android:label="@string/toolbar_title_chat_activity"
-            android:parentActivityName=".LunchActivity"/>
-
-        <!-- NOTIFICATION SERVICE -->
-        <service android:name=".notifications.NotificationsService"
+            android:parentActivityName=".LunchActivity" /> <!-- NOTIFICATION SERVICE -->
+        <service
+            android:name=".notifications.NotificationsService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
-
-        <!-- SETTINGS ACTIVITY -->
+        </service> <!-- SETTINGS ACTIVITY -->
         <activity android:name=".SettingsActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" /> <!-- TESTS -->
-
         <!-- FACEBOOK -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -99,11 +87,7 @@
 
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
-        </activity>
-
-
-
-        <!-- MAPS ANDROID KEYS -->
+        </activity> <!-- MAPS ANDROID KEYS -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

@@ -1,4 +1,4 @@
-package com.vivant.annecharlotte.go4lunch;
+package com.vivant.annecharlotte.go4lunch.lunchfragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +26,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.vivant.annecharlotte.go4lunch.DetailRestoActivity;
+import com.vivant.annecharlotte.go4lunch.DisplayNearbyPlaces;
+import com.vivant.annecharlotte.go4lunch.R;
 import com.vivant.annecharlotte.go4lunch.firestore.RestauranHelper;
 import com.vivant.annecharlotte.go4lunch.models.Nearby.GooglePlacesResult;
 import com.vivant.annecharlotte.go4lunch.firestore.Restaurant;
