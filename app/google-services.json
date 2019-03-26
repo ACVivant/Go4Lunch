@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "826752320927-gjj2pmof7si0n3mg0o9u2pqfcttsl11a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vivant.annecharlotte.go4lunch",
+            "certificate_hash": "2fb22f61424ee0fc828af7ec6b38bd57e265f240"
+          }
+        },
+        {
           "client_id": "826752320927-eingnc7ki79upkg1a98bhejueo3i77q0.apps.googleusercontent.com",
           "client_type": 3
         }
