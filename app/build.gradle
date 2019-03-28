@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'Go4LunchKey'
-            keyPassword 'myAndr01dK3y'
-            storeFile file('D:/ProjetsAndroidStudio/keystore/android.jks')
-            storePassword 'k3yst0re'
+   /* signingConfigs {
+        debug {
+            keyAlias 'AndroidDebugKey'
+            keyPassword 'android'
+            storeFile file('C:/Users/asus/.android/debug.keystore')
+            storePassword 'android'
         }
-    }
+    }*/
     compileSdkVersion 28
     defaultConfig {
         applicationId 'com.vivant.annecharlotte.go4lunch'
@@ -37,7 +37,7 @@ android {
             resValue("string", "apikey", PLACES_API_KEY)
             buildConfigField("String", "mapapikey", MAP_API_KEY)
             resValue("string", "mapapikey", MAP_API_KEY)
-            signingConfig signingConfigs.config
+            //signingConfig signingConfigs.debug
         }
     }
     productFlavors {
@@ -63,8 +63,7 @@ dependencies {
     // FIRESTORE
     implementation 'com.google.firebase:firebase-firestore:18.1.0'
     implementation 'com.firebaseui:firebase-ui-firestore:4.3.1'
-    // FirebaseUI Storage
-    implementation 'com.firebaseui:firebase-ui-storage:3.1.3'
+    implementation 'com.firebaseui:firebase-ui-database:4.0.0'
     // FACEBOOK LOGIN SUPPORT
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
     //GLIDE
