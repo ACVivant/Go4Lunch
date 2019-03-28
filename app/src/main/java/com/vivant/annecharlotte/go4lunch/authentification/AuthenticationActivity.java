@@ -31,12 +31,14 @@ public class AuthenticationActivity extends BaseActivity {
     private LinearLayout mainActivityLinearLayout;
     private Button facebookBtn;
     private Button googleBtn;
+    private Button emailBtn;
     private Button alreadyBtn;
     private static final String TAG = "AUTHENTICATIONACTIVITY";
 
     // Identifier for Sign-In Activity
     private static final int RC_SIGN_IN_GOOGLE = 123;
     private static final int RC_SIGN_IN_FACEBOOK = 456;
+    private static final int RC_SIGN_IN_EMAIL = 789;
 
     private static final String USER_ID = "userId";
 
@@ -75,6 +77,7 @@ public class AuthenticationActivity extends BaseActivity {
         mainActivityLinearLayout = findViewById(R.id.main_activity_linear_layout);
         facebookBtn = findViewById(R.id.mainactivity_button_login_facebook);
         googleBtn = findViewById(R.id.mainactivity_button_login_google);
+        emailBtn = findViewById(R.id.mainactivity_button_login_email);
         alreadyBtn = findViewById(R.id.mainactivity_button_already_connected);
 
         facebookBtn.setOnClickListener(new View.OnClickListener() {
@@ -93,6 +96,14 @@ public class AuthenticationActivity extends BaseActivity {
             }
         });
 
+        emailBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Launch Sign-In Activity when user clicked on Email Login Button
+                startSignInActivityEmail();
+            }
+        });
+
         alreadyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,11 +118,13 @@ public class AuthenticationActivity extends BaseActivity {
             alreadyBtn.setVisibility(View.VISIBLE);
             facebookBtn.setVisibility(View.GONE);
             googleBtn.setVisibility(View.GONE);
+            emailBtn.setVisibility(View.GONE);
         } else {
             Log.d(TAG, "updateUIWhenResuming: currentUser not Logged");
             alreadyBtn.setVisibility(View.GONE);
             facebookBtn.setVisibility(View.VISIBLE);
             googleBtn.setVisibility(View.VISIBLE);
+            emailBtn.setVisibility(View.VISIBLE);
         }
     }
 
@@ -149,6 +162,17 @@ public class AuthenticationActivity extends BaseActivity {
                 RC_SIGN_IN_FACEBOOK);
     }
 
+    //Launch Sign-In Activity with email
+    private void startSignInActivityEmail(){
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(
+                                Arrays.asList(new AuthUI.IdpConfig.EmailBuilder().build()))
+                        .setIsSmartLockEnabled(false, true)
+                        .build(),
+                RC_SIGN_IN_EMAIL);
+    }
     // --------------------
     // UTILS
     // --------------------
@@ -158,7 +182,7 @@ public class AuthenticationActivity extends BaseActivity {
         IdpResponse response = IdpResponse.fromResultIntent(data);
 
         Log.d(TAG, "handleResponseAfterSignIn");
-        if (requestCode == RC_SIGN_IN_GOOGLE || requestCode == RC_SIGN_IN_FACEBOOK) {
+        if (requestCode == RC_SIGN_IN_GOOGLE || requestCode == RC_SIGN_IN_FACEBOOK || requestCode == RC_SIGN_IN_EMAIL) {
             if (resultCode == RESULT_OK) { // SUCCESS
                 Log.d(TAG, "handleResponseAfterSignIn: Success");
                 // CREATE USER IN FIRESTORE

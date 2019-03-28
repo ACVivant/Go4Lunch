@@ -4,6 +4,7 @@
 
     <string name="login_facebook">"S'authentifier avec Facebook"</string>
     <string name="login_google">"S'authentifier avec Google"</string>
+    <string name="login_email">"S'authentifier avec mon email"</string>
     <string name="login_already">"Commencer"</string>
 
     <!-- NAVIGATION DRAWER -->
