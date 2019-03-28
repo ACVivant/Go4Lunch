@@ -15,7 +15,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "826752320927-e3p23mkmp58toi66ddrb4pet4v95kufn.apps.googleusercontent.com",
+          "client_id": "826752320927-g7k87qp3u9741udnt0cvvvjjvtdpfd96.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.vivant.annecharlotte.go4lunch",
@@ -23,11 +23,19 @@
           }
         },
         {
-          "client_id": "826752320927-gjj2pmof7si0n3mg0o9u2pqfcttsl11a.apps.googleusercontent.com",
+          "client_id": "826752320927-ih3cv5c5etvpj97nb9kc8m8snnm0ofam.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.vivant.annecharlotte.go4lunch",
             "certificate_hash": "2fb22f61424ee0fc828af7ec6b38bd57e265f240"
+          }
+        },
+        {
+          "client_id": "826752320927-kcfd07qc5bbc3t8dqghjrl8mhscbdm3b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vivant.annecharlotte.go4lunch",
+            "certificate_hash": "544b755c716d7cdd0c22a14c988a8864ff41d9c5"
           }
         },
         {
