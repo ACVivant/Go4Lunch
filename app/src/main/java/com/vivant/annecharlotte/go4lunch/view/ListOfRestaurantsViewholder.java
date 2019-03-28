@@ -1,6 +1,7 @@
 package com.vivant.annecharlotte.go4lunch.view;
 
 import android.location.Location;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,6 +35,8 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
     private LatLng myLatLng;
     private boolean textOK = false;
     private String today;
+
+    private static final String TAG = "ListOfRestaurantsViewho";
 
     public ListOfRestaurantsViewholder(View itemView, final ListOfRestaurantsAdapter.OnItemClickedListener listener, LatLng latLng) {
         super(itemView);
@@ -74,8 +77,9 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
         this.addressTextView.setText(address_short);
 
         // Opening hours
+        openTextView.setTextColor(openTextView.getResources().getColor(R.color.colorMyGrey));
         if(restaurantDetail.getOpeninghours()!= null) {
-            openTextView.setTextColor(openTextView.getResources().getColor(R.color.colorMyGrey));// default value that will be overwritten with today's schedules if the restaurant is open today
+            // default value that will be overwritten with today's schedules if the restaurant is open today
             isRestaurantOpen(restaurantDetail);
             textOK = false;
         } else {
@@ -184,10 +188,16 @@ public class ListOfRestaurantsViewholder extends RecyclerView.ViewHolder{
     private int getOpeningHour(Period period){
 
         Calendar calendar = Calendar.getInstance();
-        int currentHour = Integer.parseInt("" + calendar.get(Calendar.HOUR_OF_DAY) + calendar.get(Calendar.MINUTE));
+        int currentHour = 1200;
+        if (calendar.get(Calendar.MINUTE)<10) {
+            currentHour = Integer.parseInt("" + calendar.get(Calendar.HOUR_OF_DAY) + "0" +calendar.get(Calendar.MINUTE));
+        } else {
+            currentHour = Integer.parseInt("" + calendar.get(Calendar.HOUR_OF_DAY) + calendar.get(Calendar.MINUTE));
+        }
         int closureHour = Integer.parseInt(period.getClose().getTime());
         int openHour = Integer.parseInt(period.getOpen().getTime());
 
+        Log.d(TAG, "getOpeningHour: currenthour " +currentHour);
         if (currentHour<openHour) {
             textOK = true; // We are earlier than the first schedule so do not go compare with the second
             return 1;
