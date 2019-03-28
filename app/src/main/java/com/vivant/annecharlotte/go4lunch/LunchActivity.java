@@ -54,6 +54,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -95,16 +96,22 @@ public class LunchActivity extends BaseActivity
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
 
+    private static final String TAG = "LunchActivity";
+
     public Location getCurrentLocation() {
         return currentLocation;
     }
 
     private Location currentLocation;
+    private double societyLat = 49.14;
+    private double societyLng = 2.53;
+
 
     private NavigationView navigationView;
     private List<GooglePlacesResult> results;
     private Context mContext;
     private int clic = 0;
+
 
     private boolean mLocationPermissionGranted = false;
 
@@ -150,6 +157,7 @@ public class LunchActivity extends BaseActivity
     }
 
     private void loadPrefs() {
+        Log.d(TAG, "loadPrefs: ");
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
         String radiusString = sharedPreferences.getString(RADIUS_PREFS, "500");
@@ -328,11 +336,14 @@ public class LunchActivity extends BaseActivity
         }
     }
 
-    private void searchNearbyRestaurants(){
+    private void searchNearbyRestaurants(double mylat, double mylng){
+        Log.d(TAG, "searchNearbyRestaurants: ");
         String keyword = "";
         String key = BuildConfig.apikey;
-        String lat = String.valueOf(currentLocation.getLatitude());
-        String lng = String.valueOf(currentLocation.getLongitude());
+        //String lat = String.valueOf(currentLocation.getLatitude());
+        //String lng = String.valueOf(currentLocation.getLongitude());
+        String lat = String.valueOf(mylat);
+        String lng = String.valueOf(mylng);
 
         String location = lat+","+lng;
 
@@ -356,6 +367,7 @@ public class LunchActivity extends BaseActivity
 
             @Override
             public void onFailure(@NonNull Call<NearbyPlacesList> call, @NonNull Throwable t) {
+                Log.d(TAG, "onFailure: ");
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
@@ -417,7 +429,7 @@ public class LunchActivity extends BaseActivity
 
                             fragment1.setUserLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
                             fragment2.setUserLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
-                            searchNearbyRestaurants();
+                            searchNearbyRestaurants(currentLocation.getLatitude(), currentLocation.getLongitude());
                         }
                     }
                 });
@@ -434,18 +446,19 @@ public class LunchActivity extends BaseActivity
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         // onRequestPermissionsResult: called
         mLocationPermissionGranted = false;
+        Log.d(TAG, "onRequestPermissionsResult: ");
         switch (requestCode) {
             case LOCATION_PERMISSION_REQUEST_CODE: {
                 if (grantResults.length > 0) {
                     for (int grantResult : grantResults) {
                         if (grantResult != PackageManager.PERMISSION_GRANTED) {
                             // onRequestPermissionsResult: permissions failed
-                            mLocationPermissionGranted = false;
                             return;
+                        } else {
+                            // onRequestPermissionsResult: Permissions granted
+                            mLocationPermissionGranted = true;
+                            getLocationPermission();
                         }
-                        // onRequestPermissionsResult: Permissions granted
-                        mLocationPermissionGranted = true;
-                        getLocationPermission();
                     }
                 }
             }
